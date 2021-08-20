@@ -237,6 +237,6 @@ Describe "Call Function - Confirm-FilesystemHashes" -Tag IntegrationTest {
 }
 
 AfterAll {
-    Set-Location $PSScriptRoot\Output
+    Set-Location $PSScriptRoot
     [ModuleState]::ClearTestingStates()
 }

@@ -45,6 +45,6 @@ Describe "Artist Unit Test" -Tag UnitTest {
 }
 
 AfterAll {
-    Set-Location $PSScriptRoot\Output
+    Set-Location $PSScriptRoot
     [ModuleState]::ClearTestingStates()
 }

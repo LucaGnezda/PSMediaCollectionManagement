@@ -1328,6 +1328,6 @@ Describe "ContentModel Integration Test - Analyse Model" -Tag IntegrationTest {
 }
 
 AfterAll {
-    Set-Location $PSScriptRoot\Output
+    Set-Location $PSScriptRoot
     [ModuleState]::ClearTestingStates()
 }
