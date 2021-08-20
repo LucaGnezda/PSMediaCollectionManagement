@@ -84,7 +84,7 @@ Confirm-FilesystemHashes $contentModel
 ```
 
 # Roadmap
-Things I still need to or would like to do.
+Things still to be done:
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
