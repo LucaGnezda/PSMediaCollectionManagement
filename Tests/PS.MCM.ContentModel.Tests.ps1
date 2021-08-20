@@ -7,13 +7,7 @@ BeforeAll {
 
     [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
     [ModuleState]::SetTestingState([TestAttribute]::MockDestructiveActions)
-
-    # TODO: Create Test Helpers to better present code coverage results
-    # TODO: Spellcheck Titles (https://gist.github.com/PrateekKumarSingh/1cb264e6e2eb8b2832e9, https://geekeefy.wordpress.com/2016/03/08/spellchk/)
-    # TODO: Make ContentModels work off a relative path from the scriptroot so it works even if you change directories after loading (Note Push/Pop Location https://stackoverflow.com/questions/12396025/how-to-convert-absolute-path-to-relative-path-in-powershell/12396272#12396272)
-    # TODO: Credit authors where other scripts were used
-    # TODO: Document everything
-    # TODO: Add to Github
+    
 }
 
 Describe "ContentModel Integration Test" -Tag IntegrationTest {
