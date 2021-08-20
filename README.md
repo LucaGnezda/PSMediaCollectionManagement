@@ -90,9 +90,9 @@ Things I still need to or would like to do.
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: Not started |
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: Not Started |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_minus_sign: Not Started |
-| Feature | Module readme | :heavy_minus_sign: Not Started |
-| Codebase Improvement | Include a module definition | :construction: :heavy_check_mark: Completed |
-| Codebase Improvement | Credit authors where I have reused functions/code | :construction: :heavy_check_mark: Completed |
+| Feature | Module readme | :heavy_check_mark: Completed |
+| Codebase Improvement | Include a module definition | :heavy_minus_sign: Not Started |
+| Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: Completed |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: Not Started |
 | Codebase Improvement | Re-organise public functions into logical groups | :heavy_minus_sign: Not Started | 
 | Codebase Improvement | Comment all public functions with help blocks | :heavy_minus_sign: Not Started | 
@@ -102,7 +102,7 @@ Things I still need to or would like to do.
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- This could be a bug in this module, but Powershell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, but calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
+- Could be a bug in this module, but Powershell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, but calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
