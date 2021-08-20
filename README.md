@@ -87,15 +87,19 @@ Confirm-FilesystemHashes $contentModel
 Things I still need to or would like to do.
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
-| Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: Not started |
-| Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: Not Started |
-| Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_minus_sign: Not Started |
+| Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
+| Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
+| Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_minus_sign: |
 | Feature | Module readme | :heavy_check_mark: Completed |
-| Codebase Improvement | Include a module definition | :heavy_minus_sign: Not Started |
-| Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: Completed |
-| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: Not Started |
-| Codebase Improvement | Re-organise public functions into logical groups | :heavy_minus_sign: Not Started | 
-| Codebase Improvement | Comment all public functions with help blocks | :heavy_minus_sign: Not Started | 
+| Codebase Improvement | Include a module definition | :heavy_minus_sign: |
+| Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: |
+| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
+| Codebase Improvement | Re-organise public functions into logical groups | :heavy_minus_sign: | 
+| Codebase Improvement | Comment all public functions with help blocks | :heavy_minus_sign: | 
+Where:
+- :heavy_minus_sign: = Not Started
+- :construction: = In progress
+- :heavy_check_mark: = Completed
 
 # Notes
 - This Module includes Write-Host wrappers so you can do a few cool things:
