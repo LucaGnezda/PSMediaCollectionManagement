@@ -11,7 +11,7 @@ Pretty simple really:
 # One time setup
     # Download the repository
     # Unblock the zip
-    # Extract the PSSlack folder to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
+    # Extract to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
 # Import the module.
     # From the root
     Import-Module .\Module\PS.MediaContentManagement.psm1
