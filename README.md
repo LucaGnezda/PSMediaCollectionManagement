@@ -14,7 +14,7 @@ Pretty simple really:
     # Extract the PSSlack folder to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
 # Import the module.
     # From the root
-    Import-Module .\Module\PS.MediaContentManagement.psm1    #Alternatively, Import-Module \\Path\To\PSSlack
+    Import-Module .\Module\PS.MediaContentManagement.psm1
 
 # Get commands in the module
     Get-Command -Module PS.MediaContentManagement
@@ -107,7 +107,7 @@ Where:
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- Could be a bug in this module, but Powershell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, but calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
+- Could be a bug in this module, but PowerShell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, but calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
