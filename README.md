@@ -121,6 +121,7 @@ Things still to be done:
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
 | Codebase Improvement | Re-organise public functions into logical groups | :heavy_minus_sign: | 
 | Codebase Improvement | Comment all public functions with help blocks | :heavy_minus_sign: | 
+| Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
 Where:
 - :heavy_minus_sign: = Not Started
