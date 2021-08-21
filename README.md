@@ -1,6 +1,6 @@
 PS.MCM PowerShell Module (PowerShell Media Content Management)
 =============
-This is a Media Content Management Module. It's purpose is to help track, verify integrity and maintain a well defined file naming schema for media files. It achieves this by building an object graph of files within a folder. From there the user identify filename errors, bulk alter and update, check integrity, compare models, spellcheck (coming), etc. It can also save these models to a structured json, which can then be reloaded and/or compared with other files and models.
+This is a filesystem media content management module. It's purpose is to help manage a well defined file naming structure as well as track file integrity for these files. It works by capturing information about files from properties, hash and filename, then builds a object graph based on the naming structure. From there the user can identify filename inconsistencies, perform a range of bulk alters and updates, check integrity, compare models, copy and merge models, check spelling (coming soon), etc. It can also save models to a structured json file, which can then be reloaded at a later time to re-compare against the filesystem or other models.
 
 # Requirements
 PowerShell 5 or later.
