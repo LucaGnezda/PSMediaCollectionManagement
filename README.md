@@ -79,8 +79,31 @@ Confirm-FilesystemHashes $contentModel
 
 Walking through your model
 ```powershell
-# Try 
-Confirm-FilesystemHashes $contentModel
+# Try things like
+$contentModel.Content
+$contentModel.Series
+$contentModel.Albums.Matching(Foo).ProducedBy
+```
+
+Analysing your model
+```powershell
+# Try things like
+$contentModel.AnalyseActorsForPossibleLabellingIssues()
+$contentModel.AnalyseSeriesForPossibleLabellingIssues()
+```
+
+Altering your model
+```powershell
+# Try things like
+$contentModel.AlterArtist("Foo", "Bar")
+$contentModel.AlterSeasonEpisodeFormat(2, 2, [SeasonEpisodePattern]::Uppercase_S0E0, $false)
+```
+
+Doing other things with your models
+```powershell
+# Try things like
+$contentModelCopy = Copy-ContentModel $contentModel
+$mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
 ```
 
 # Roadmap
