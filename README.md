@@ -132,7 +132,7 @@ Where:
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- Probably just a bug in this module, but PowerShell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, but calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
+- Probably just a bug in this module, but PowerShell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
