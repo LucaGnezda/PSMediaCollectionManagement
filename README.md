@@ -119,7 +119,7 @@ Things still to be done:
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_minus_sign: |
 | Feature | Readme | :heavy_check_mark: |
-| Codebase Improvement | Include a module definition & get-help about | :construction: |
+| Codebase Improvement | Include a module definition & get-help about | :heavy_check_mark: |
 | Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
 | Codebase Improvement | Re-organise public functions into logical groups | :heavy_check_mark: | 
