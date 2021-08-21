@@ -21,8 +21,8 @@ using module .\Using\ObjectModels\PS.MCM.ContentModel.Class.psm1
 #region Dot source scripts 
 #-------------------------
 #Get public and private function definition files.
-$publicScripts   = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue )
-$privateScripts  = @( Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue )
+$publicScripts   = @( Get-ChildItem -Path $PSScriptRoot\Public\*\*.ps1 -ErrorAction SilentlyContinue )
+$privateScripts  = @( Get-ChildItem -Path $PSScriptRoot\Private\*\*.ps1 -ErrorAction SilentlyContinue )
 
 #Dot source the files
 foreach ($moduleScript in @($publicScripts + $privateScripts)) {

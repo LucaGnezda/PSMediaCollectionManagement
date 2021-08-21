@@ -1,6 +1,6 @@
-﻿using module .\..\Using\Helpers\PS.MCM.FileMetadataProperty.Class.psm1
-using module .\..\Using\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
-using module .\..\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+﻿using module .\..\..\Using\Helpers\PS.MCM.FileMetadataProperty.Class.psm1
+using module .\..\..\Using\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
+using module .\..\..\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 
 <#
     .SYNOPSIS

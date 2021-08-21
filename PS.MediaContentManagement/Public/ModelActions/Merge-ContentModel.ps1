@@ -1,6 +1,6 @@
-using module .\..\Using\ObjectModels\PS.MCM.ContentModel.Class.psm1
-using module .\..\Using\Helpers\PS.MCM.ContentComparer.Class.psm1
-using module .\..\Using\Types\PS.MCM.Types.psm1
+using module .\..\..\Using\ObjectModels\PS.MCM.ContentModel.Class.psm1
+using module .\..\..\Using\Helpers\PS.MCM.ContentComparer.Class.psm1
+using module .\..\..\Using\Types\PS.MCM.Types.psm1
 
 function Merge-ContentModel (
     [Parameter(Mandatory=$true)]
