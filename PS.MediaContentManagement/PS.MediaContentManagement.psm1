@@ -42,6 +42,6 @@ foreach ($moduleScript in @($publicScripts + $privateScripts)) {
 #----------------------------
 
 # Implicit foreach export
-Export-ModuleMember -Function $publicScripts.Basename
+# Export-ModuleMember -Function $publicScripts.Basename
 
 #endregion Export Module Members

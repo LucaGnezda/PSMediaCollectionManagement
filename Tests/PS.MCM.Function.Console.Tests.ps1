@@ -1,7 +1,7 @@
-using module .\..\Module\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 
 BeforeAll { 
-    Import-Module D:\Scripting\PSMediaCollectionManagement\Module\PS.MediaContentManagement.psm1 -Force
+    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaContentManagement\PS.MediaContentManagement.psm1 -Force
 
     [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
 }

@@ -14,13 +14,15 @@ Pretty simple really:
     # Extract to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
 # Import the module.
     # From the root
-    Import-Module .\Module\PS.MediaContentManagement.psm1
+    Import-Module .\PS.MediaContentManagement
 
 # Get commands in the module
     Get-Command -Module PS.MediaContentManagement
 
 # And if you want to use the module types in your powershell session
-    using module .\Module\Using\Types\PS.MCM.Types.psm1
+    using module .\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
+    using module .\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
+    using module .\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 ```
 
 # Examples
@@ -79,8 +81,31 @@ Confirm-FilesystemHashes $contentModel
 
 Walking through your model
 ```powershell
-# Try 
-Confirm-FilesystemHashes $contentModel
+# Try things like
+$contentModel.Content
+$contentModel.Series
+$contentModel.Albums.Matching(Foo).ProducedBy
+```
+
+Analysing your model
+```powershell
+# Try things like
+$contentModel.AnalyseActorsForPossibleLabellingIssues()
+$contentModel.AnalyseSeriesForPossibleLabellingIssues()
+```
+
+Altering your model
+```powershell
+# Try things like
+$contentModel.AlterArtist("Foo", "Bar")
+$contentModel.AlterSeasonEpisodeFormat(2, 2, [SeasonEpisodePattern]::Uppercase_S0E0, $false)
+```
+
+Doing other things with your models
+```powershell
+# Try things like
+$contentModelCopy = Copy-ContentModel $contentModel
+$mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
 ```
 
 # Roadmap

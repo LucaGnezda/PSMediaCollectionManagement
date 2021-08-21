@@ -1,9 +1,9 @@
-using module .\..\Module\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
-using module .\..\Module\Using\Types\PS.MCM.Types.psm1
-using module .\..\Module\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
+using module .\..\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
+using module .\..\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
 
 BeforeAll { 
-    Import-Module D:\Scripting\PSMediaCollectionManagement\Module\PS.MediaContentManagement.psm1 -Force
+    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaContentManagement\PS.MediaContentManagement.psm1 -Force
 
     [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
     [ModuleState]::SetTestingState([TestAttribute]::MockDestructiveActions)
