@@ -119,7 +119,7 @@ Things still to be done:
 | Codebase Improvement | Include a module definition & get-help about | :construction: |
 | Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
-| Codebase Improvement | Re-organise public functions into logical groups | :heavy_minus_sign: | 
+| Codebase Improvement | Re-organise public functions into logical groups | :heavy_check_mark: | 
 | Codebase Improvement | Comment all public functions with help blocks | :heavy_minus_sign: | 
 | Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
