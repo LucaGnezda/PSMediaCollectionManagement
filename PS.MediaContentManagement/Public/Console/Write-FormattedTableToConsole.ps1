@@ -1,5 +1,28 @@
-using module .\..\Using\Helpers\PS.MCM.ANSIEscapedString.Abstract.psm1
+using module .\..\..\Using\Helpers\PS.MCM.ANSIEscapedString.Abstract.psm1
 
+
+<#
+    .SYNOPSIS
+    Writes to a well formatted colourisedc table to the console (Write-Host) or to a mock console if set. 
+
+    .DESCRIPTION
+    Writes to a well formatted colourisedc table to the console (Write-Host) or to a mock console if set. 
+    Allows the user to define the headings, data, scolumn widths, column and role colour exscape codes.
+
+    .INPUTS
+    [String[]] ColumnHeadings
+    [String[]] ColumnProperties (attribute to use from Object)
+    [Int[]] ColumnWidths (in chars)
+    [Int[]] ColumnColors (escape code colours)
+    [Bool[]] AcceptColumnColorsFromInputIfAvailable (when true will use color from object is present)
+    [System.Collections.Generic.List[Object]] Object input data
+
+    .OUTPUTS
+    None.
+
+    .EXAMPLE
+    PS> Write-FormattedTableToConsole -ColumnHeadings @("Foo, "Bar") -ColumnProperties @("A, B") -ColumnWidths @(10, 20) -ColumnColors @(92, 93) -AcceptColumnColorsFromInputIfAvailable @($false, @true) -Object $data 
+#>
 function Write-FormattedTableToConsole (
     [Parameter(Mandatory=$true)]
     [String[]] $ColumnHeadings,

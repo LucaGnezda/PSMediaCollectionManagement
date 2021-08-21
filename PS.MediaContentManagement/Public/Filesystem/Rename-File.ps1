@@ -1,6 +1,24 @@
-using module .\..\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
-using module .\..\using\Types\PS.MCM.Types.psm1
+using module .\..\..\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\..\using\Types\PS.MCM.Types.psm1
 
+<#
+    .SYNOPSIS
+    Wrapper for Rename-Item.
+
+    .DESCRIPTION
+    Wrapper for Rename-Item. Performs a WhatIf if module is in a mock state.
+
+    .INPUTS
+    [String] Path
+    [String] NewName
+
+    .OUTPUTS
+    [Boolean] $true if update successful 
+    
+
+    .EXAMPLE
+    PS> Rename-File ".\Foo.tex" "Bar.txt"
+#>
 function Rename-File (
     [Parameter(Mandatory=$true)]
     [String] $Path,

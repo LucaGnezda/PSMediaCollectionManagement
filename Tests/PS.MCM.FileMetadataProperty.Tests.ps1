@@ -1,4 +1,4 @@
-using module .\..\Module\Using\Helpers\PS.MCM.FileMetadataProperty.Class.psm1
+using module .\..\PS.MediaContentManagement\Using\Helpers\PS.MCM.FileMetadataProperty.Class.psm1
 
 BeforeAll { 
 

@@ -14,13 +14,18 @@ Pretty simple really:
     # Extract to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
 # Import the module.
     # From the root
-    Import-Module .\Module\PS.MediaContentManagement.psm1
+    Import-Module .\PS.MediaContentManagement
 
 # Get commands in the module
     Get-Command -Module PS.MediaContentManagement
 
 # And if you want to use the module types in your powershell session
-    using module .\Module\Using\Types\PS.MCM.Types.psm1
+    using module .\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
+    using module .\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
+    using module .\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+
+# Get help
+    Get-Help about_PS.MediaContentManagement
 ```
 
 # Examples
@@ -79,8 +84,31 @@ Confirm-FilesystemHashes $contentModel
 
 Walking through your model
 ```powershell
-# Try 
-Confirm-FilesystemHashes $contentModel
+# Try things like
+$contentModel.Content
+$contentModel.Series
+$contentModel.Albums.Matching(Foo).ProducedBy
+```
+
+Analysing your model
+```powershell
+# Try things like
+$contentModel.AnalyseActorsForPossibleLabellingIssues()
+$contentModel.AnalyseSeriesForPossibleLabellingIssues()
+```
+
+Altering your model
+```powershell
+# Try things like
+$contentModel.AlterArtist("Foo", "Bar")
+$contentModel.AlterSeasonEpisodeFormat(2, 2, [SeasonEpisodePattern]::Uppercase_S0E0, $false)
+```
+
+Doing other things with your models
+```powershell
+# Try things like
+$contentModelCopy = Copy-ContentModel $contentModel
+$mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
 ```
 
 # Roadmap
@@ -91,11 +119,12 @@ Things still to be done:
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_minus_sign: |
 | Feature | Readme | :heavy_check_mark: |
-| Codebase Improvement | Include a module definition & get-help about | :heavy_minus_sign: |
+| Codebase Improvement | Include a module definition & get-help about | :heavy_check_mark: |
 | Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
-| Codebase Improvement | Re-organise public functions into logical groups | :heavy_minus_sign: | 
-| Codebase Improvement | Comment all public functions with help blocks | :heavy_minus_sign: | 
+| Codebase Improvement | Re-organise public functions into logical groups | :heavy_check_mark: | 
+| Codebase Improvement | Comment all public functions with help blocks | :heavy_check_mark: | 
+| Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
 Where:
 - :heavy_minus_sign: = Not Started
@@ -107,7 +136,7 @@ Where:
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- Could be a bug in this module, but PowerShell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, but calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
+- Probably just a bug in this module, but PowerShell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
