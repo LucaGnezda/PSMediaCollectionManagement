@@ -1,4 +1,4 @@
-using module .\..\Using\ObjectModels\PS.MCM.ContentModel.Class.psm1
+using module .\..\..\Using\ObjectModels\PS.MCM.ContentModel.Class.psm1
 
 function Copy-ContentModel (
     [Parameter(Mandatory=$true)]

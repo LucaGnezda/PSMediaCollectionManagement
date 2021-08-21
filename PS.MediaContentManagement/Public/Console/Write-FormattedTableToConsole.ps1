@@ -1,4 +1,4 @@
-using module .\..\Using\Helpers\PS.MCM.ANSIEscapedString.Abstract.psm1
+using module .\..\..\Using\Helpers\PS.MCM.ANSIEscapedString.Abstract.psm1
 
 function Write-FormattedTableToConsole (
     [Parameter(Mandatory=$true)]
