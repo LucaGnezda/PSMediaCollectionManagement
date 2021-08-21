@@ -14,13 +14,15 @@ Pretty simple really:
     # Extract to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
 # Import the module.
     # From the root
-    Import-Module .\Module\PS.MediaContentManagement.psm1
+    Import-Module .\PS.MediaContentManagement
 
 # Get commands in the module
     Get-Command -Module PS.MediaContentManagement
 
 # And if you want to use the module types in your powershell session
-    using module .\Module\Using\Types\PS.MCM.Types.psm1
+    using module .\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
+    using module .\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
+    using module .\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 ```
 
 # Examples

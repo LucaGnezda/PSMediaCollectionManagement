@@ -1,11 +1,11 @@
-using module .\..\Module\Using\ObjectModels\PS.MCM.ContentModelConfig.Class.psm1
-using module .\..\Module\Using\ObjectModels\PS.MCM.Actor.Class.psm1
-using module .\..\Module\Using\ObjectModels\PS.MCM.Content.Class.psm1
-using module .\..\Module\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
-using module .\..\Module\Using\Types\PS.MCM.Types.psm1
+using module .\..\PS.MediaContentManagement\Using\ObjectModels\PS.MCM.ContentModelConfig.Class.psm1
+using module .\..\PS.MediaContentManagement\Using\ObjectModels\PS.MCM.Actor.Class.psm1
+using module .\..\PS.MediaContentManagement\Using\ObjectModels\PS.MCM.Content.Class.psm1
+using module .\..\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
 
 BeforeAll { 
-    Import-Module D:\Scripting\PSMediaCollectionManagement\Module\PS.MediaContentManagement.psm1 -Force
+    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaContentManagement\PS.MediaContentManagement.psm1 -Force
 
     [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
     [ModuleState]::SetTestingState([TestAttribute]::MockDestructiveActions)
