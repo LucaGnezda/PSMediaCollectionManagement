@@ -23,6 +23,9 @@ Pretty simple really:
     using module .\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
     using module .\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
     using module .\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+
+# Get help
+    Get-Help about_PS.MediaContentManagement
 ```
 
 # Examples
