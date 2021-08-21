@@ -2,6 +2,23 @@ using module .\..\..\Using\ObjectModels\PS.MCM.ContentModel.Class.psm1
 using module .\..\..\Using\Helpers\PS.MCM.ContentComparer.Class.psm1
 using module .\..\..\Using\Types\PS.MCM.Types.psm1
 
+<#
+    .SYNOPSIS
+    Merges two content models.
+
+    .DESCRIPTION
+    Merges two content models into a third return model.
+
+    .INPUTS
+    [ContentModel] ContentModel 
+    [ContentModel] ContentModel to merge with
+
+    .OUTPUTS
+    [ContentModel] ContentModel merged
+
+    .EXAMPLE
+    PS> $contentModelC = Merge-ContentModel $contentModelA $contentModelB
+#>
 function Merge-ContentModel (
     [Parameter(Mandatory=$true)]
     [ContentModel] $contentModelA,

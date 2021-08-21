@@ -1,3 +1,21 @@
+<#
+    .SYNOPSIS
+    Writes to console (Write-Host) or to a mock console if set. 
+
+    .DESCRIPTION
+    Writes to console (Write-Host) or to a mock console if set. Also honours any indent settings from Add, Remove 
+    and Reset-Console Indent. Always displays yellow, ignores colour if provided.
+
+    .INPUTS
+    [Switch] NoNewLine
+    [System.Collections.Generic.List[Object]] Object
+
+    .OUTPUTS
+    None.
+
+    .EXAMPLE
+    PS> Write-WarnToConsole "Hello"
+#>
 function Write-WarnToConsole (
     [Parameter(Mandatory=$false, ParameterSetName="WithColor")]
     [Parameter(Mandatory=$false, ParameterSetName="WithoutColor")]

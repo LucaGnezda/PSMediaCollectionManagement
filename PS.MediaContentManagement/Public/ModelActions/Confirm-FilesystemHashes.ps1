@@ -1,3 +1,20 @@
+<#
+    .SYNOPSIS
+    Checks hashes of files in the filesystem against known hashes in the content model.
+
+    .DESCRIPTION
+    Checks hashes of files in the filesystem against known hashes in the content model.
+
+    .INPUTS
+    [ContentModel] ContentModel with known hashes
+    [Bool] ReturnSummary (returns an array if $true)
+
+    .OUTPUTS
+    None or Array.
+
+    .EXAMPLE
+    PS> Confirm-FilesystemHashes $contentModel $false
+#>
 function Confirm-FilesystemHashes (
     [Parameter(Mandatory=$true)]
     [ContentModel] $contentModel,
