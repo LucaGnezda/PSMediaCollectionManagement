@@ -1,7 +1,7 @@
 using module .\..\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
 
 BeforeAll { 
-    
+    . $PSScriptRoot\..\PS.MediaContentManagement\Public\Types\Types.ps1
 }
 
 Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {

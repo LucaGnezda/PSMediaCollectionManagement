@@ -9,8 +9,8 @@
 #endregion Header
 
 
-#region Type Declarations
-#------------------------
+#region Using Type Declarations (Private)
+#----------------------------------------
 
 enum FilenameElement {
     Studio = 1
@@ -46,6 +46,20 @@ enum ContentWarning {
     MergeConflictsInData = 7
 }
 
+enum TestAttribute {
+    MockDestructiveActions = 1
+    SuppressConsoleOutput = 2
+} 
+
+enum SeasonEpisodePattern {
+    Uppercase_S0E0 = 0
+    Lowercase_S0E0 = 1
+    Uppercase_0X0 = 2
+    Lowercase_0X0 = 3
+} 
+#endregion Using Type Declarations (Private)
+
+
 # Please note, the commented enums below are defined in the class files that implement them. Powershell 
 # Seems unable to correctly handle a situation where a class with static methods, that requires an enum, 
 # which is defined in another file. When this is attempted, while the class itself will function correctly, 
@@ -56,4 +70,4 @@ enum ContentWarning {
 # enum TestAttribute { ... } - implemented in PS.MCM.ModuleState.Abstract.psm1
 # enum SeasonEpisodePattern { .. } - implemented in PS.MCM.SeasonEpisodeParser.Abstract.psm1
 
-#endregion Type Declarations
+
