@@ -119,6 +119,7 @@ Things still to be done:
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_minus_sign: |
 | Feature | Readme | :heavy_check_mark: |
+| Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
 | Codebase Improvement | Include a module definition & get-help about | :heavy_check_mark: |
 | Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
@@ -136,11 +137,12 @@ Where:
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- Probably just a bug in this module, but PowerShell seems unable to correctly handle a situation where a class with static methods, that requires an enum, which is defined in another file. When this is attempted, while the class itself will function correctly, calling scopes only seem able to reference one of the two using statements at a time. if the second is referenced, the first is effectively unloaded. This issue has been tested and confirmed in PowerShell 5, 6 & 7.
+- 'Using' is flaky when a class uses another module to define enums which are then used a parameters in public methods. While the class itself behaves fine, the console gets a problematic experience where you can only refence one of the two definitions at a time. I believe this is due to the two different scopes (inner and console usings) resetting the scope for each other. 
+- Enums are also difficult when used as class method parameters in modules. To properly export enums from a module you need them to be defined with Add-Type, but classes need them defines in module files references by using. There two needs are incompatible, so instead the code defines them twice, once for the internal classes and once for console ease of use. These are then sync checked by parsing the class files and comparing it in Pester.
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
-- [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for their module architecture/pattern
+- [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for inspiration on structuring modules
 - [gravejester](https://github.com/gravejester) for their string approximation functions.
 - Pretty much everyone on StackOverflow, for pretty much having answers to every questions ever conceived.
 - The Pester community, for creating an awesome PowerShell testing framework.

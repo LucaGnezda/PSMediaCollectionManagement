@@ -1,6 +1,6 @@
-using module .\..\..\Using\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
-using module .\..\..\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
-using module .\..\..\Using\Types\PS.MCM.Types.psm1
+using module .\..\Using\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
+using module .\..\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\Using\Types\PS.MCM.Types.psm1
 
 function Set-ConsoleState (
 
