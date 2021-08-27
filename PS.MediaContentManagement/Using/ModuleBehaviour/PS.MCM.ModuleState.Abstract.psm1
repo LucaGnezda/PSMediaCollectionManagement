@@ -12,16 +12,16 @@
 #region Using
 #------------
 using module .\PS.MCM.ModuleSettings.Abstract.psm1
-#using module .\..\Types\PS.MCM.Types.psm1
+using module .\..\Types\PS.MCM.Types.psm1
 #endregion Using
 
 
 #region Types
 #------------
-enum TestAttribute {
-    MockDestructiveActions = 1
-    SuppressConsoleOutput = 2
-} 
+#enum TestAttribute {
+#    MockDestructiveActions = 1
+#    SuppressConsoleOutput = 2
+#} 
 #endregion Types
 
 

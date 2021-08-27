@@ -11,18 +11,19 @@
 
 #region Using
 #------------
+using module .\..\Types\PS.MCM.Types.psm1
 #endregion Using
 
 
 
 #region Types
 #------------
-enum SeasonEpisodePattern {
-    Uppercase_S0E0 = 0
-    Lowercase_S0E0 = 1
-    Uppercase_0X0 = 2
-    Lowercase_0X0 = 3
-} 
+#enum SeasonEpisodePattern {
+#    Uppercase_S0E0 = 0
+#    Lowercase_S0E0 = 1
+#    Uppercase_0X0 = 2
+#    Lowercase_0X0 = 3
+#} 
 #endregion Types
 
 
