@@ -58,6 +58,9 @@ function Write-FormattedTableToConsole (
         #   https://www.thomasmaurer.ch/2011/11/powershell-convert-string-to-scriptblock/ (converting strings into ScriptBlocks)
         #   https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_script_blocks?view=powershell-7.1 (ScriptBlocks)
         #   https://docs.microsoft.com/en-us/powershell/scripting/learn/deep-dives/everything-about-hashtable?view=powershell-7.1  (Hashtables)
+        #
+        # Update: This approach has been depricated in favour of Write-Host. Format-Table doesn't handle column widths well when the last chars are an excape code
+        #         This leads to a table format inconsistencies. Whereas these can be handled properly using a more manual approach.
         $scriptBlockString  = "`$e = [char]27;"`
                             + "if (`$$($AcceptColumnColorsFromInputIfAvailable[$i]) -eq `$true -and `$_.Color -ne `$null) {"`
                             + "    `$color = `$_.Color"`
