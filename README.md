@@ -19,11 +19,6 @@ Pretty simple really:
 # Get commands in the module
     Get-Command -Module PS.MediaContentManagement
 
-# And if you want to use the module types in your powershell session
-    using module .\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
-    using module .\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
-    using module .\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
-
 # Get help
     Get-Help about_PS.MediaContentManagement
 ```
