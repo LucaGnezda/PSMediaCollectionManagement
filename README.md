@@ -142,7 +142,7 @@ Where:
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
-- [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for their module architecture/pattern
+- [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for inspiration on structuring modules
 - [gravejester](https://github.com/gravejester) for their string approximation functions.
 - Pretty much everyone on StackOverflow, for pretty much having answers to every questions ever conceived.
 - The Pester community, for creating an awesome PowerShell testing framework.
