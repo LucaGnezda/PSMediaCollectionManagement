@@ -119,7 +119,7 @@ Things still to be done:
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_minus_sign: |
 | Feature | Readme | :heavy_check_mark: |
-| Codebase Improvement | Improve usability of Types for internal and console use | :heavy_check_mark: |
+| Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
 | Codebase Improvement | Include a module definition & get-help about | :heavy_check_mark: |
 | Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
