@@ -1249,20 +1249,17 @@ class ContentModel {
         
             Write-InfoToConsole "  Altering BaseName" $fromObjectContentItem.BaseName
 
-            # get the current content item's subject collection
-            $fromObjectContentItemSubject = $fromObjectContentItem.GetCollectionByType($filenameElement)
-
             # if there is a toObject, and if its not the same object, then
             if (($null -ne $toObject) -and ($fromObject -ne $toObject)) {
                 
                 # depending on the subject type ...
                 switch ($filenameElement) {
-                    {$_ -in @([FilenameElement]::Actors, [FilenameElement]::Artists)} {
+                    {$_ -eq [FilenameElement]::Actors} {
                         
                         # remap content references
-                        for ($i = 0; $i -lt $fromObjectContentItemSubject.Count; $i++) {
-                            if ($fromObjectContentItemSubject[$i].Name -eq $fromName) {
-                                $fromObjectContentItemSubject[$i] = $toObject
+                        for ($i = 0; $i -lt $fromObjectContentItem.Actors.Count; $i++) {
+                            if ($fromObjectContentItem.Actors[$i].Name -eq $fromName) {
+                                $fromObjectContentItem.Actors[$i] = $toObject
                             }
                         }
 
@@ -1271,7 +1268,21 @@ class ContentModel {
                         break
 
                     }
-                    {$_ -in @([FilenameElement]::Album)} {
+                    {$_ -eq [FilenameElement]::Artists} {
+                        
+                        # remap content references
+                        for ($i = 0; $i -lt $fromObjectContentItem.Artists.Count; $i++) {
+                            if ($fromObjectContentItem.Artists[$i].Name -eq $fromName) {
+                                $fromObjectContentItem.Artists[$i] = $toObject
+                            }
+                        }
+
+                        # add the content to the toObject
+                        $toObjectContent.Add($fromObjectContentItem)
+                        break
+
+                    }
+                    {$_ -eq [FilenameElement]::Album} {
 
                         # if the content model also models has studios, then re need to remap the relationship between studios and albums as well
                         if ($null -ne $fromObject.ProducedBy) {
@@ -1295,7 +1306,7 @@ class ContentModel {
                         }
                         
                         # remap content reference
-                        $fromObjectContentItemSubject = $toObject
+                        $fromObjectContentItem.OnAlbum = $toObject
 
                         # add the content to the toObject
                         $toObjectContent.Add($fromObjectContentItem)
@@ -1303,7 +1314,7 @@ class ContentModel {
                         break
 
                     }
-                    {$_ -in @([FilenameElement]::Series)} {
+                    {$_ -eq [FilenameElement]::Series} {
 
                         # if the content model also models has studios, then re need to remap the relationship between studios and series as well
                         if ($null -ne $fromObject.ProducedBy) {
@@ -1327,7 +1338,7 @@ class ContentModel {
                         }
                         
                         # remap content reference
-                        $fromObjectContentItemSubject = $toObject
+                        $fromObjectContentItem.FromSeries = $toObject
 
                         # add the content to the toObject
                         $toObjectContent.Add($fromObjectContentItem)
@@ -1335,7 +1346,7 @@ class ContentModel {
                         break
 
                     }
-                    {$_ -in @([FilenameElement]::Studio)} {
+                    {$_ -eq [FilenameElement]::Studio} {
                         
                         # if the content model also models has albums, then re need to remap the relationship between studios and albums as well
                         if ($null -ne $fromObject.ProducedAlbums) {
@@ -1380,7 +1391,7 @@ class ContentModel {
                         }
 
                         # remap content reference
-                        $fromObjectContentItemSubject = $toObject
+                        $fromObjectContentItem.ProducedBy = $toObject
 
                         # add the content to the toObject
                         $toObjectContent.Add($fromObjectContentItem)
