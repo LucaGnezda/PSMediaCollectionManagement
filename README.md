@@ -121,6 +121,7 @@ Things still to be done:
 | Codebase Improvement | Re-organise public functions into logical groups | :heavy_check_mark: | 
 | Codebase Improvement | Comment all public functions with help blocks | :heavy_check_mark: | 
 | Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
+| Bugfix | Altered content remapping | :heavy_check_mark: | 
 
 Where:
 - :heavy_minus_sign: = Not Started
