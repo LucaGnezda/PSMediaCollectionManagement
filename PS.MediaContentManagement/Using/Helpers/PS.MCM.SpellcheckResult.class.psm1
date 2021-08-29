@@ -43,4 +43,3 @@ class SpellcheckResult {
 }
 
 #endregion Class Definition
-}
