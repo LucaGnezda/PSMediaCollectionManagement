@@ -15,6 +15,7 @@ using module .\..\Types\PS.MCM.Types.psm1
 using module .\..\Helpers\PS.MCM.ContentComparer.Class.psm1
 using module .\..\Helpers\PS.MCM.ElementParser.Abstract.psm1
 using module .\..\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
+using module .\..\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 using module .\PS.MCM.ContentModelConfig.Class.psm1
 using module .\PS.MCM.Actor.Class.psm1
 using module .\PS.MCM.Album.Class.psm1
@@ -22,6 +23,7 @@ using module .\PS.MCM.Artist.Class.psm1
 using module .\PS.MCM.Series.Class.psm1
 using module .\PS.MCM.Studio.Class.psm1
 using module .\PS.MCM.Content.Class.psm1
+using module .\PS.MCM.SpellcheckResult.Class.psm1
 
 #endregion Using
 
@@ -207,6 +209,11 @@ class ContentModel {
         # Initialise the ContentModel
         $this.Init()
         
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($loadProperties) {
+            [ModuleState]::InstantiateShell()
+        }
+
         # read the filesystem
         if ($this.Config.IncludedExtensions.Count -eq 0) {
             [Object[]] $files = Get-ChildItem -File
@@ -244,6 +251,9 @@ class ContentModel {
         
         }
 
+        # Dispose non GC objects
+        [ModuleState]::DisposeCurrentShellIfPresent()
+
         # Hide the progress bar
         Write-Progress -Activity "Generating Model" -Completed
 
@@ -277,6 +287,11 @@ class ContentModel {
 
         # Get the current list of files
         [Object[]] $files = Get-ChildItem -File | Where-Object {$_.Extension -in $this.Config.IncludedExtensions}
+
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($loadProperties) {
+            [ModuleState]::InstantiateShell()
+        }
 
         # Pre-process
         Write-InfoToConsole "Indexing changes ..."
@@ -353,6 +368,9 @@ class ContentModel {
             Write-Progress -Activity "Populating missing properties" -Completed
         }
 
+        # Dispose non GC objects
+        [ModuleState]::DisposeCurrentShellIfPresent()
+
         # Resort the list
         Write-InfoToConsole "Resorting the list"
         $comp = [ContentComparer]::new("FileName")
@@ -400,6 +418,11 @@ class ContentModel {
         
         # Initialise the ContentModel
         $this.Init()
+
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($collectInfoWhereMissing) {
+            [ModuleState]::InstantiateShell()
+        }
 
         # Read in the json
         try {
@@ -479,6 +502,9 @@ class ContentModel {
         
         }
 
+        # Dispose non GC objects
+        [ModuleState]::DisposeCurrentShellIfPresent()
+
         # Remove the progress bar
         Write-Progress -Activity "Importing File Index" -Completed
 
@@ -512,6 +538,11 @@ class ContentModel {
     [Void] SaveIndex ([String] $indexFilePath, [Bool] $CollectInfoWhereMissing) {
     
         Write-InfoToConsole "Validating path" $indexFilePath "..."
+
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($collectInfoWhereMissing) {
+            [ModuleState]::InstantiateShell()
+        }
 
         # First validate the path portion of the filepath
         if (-not(((Split-Path $indexFilePath) -ne "") -and (Split-Path $indexFilePath | Test-Path))) {
@@ -792,13 +823,86 @@ class ContentModel {
         return $this.AnalysePossibleLabellingIssues([FilenameElement]::Studio, $returnSummary)
     }
 
-    [Hashtable] SpellcheckTitles() {
+    [Hashtable] GenerateTitleSpellcheckResults() {
 
-        
+        [System.Collections.Hashtable] $spellcheckResults = [System.Collections.Hashtable]::new()
+        $wordInterop = $null
 
-        foreach ($contentItem in $this.Content) {
+        # Attempt to initialise Microsoft Word Interop, and fail and cleanup gracefully if unable to do so.
+        try {           
+            Write-InfoToConsole "Instantiating COM Word Interop"
+            $wordInterop = New-Object -COM Word.Application
+            $wordInterop.Documents.Add([System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value) > $null
 
         }
+        catch {
+            Write-WarnToConsole "Unable to initialise Word Interop, no spellcheck results will be included in the dictionary."
+            
+            try {
+                Write-InfoToConsole "Disposing COM Word Interop"
+                $wordInterop.Quit()
+            }
+            catch {
+                # silently
+            }
+            $wordInterop = $null
+        }
+
+
+        # Scan through all the titles building a word dictionary
+        foreach ($contentItem in $this.Content) {
+
+            $splitTitle = ($contentItem.Title.Trim() -split " ") -replace "[^a-zA-Z0-9'-]", ""
+
+            foreach ($word in $splitTitle) {
+
+                if ($word.Length -gt 0) {
+
+                    # try to find the word in the dictionary
+                    $result = $spellcheckResults[$word]
+
+                    # if not there
+                    if ($null -eq $result) {
+                        
+                        # spellcheck if available
+                        $isCorrect = $null
+                        if ($null -ne $wordInterop) {
+                            $isCorrect = $wordInterop.CheckSpelling($word)
+                        }
+
+                        $result = [SpellcheckResult]::New($word, $isCorrect)
+                        $result.AddRelatedContent($contentItem)
+
+                        # if not correct (and not null, ie spellcheck is available), get suggestions
+                        if ($result.IsCorrect -eq $false) {
+
+                            # Add each suggestion
+                            foreach ($suggestion in $wordInterop.GetSpellingSuggestions($word)) {
+                                $result.AddSuggestion($suggestion.Name)
+                            }
+                        }
+
+                        $spellcheckResults.Add($word, $result)
+                    }
+                    else {
+                        #otherwise, just add the content relationship to the existing item
+                        $result.AddRelatedContent($contentItem)
+                    }
+                }
+            }
+        }
+
+        if ($null -ne $wordInterop) {
+            try {
+                Write-InfoToConsole "Disposing COM Word Interop"
+                $wordInterop.Quit()
+            }
+            catch {
+                # silently
+            }
+        }
+
+        return $spellcheckResults
     }
 
     [Content] AddContentToModel([System.IO.FileInfo] $file) {

@@ -31,9 +31,9 @@ using module .\..\Types\PS.MCM.Types.psm1
 class ModuleState {
     
     #region Static Properties
-    
+
     # This is used by the FileMetadata functions it holds a single COM Shell object to improve performance.
-    [System.MarshalByRefObject] static $Shell = (New-Object -ComObject Shell.Application)
+    [System.MarshalByRefObject] static $Shell = $null
 
     # These states are used by the console wrapper functions to help format console output.
     [Int] static $ToConsole_IndentLevel = [ModuleSettings]::TOCONSOLE_MIN_INDENT()
@@ -79,6 +79,20 @@ class ModuleState {
 
     [Void] static ClearTestingStates() {
         [ModuleState]::Testing_States.Clear()
+    }
+
+    [Void] static InstantiateShell() {
+        Write-InfoToConsole "Instantiating a COM Shell"
+        [ModuleState]::Shell = New-Object -ComObject Shell.Application
+    }
+
+    [Void] static DisposeCurrentShellIfPresent() {
+        if ($null -ne [ModuleState]::Shell) {
+            Write-InfoToConsole "Disposing COM Shell"
+            [System.Runtime.InteropServices.Marshal]::ReleaseComObject([System.__ComObject] [ModuleState]::Shell) | out-null
+            [System.GC]::Collect()
+            [System.GC]::WaitForPendingFinalizers()
+        }
     }
     #endregion Static Methods
 
