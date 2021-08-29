@@ -11,24 +11,29 @@
 
 #region Using
 #------------
+using module .\PS.MCM.Content.Class.psm1
 #endregion Using
 
 
 
 #region Class Definition
 #-----------------------
-class SpellcheckResult {
+class SpellcheckedWord {
 
     #region Properties
-    [Bool]   $Correct
+    [String] $Word
+    [Bool]   $IsCorrect
+    [System.Collections.Generic.List[Content]] $FoundInTitleOfContent
     [System.Collections.Generic.List[String]] $Suggestions
 
     #endregion Properties
 
 
     #region Constructors
-    SpellcheckResult([Bool] $correct) {
-        $this.Correct = $correct
+    SpellcheckedWord([String] $word, [Bool] $isCorrect) {
+        $this.Word = $word
+        $this.IsCorrect = $isCorrect
+        $this.FoundInTitleOfContent = [System.Collections.Generic.List[Content]]::new()
         $this.Suggestions = [System.Collections.Generic.List[String]]::new()
     }
     #endregion Constructors
@@ -38,6 +43,11 @@ class SpellcheckResult {
     [Void] AddSuggestion ([String] $s) {
         $this.Suggestions.Add($s)
         $this.Suggestions.Sort()
+    }
+
+    [Void] AddRelateContent ([Content] $content) {
+        $this.FoundInTitleOfContent.Add($content)
+        $this.FoundInTitleOfContent.Sort()
     }
     #endregion Methods
 }

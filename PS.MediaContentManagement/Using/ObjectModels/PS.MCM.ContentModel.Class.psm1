@@ -792,6 +792,15 @@ class ContentModel {
         return $this.AnalysePossibleLabellingIssues([FilenameElement]::Studio, $returnSummary)
     }
 
+    [Hashtable] SpellcheckTitles() {
+
+        
+
+        foreach ($contentItem in $this.Content) {
+
+        }
+    }
+
     [Content] AddContentToModel([System.IO.FileInfo] $file) {
 
         # Call the specific overload of this method
