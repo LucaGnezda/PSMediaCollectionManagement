@@ -90,6 +90,7 @@ Analysing your model
 # Try things like
 $contentModel.AnalyseActorsForPossibleLabellingIssues()
 $contentModel.AnalyseSeriesForPossibleLabellingIssues()
+$contentModel.SpellcheckContentTitles()
 ```
 
 Altering your model
@@ -112,7 +113,7 @@ Things still to be done:
 | ---- | ---------------- | ------ |
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
-| Feature | Title analysis, generating word dictionaries and spellchecking | :construction: |
+| Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
 | Feature | Readme | :heavy_check_mark: |
 | Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
 | Codebase Improvement | Include a module definition & get-help about | :heavy_check_mark: |
