@@ -14,6 +14,7 @@
 using module .\..\Types\PS.MCM.Types.psm1
 using module .\..\Helpers\PS.MCM.ContentComparer.Class.psm1
 using module .\..\Helpers\PS.MCM.ElementParser.Abstract.psm1
+using module .\..\Helpers\PS.MCM.SpellcheckProvider.Abstract.psm1
 using module .\..\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
 using module .\..\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 using module .\PS.MCM.ContentModelConfig.Class.psm1
@@ -823,31 +824,18 @@ class ContentModel {
         return $this.AnalysePossibleLabellingIssues([FilenameElement]::Studio, $returnSummary)
     }
 
-    [Hashtable] GenerateTitleSpellcheckResults() {
+    [Void] SpellcheckContentTitles() {
+        $this.GenerateTitleSpellcheckResults($false)
+    }
+
+    [Hashtable] SpellcheckContentTitles([Bool] $returnResults) {
 
         [System.Collections.Hashtable] $spellcheckResults = [System.Collections.Hashtable]::new()
-        $wordInterop = $null
 
-        # Attempt to initialise Microsoft Word Interop, and fail and cleanup gracefully if unable to do so.
-        try {           
-            Write-InfoToConsole "Instantiating COM Word Interop"
-            $wordInterop = New-Object -COM Word.Application
-            $wordInterop.Documents.Add([System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value) > $null
+        # Initialise the spellcheck provider
+        [SpellcheckProvider]::Initialise()
 
-        }
-        catch {
-            Write-WarnToConsole "Unable to initialise Word Interop, no spellcheck results will be included in the dictionary."
-            
-            try {
-                Write-InfoToConsole "Disposing COM Word Interop"
-                $wordInterop.Quit()
-            }
-            catch {
-                # silently
-            }
-            $wordInterop = $null
-        }
-
+        Write-InfoToConsole "Scanning ..."
 
         # Scan through all the titles building a word dictionary
         foreach ($contentItem in $this.Content) {
@@ -865,20 +853,15 @@ class ContentModel {
                     if ($null -eq $result) {
                         
                         # spellcheck if available
-                        $isCorrect = $null
-                        if ($null -ne $wordInterop) {
-                            $isCorrect = $wordInterop.CheckSpelling($word)
-                        }
-
-                        $result = [SpellcheckResult]::New($word, $isCorrect)
+                        $result = [SpellcheckResult]::New($word, [SpellcheckProvider]::CheckSpelling($word))
                         $result.AddRelatedContent($contentItem)
 
-                        # if not correct (and not null, ie spellcheck is available), get suggestions
+                        # if not correct, get suggestions
                         if ($result.IsCorrect -eq $false) {
 
                             # Add each suggestion
-                            foreach ($suggestion in $wordInterop.GetSpellingSuggestions($word)) {
-                                $result.AddSuggestion($suggestion.Name)
+                            foreach ($suggestion in [SpellcheckProvider]::GetSuggestions($word)) {
+                                $result.AddSuggestion($suggestion)
                             }
                         }
 
@@ -892,17 +875,19 @@ class ContentModel {
             }
         }
 
-        if ($null -ne $wordInterop) {
-            try {
-                Write-InfoToConsole "Disposing COM Word Interop"
-                $wordInterop.Quit()
-            }
-            catch {
-                # silently
-            }
-        }
+        # Dispose the provider
+        [SpellcheckProvider]::Dispose()
 
-        return $spellcheckResults
+        # Output the results
+        $this.DisplaySpellcheckSuggestions($spellcheckResults)
+
+        # Return results if requested
+        if ($returnResults) {
+            return $spellcheckResults
+        }
+        else {
+            return $null
+        }
     }
 
     [Content] AddContentToModel([System.IO.FileInfo] $file) {
@@ -1304,7 +1289,6 @@ class ContentModel {
 
         $subjectCollection = $this.GetCollectionByType([FilenameElement] $filenameElement)
         $fromObjectContent = $null
-        $fromObjectContentItemSubject = $null
         $toObjectContent = $null
 
         # Check the subject is not null
@@ -1709,6 +1693,42 @@ class ContentModel {
         }
         else {
             return $null
+        }
+    }
+
+    [Void] Hidden DisplaySpellcheckSuggestions([System.Collections.Hashtable] $spellcheckResults) {
+
+        [Int] $maxWordLength = 0
+        
+        # Get the maximum length of an incorrect word for formatting purposes
+        foreach ($word in $spellcheckResults.GetEnumerator()) {
+            if (($word.Name.Length -gt $maxWordLength) -and (-not $word.Value.IsCorrect)) {
+                $maxWordLength = $word.Key.Length
+            }
+        }
+
+        # output a table header
+        Write-ToConsole ""
+        Write-ToConsole ("Word").PadRight($maxWordLength) "Suggestions"
+        Write-ToConsole ("-" * $maxWordLength) ("-" * "Suggestions".Length)
+
+        # output each incorrect word
+        foreach ($word in $spellcheckResults.GetEnumerator()) {
+            if (-not $word.Value.IsCorrect) {
+                Write-WarnToConsole $word.Name.PadRight($maxWordLength + 1) -NoNewLine
+                Write-ToConsole ($word.Value.Suggestions -join ", ")
+
+                Add-ConsoleIndent
+                Write-InfoToConsole "Found in:"
+                Add-ConsoleIndent
+
+                foreach ($content in $word.Value.FoundInTitleOfContent){
+                    Write-InfoToConsole $content.Basename
+                }
+
+                Remove-ConsoleIndent
+                Remove-ConsoleIndent
+            }
         }
     }
     #endregion Hidden Methods
