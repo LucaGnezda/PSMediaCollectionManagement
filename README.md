@@ -116,21 +116,16 @@ Things still to be done, in progress, or recently completed:
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
-| Feature | Readme | :heavy_check_mark: |
 
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
 | Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
-| Codebase Improvement | Include a module definition & get-help about | :heavy_check_mark: |
-| Codebase Improvement | Credit authors where I have reused functions/code | :heavy_check_mark: |
-| Codebase Improvement | Re-organise public functions into logical groups | :heavy_check_mark: | 
-| Codebase Improvement | Comment all public functions with help blocks | :heavy_check_mark: | 
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
 | Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
-| Bugfix | Altered content remapping | :heavy_check_mark: | 
+| Bugfix | Fixed cross reference remapping when altering Studio and Album parts of an object graph | :heavy_check_mark: | 
 
 Where:
 - :heavy_minus_sign: = Not Started
