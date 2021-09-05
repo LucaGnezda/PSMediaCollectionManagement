@@ -13,6 +13,7 @@
 #------------
 using module .\..\Types\PS.MCM.Types.psm1
 using module .\..\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
+using module .\..\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 using module .\PS.MCM.Actor.Class.psm1
 using module .\PS.MCM.Album.Class.psm1
 using module .\PS.MCM.Artist.Class.psm1
@@ -366,6 +367,9 @@ class Content {
 
     [Void] FillPropertiesWhereMissing([System.IO.FileInfo] $file, [Bool] $silently) {
         
+        # If we don't have a COM Shell, instantiate one. If we do remember so we can dispose it when done.
+        $disposeWhenDone = [ModuleState]::InstantiateShell()
+
         if ($null -eq $file) { 
             $file = Get-ChildItem $this.FileName -ErrorAction SilentlyContinue
         }
@@ -436,6 +440,11 @@ class Content {
             }
             $this.AddWarning([ContentWarning]::ErrorLoadingProperties)
         }
+
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
+        }
+
         return
     }
 

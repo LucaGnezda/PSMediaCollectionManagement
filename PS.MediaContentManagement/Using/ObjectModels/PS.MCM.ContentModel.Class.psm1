@@ -14,7 +14,9 @@
 using module .\..\Types\PS.MCM.Types.psm1
 using module .\..\Helpers\PS.MCM.ContentComparer.Class.psm1
 using module .\..\Helpers\PS.MCM.ElementParser.Abstract.psm1
+using module .\..\Helpers\PS.MCM.SpellcheckProvider.Abstract.psm1
 using module .\..\ModuleBehaviour\PS.MCM.ModuleSettings.Abstract.psm1
+using module .\..\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
 using module .\PS.MCM.ContentModelConfig.Class.psm1
 using module .\PS.MCM.Actor.Class.psm1
 using module .\PS.MCM.Album.Class.psm1
@@ -22,6 +24,7 @@ using module .\PS.MCM.Artist.Class.psm1
 using module .\PS.MCM.Series.Class.psm1
 using module .\PS.MCM.Studio.Class.psm1
 using module .\PS.MCM.Content.Class.psm1
+using module .\PS.MCM.SpellcheckResult.Class.psm1
 
 #endregion Using
 
@@ -203,10 +206,16 @@ class ContentModel {
         # Start starting state
         $i = 0
         $loadWarnings = 0
+        $disposeWhenDone = $null
         
         # Initialise the ContentModel
         $this.Init()
         
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($loadProperties) {
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
+        }
+
         # read the filesystem
         if ($this.Config.IncludedExtensions.Count -eq 0) {
             [Object[]] $files = Get-ChildItem -File
@@ -244,6 +253,11 @@ class ContentModel {
         
         }
 
+        # Dispose non GC objects
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
+        }
+
         # Hide the progress bar
         Write-Progress -Activity "Generating Model" -Completed
 
@@ -274,9 +288,15 @@ class ContentModel {
 
         # Set starting state
         $loadWarnings = 0
+        $disposeWhenDone = $null
 
         # Get the current list of files
         [Object[]] $files = Get-ChildItem -File | Where-Object {$_.Extension -in $this.Config.IncludedExtensions}
+
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($loadProperties) {
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
+        }
 
         # Pre-process
         Write-InfoToConsole "Indexing changes ..."
@@ -353,6 +373,11 @@ class ContentModel {
             Write-Progress -Activity "Populating missing properties" -Completed
         }
 
+        # Dispose non GC objects
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
+        }
+
         # Resort the list
         Write-InfoToConsole "Resorting the list"
         $comp = [ContentComparer]::new("FileName")
@@ -397,9 +422,15 @@ class ContentModel {
         # Set starting state
         $i = 0
         $loadWarnings = 0
+        $disposeWhenDone = $null
         
         # Initialise the ContentModel
         $this.Init()
+
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($collectInfoWhereMissing) {
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
+        }
 
         # Read in the json
         try {
@@ -479,6 +510,11 @@ class ContentModel {
         
         }
 
+        # Dispose non GC objects
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
+        }
+
         # Remove the progress bar
         Write-Progress -Activity "Importing File Index" -Completed
 
@@ -511,7 +547,14 @@ class ContentModel {
 
     [Void] SaveIndex ([String] $indexFilePath, [Bool] $CollectInfoWhereMissing) {
     
+        $disposeWhenDone = $null
+
         Write-InfoToConsole "Validating path" $indexFilePath "..."
+
+        # Instantiate Shell now so it is retained for the life of the method.
+        if ($collectInfoWhereMissing) {
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
+        }
 
         # First validate the path portion of the filepath
         if (-not(((Split-Path $indexFilePath) -ne "") -and (Split-Path $indexFilePath | Test-Path))) {
@@ -533,6 +576,11 @@ class ContentModel {
 
             }
             Write-Progress -Activity "Collecting additional information" -Completed
+        }
+
+        # Dispose non GC objects
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
         }
         
         Write-InfoToConsole "Generating json output..."
@@ -790,6 +838,72 @@ class ContentModel {
 
     [Int[]] AnalyseStudiosForPossibleLabellingIssues ([Bool] $returnSummary) {
         return $this.AnalysePossibleLabellingIssues([FilenameElement]::Studio, $returnSummary)
+    }
+
+    [Void] SpellcheckContentTitles() {
+        $this.SpellcheckContentTitles($false)
+    }
+
+    [Hashtable] SpellcheckContentTitles([Bool] $returnResults) {
+
+        [System.Collections.Hashtable] $spellcheckResults = [System.Collections.Hashtable]::new()
+
+        # Initialise the spellcheck provider
+        [SpellcheckProvider]::Initialise()
+
+        Write-InfoToConsole "Scanning ..."
+
+        # Scan through all the titles building a word dictionary
+        foreach ($contentItem in $this.Content) {
+
+            $splitTitle = ($contentItem.Title.Trim() -split " ") -replace "[^a-zA-Z0-9'-]", ""
+
+            foreach ($word in $splitTitle) {
+
+                if ($word.Length -gt 0) {
+
+                    # try to find the word in the dictionary
+                    $result = $spellcheckResults[$word]
+
+                    # if not there
+                    if ($null -eq $result) {
+                        
+                        # spellcheck if available
+                        $result = [SpellcheckResult]::New($word, [SpellcheckProvider]::CheckSpelling($word))
+                        $result.AddRelatedContent($contentItem)
+
+                        # if not correct, get suggestions
+                        if ($result.IsCorrect -eq $false) {
+
+                            # Add each suggestion
+                            foreach ($suggestion in [SpellcheckProvider]::GetSuggestions($word)) {
+                                $result.AddSuggestion($suggestion)
+                            }
+                        }
+
+                        $spellcheckResults.Add($word, $result)
+                    }
+                    else {
+                        #otherwise, just add the content relationship to the existing item
+                        $result.AddRelatedContent($contentItem)
+                    }
+                }
+            }
+        }
+
+        # Dispose the provider
+        [SpellcheckProvider]::Dispose()
+
+        # Output the results
+        $this.DisplaySpellcheckSuggestions($spellcheckResults)
+
+        # Return results if requested
+        if ($returnResults) {
+            return $spellcheckResults
+        }
+        else {
+            return $null
+        }
     }
 
     [Content] AddContentToModel([System.IO.FileInfo] $file) {
@@ -1191,7 +1305,6 @@ class ContentModel {
 
         $subjectCollection = $this.GetCollectionByType([FilenameElement] $filenameElement)
         $fromObjectContent = $null
-        $fromObjectContentItemSubject = $null
         $toObjectContent = $null
 
         # Check the subject is not null
@@ -1596,6 +1709,42 @@ class ContentModel {
         }
         else {
             return $null
+        }
+    }
+
+    [Void] Hidden DisplaySpellcheckSuggestions([System.Collections.Hashtable] $spellcheckResults) {
+
+        [Int] $maxWordLength = 0
+        
+        # Get the maximum length of an incorrect word for formatting purposes
+        foreach ($word in $spellcheckResults.GetEnumerator()) {
+            if (($word.Name.Length -gt $maxWordLength) -and (-not $word.Value.IsCorrect)) {
+                $maxWordLength = $word.Key.Length
+            }
+        }
+
+        # output a table header
+        Write-ToConsole ""
+        Write-ToConsole ("Word").PadRight($maxWordLength) "Suggestions"
+        Write-ToConsole ("-" * $maxWordLength) ("-" * "Suggestions".Length)
+
+        # output each incorrect word
+        foreach ($word in $spellcheckResults.GetEnumerator()) {
+            if (-not $word.Value.IsCorrect) {
+                Write-WarnToConsole $word.Name.PadRight($maxWordLength + 1) -NoNewLine
+                Write-ToConsole ($word.Value.Suggestions -join ", ")
+
+                Add-ConsoleIndent
+                Write-InfoToConsole "Found in:"
+                Add-ConsoleIndent
+
+                foreach ($content in $word.Value.FoundInTitleOfContent){
+                    Write-InfoToConsole $content.Basename
+                }
+
+                Remove-ConsoleIndent
+                Remove-ConsoleIndent
+            }
         }
     }
     #endregion Hidden Methods

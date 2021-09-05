@@ -1316,8 +1316,26 @@ Describe "ContentModel Integration Test - Analyse Model" -Tag IntegrationTest {
         $contentModelC.AnalyseStudiosForPossibleLabellingIssues($true) | Should -Be @(2, 0, 0, 0, 0, 2)
     }
 
-    IT "Summary" {
+    It "Summary" {
         $contentModelc.Summary() # Nothing to test, other than it doesn't error
+    }
+}
+
+Describe "ContentModel Integration Test - Spellcheck Titles" -Tag IntegrationTest {
+    BeforeAll {
+        $contentModel = New-ContentModel
+        Set-Location $PSScriptRoot\TestData\ContentTestG
+        $contentModel.LoadIndex(".\index.test.inputA.json", $true)
+    }
+
+    It "Spellcheck" {
+        $results = $contentModel.SpellcheckContentTitles($true)
+        $results.Count | Should -Be 9
+        $results.Contains("cat") | Should -Be $true
+        $results["cat"].IsCorrect | Should -Be $true
+        $results.Contains("Ths") | Should -Be $true
+        $results["Ths"].IsCorrect | Should -Be $false
+        $results["Ths"].Suggestions | Should -Contain "This"
     }
 }
 
