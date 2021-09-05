@@ -13,7 +13,6 @@ Pretty simple really:
     # Unblock the zip
     # Extract to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
 # Import the module.
-    # From the root
     Import-Module .\PS.MediaContentManagement
 
 # Get commands in the module
