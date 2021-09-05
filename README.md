@@ -114,6 +114,7 @@ Things still to be done:
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
+| Feature | Custom dictionaries | :heavy_minus_sign: |
 | Feature | Readme | :heavy_check_mark: |
 | Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
 | Codebase Improvement | Include a module definition & get-help about | :heavy_check_mark: |
@@ -136,7 +137,12 @@ Where:
     - Output colourful custom formatted tables
 - 'Using' is flaky when a class uses another module to define enums which are then used a parameters in public methods. While the class itself behaves fine, the console gets a problematic experience where you can only refence one of the two definitions at a time. I believe this is due to the two different scopes (inner and console) resetting the scope for each other. 
 - Enums are also difficult when used as class method parameters in modules. To properly export enums from a module you need them to be defined with Add-Type, but classes need them defines in module files referenced by using. These two needs are incompatible, so instead this code defines them twice, once for the class definitions and once for console ease of use. These are then sync checked by parsing the enum type module file and comparing it with the exportable enums with Pester.
-- Currently the Spellchecker requires a local install of Microsoft Word. This was done so spellchecking can run exclusively on the local machine. However this implementation has been wrapped in a provider abstract class, allowing other implementations to be substituted or added in its place in the future. 
+- Currently the spellcheck features require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine. However the feature has implemented as a provider, that abstracts away implementation specifics. This will more easily allow other implementations to be substituted or added in the future. 
+
+# Developer Tips
+- This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
+- If you would like to attach a Visual Studio Code debugger it is recommended you configure the debugger to run an interactive PowerShell session.
+- Please note, modules with classes won't re-load correctly after being changed in PowerShell 5. If you change the code, remember to re-start your IDE before restarting your debugger.
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
