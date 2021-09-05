@@ -68,6 +68,8 @@ Comparing models
 ```powershell
 # Load a content model
 Compare-ContentModels $contentModel ".\Index.json"
+Compare-ContentModels ".\IndexA.json" ".\IndexB.json"
+Compare-ContentModels $contentModelA $contentModelB 
 ```
 
 Verify Filesystem
