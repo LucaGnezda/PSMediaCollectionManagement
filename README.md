@@ -141,7 +141,7 @@ Where:
 - Enums are also difficult when used as class method parameters in modules. To properly export enums from a module you need them to be defined with Add-Type, but classes need them defines in module files referenced by using. These two needs are incompatible, so instead this code defines them twice, once for the class definitions and once for console ease of use. These are then sync checked by parsing the enum type module file and comparing it with the exportable enums with Pester.
 - Currently the spellcheck features require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine. However the feature has implemented as a provider, that abstracts away implementation specifics. This will more easily allow other implementations to be substituted or added in the future. 
 
-# Developer Tips
+# Developer tips
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
 - If you would like to attach a Visual Studio Code debugger it is recommended you configure the debugger to run an interactive PowerShell session.
 - Please note, modules with classes won't re-load correctly after being changed in PowerShell 5. If you change the code, remember to re-start your IDE before restarting your debugger.
