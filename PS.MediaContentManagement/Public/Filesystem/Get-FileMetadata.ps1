@@ -37,14 +37,9 @@ function Get-FileMetadata (
     [System.Collections.Generic.List[FileMetadataProperty]] $fileMetadata = [System.Collections.Generic.List[FileMetadataProperty]]::new()
     [String] $rawPropertyName = ""
     [String] $rawPropertyValue = ""
-    $disposeWhenDone = $false
     
-    # If we don't have a COM Shell, instantiate one
-    if ($null -eq [ModuleState]::Shell) {
-        Write-InfoToConsole "Instantiating a COM Shell"
-        [ModuleState]::Shell = New-Object -ComObject Shell.Application
-        $disposeWhenDone = $true
-    }
+    # If we don't have a COM Shell, instantiate one. If we do remember so we can dispose it when done.
+    $disposeWhenDone = [ModuleState]::InstantiateShell()
 
     # Get a TextInfo object
     $textInfo = (Get-Culture).TextInfo
@@ -95,6 +90,10 @@ function Get-FileMetadata (
         
             $i++
         }
+    }
+
+    if ($disposeWhenDone) {
+        [ModuleState]::DisposeCurrentShellIfPresent()
     }
 
     return $fileMetadata

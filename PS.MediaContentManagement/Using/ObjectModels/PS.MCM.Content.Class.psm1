@@ -367,10 +367,8 @@ class Content {
 
     [Void] FillPropertiesWhereMissing([System.IO.FileInfo] $file, [Bool] $silently) {
         
-        $disposeWhenDone = $false
-        if ($null -eq [ModuleState]::Shell) {
-            $disposeWhenDone = $true
-        }
+        # If we don't have a COM Shell, instantiate one. If we do remember so we can dispose it when done.
+        $disposeWhenDone = [ModuleState]::InstantiateShell()
 
         if ($null -eq $file) { 
             $file = Get-ChildItem $this.FileName -ErrorAction SilentlyContinue

@@ -136,6 +136,7 @@ Where:
     - Output colourful custom formatted tables
 - 'Using' is flaky when a class uses another module to define enums which are then used a parameters in public methods. While the class itself behaves fine, the console gets a problematic experience where you can only refence one of the two definitions at a time. I believe this is due to the two different scopes (inner and console) resetting the scope for each other. 
 - Enums are also difficult when used as class method parameters in modules. To properly export enums from a module you need them to be defined with Add-Type, but classes need them defines in module files referenced by using. These two needs are incompatible, so instead this code defines them twice, once for the class definitions and once for console ease of use. These are then sync checked by parsing the enum type module file and comparing it with the exportable enums with Pester.
+- Currently the Spellchecker requires a local install of Microsoft Word. This was done so spellchecking can run exclusively on the local machine. However this implementation has been wrapped in a provider abstract class, allowing other implementations to be substituted or added in its place in the future. 
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...

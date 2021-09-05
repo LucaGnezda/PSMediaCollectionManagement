@@ -81,9 +81,15 @@ class ModuleState {
         [ModuleState]::Testing_States.Clear()
     }
 
-    [Void] static InstantiateShell() {
-        Write-InfoToConsole "Instantiating a COM Shell"
-        [ModuleState]::Shell = New-Object -ComObject Shell.Application
+    [Bool] static InstantiateShell() {
+        if ($null -eq [ModuleState]::Shell) {
+            Write-InfoToConsole "Instantiating a COM Shell"
+            [ModuleState]::Shell = New-Object -ComObject Shell.Application
+            return $true
+        }
+        else {
+            return $false
+        }
     }
 
     [Void] static DisposeCurrentShellIfPresent() {
@@ -92,6 +98,7 @@ class ModuleState {
             [System.Runtime.InteropServices.Marshal]::ReleaseComObject([System.__ComObject] [ModuleState]::Shell) | out-null
             [System.GC]::Collect()
             [System.GC]::WaitForPendingFinalizers()
+            [ModuleState]::Shell = $null
         }
     }
     #endregion Static Methods

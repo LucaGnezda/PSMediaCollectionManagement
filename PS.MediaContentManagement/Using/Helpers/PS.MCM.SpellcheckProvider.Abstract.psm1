@@ -20,7 +20,7 @@
 class SpellcheckProvider
 {
     #region Properties
-    [System.MarshalByRefObject] static $WordInterop = $null
+    [System.MarshalByRefObject] static hidden $_WordInterop = $null
     #endregion Properties
 
 
@@ -37,8 +37,8 @@ class SpellcheckProvider
          # Attempt to initialise Microsoft Word Interop, and fail and cleanup gracefully if unable to do so.
          try {           
             Write-InfoToConsole "Instantiating COM Word Interop"
-            [SpellcheckProvider]::WordInterop = New-Object -COM Word.Application
-            [SpellcheckProvider]::WordInterop.Documents.Add([System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value) > $null
+            [SpellcheckProvider]::_WordInterop = New-Object -COM Word.Application
+            [SpellcheckProvider]::_WordInterop.Documents.Add([System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value, [System.Reflection.Missing]::Value) > $null
             return $true
         }
         catch {
@@ -46,13 +46,13 @@ class SpellcheckProvider
             
             try {
                 Write-InfoToConsole "Disposing COM Word Interop"
-                [SpellcheckProvider]::WordInterop.Quit()
+                [SpellcheckProvider]::_WordInterop.Quit()
             }
             catch {
                 # silently
             }
             finally {
-                [SpellcheckProvider]::WordInterop = $null
+                [SpellcheckProvider]::_WordInterop = $null
             }
             return $false
         }
@@ -62,8 +62,8 @@ class SpellcheckProvider
     [System.Nullable[Bool]] Static CheckSpelling ([String] $word) {
 
         # return spellcheck result if provider is available
-        if ($null -ne [SpellcheckProvider]::WordInterop) {
-            return [SpellcheckProvider]::WordInterop.CheckSpelling($word)
+        if ($null -ne [SpellcheckProvider]::_WordInterop) {
+            return [SpellcheckProvider]::_WordInterop.CheckSpelling($word)
         }
         else {
             return $null
@@ -73,7 +73,7 @@ class SpellcheckProvider
     [Object] Static GetSuggestions ([String] $word) {
 
         # Get the spellcheck suggestions
-        $wordSuggestions = [SpellcheckProvider]::WordInterop.GetSpellingSuggestions($word)
+        $wordSuggestions = [SpellcheckProvider]::_WordInterop.GetSpellingSuggestions($word)
         
         # load it into a list
         $suggestionsList = [System.Collections.Generic.List[String]]::new()
@@ -88,13 +88,16 @@ class SpellcheckProvider
 
     [Void] Static Dispose () {
 
-        if ($null -ne [SpellcheckProvider]::WordInterop) {
+        if ($null -ne [SpellcheckProvider]::_WordInterop) {
             try {
                 Write-InfoToConsole "Disposing COM Word Interop"
-                [SpellcheckProvider]::WordInterop.Quit()
+                [SpellcheckProvider]::_WordInterop.Quit()
             }
             catch {
                 # silently
+            }
+            finally {
+                [SpellcheckProvider]::_WordInterop = $null
             }
         }
 

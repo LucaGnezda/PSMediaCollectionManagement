@@ -206,13 +206,14 @@ class ContentModel {
         # Start starting state
         $i = 0
         $loadWarnings = 0
+        $disposeWhenDone = $null
         
         # Initialise the ContentModel
         $this.Init()
         
         # Instantiate Shell now so it is retained for the life of the method.
         if ($loadProperties) {
-            [ModuleState]::InstantiateShell()
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
         }
 
         # read the filesystem
@@ -253,7 +254,9 @@ class ContentModel {
         }
 
         # Dispose non GC objects
-        [ModuleState]::DisposeCurrentShellIfPresent()
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
+        }
 
         # Hide the progress bar
         Write-Progress -Activity "Generating Model" -Completed
@@ -285,13 +288,14 @@ class ContentModel {
 
         # Set starting state
         $loadWarnings = 0
+        $disposeWhenDone = $null
 
         # Get the current list of files
         [Object[]] $files = Get-ChildItem -File | Where-Object {$_.Extension -in $this.Config.IncludedExtensions}
 
         # Instantiate Shell now so it is retained for the life of the method.
         if ($loadProperties) {
-            [ModuleState]::InstantiateShell()
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
         }
 
         # Pre-process
@@ -370,7 +374,9 @@ class ContentModel {
         }
 
         # Dispose non GC objects
-        [ModuleState]::DisposeCurrentShellIfPresent()
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
+        }
 
         # Resort the list
         Write-InfoToConsole "Resorting the list"
@@ -416,13 +422,14 @@ class ContentModel {
         # Set starting state
         $i = 0
         $loadWarnings = 0
+        $disposeWhenDone = $null
         
         # Initialise the ContentModel
         $this.Init()
 
         # Instantiate Shell now so it is retained for the life of the method.
         if ($collectInfoWhereMissing) {
-            [ModuleState]::InstantiateShell()
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
         }
 
         # Read in the json
@@ -504,7 +511,9 @@ class ContentModel {
         }
 
         # Dispose non GC objects
-        [ModuleState]::DisposeCurrentShellIfPresent()
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
+        }
 
         # Remove the progress bar
         Write-Progress -Activity "Importing File Index" -Completed
@@ -538,11 +547,13 @@ class ContentModel {
 
     [Void] SaveIndex ([String] $indexFilePath, [Bool] $CollectInfoWhereMissing) {
     
+        $disposeWhenDone = $null
+
         Write-InfoToConsole "Validating path" $indexFilePath "..."
 
         # Instantiate Shell now so it is retained for the life of the method.
         if ($collectInfoWhereMissing) {
-            [ModuleState]::InstantiateShell()
+            $disposeWhenDone = [ModuleState]::InstantiateShell()
         }
 
         # First validate the path portion of the filepath
@@ -565,6 +576,11 @@ class ContentModel {
 
             }
             Write-Progress -Activity "Collecting additional information" -Completed
+        }
+
+        # Dispose non GC objects
+        if ($disposeWhenDone) {
+            [ModuleState]::DisposeCurrentShellIfPresent()
         }
         
         Write-InfoToConsole "Generating json output..."
@@ -825,7 +841,7 @@ class ContentModel {
     }
 
     [Void] SpellcheckContentTitles() {
-        $this.GenerateTitleSpellcheckResults($false)
+        $this.SpellcheckContentTitles($false)
     }
 
     [Hashtable] SpellcheckContentTitles([Bool] $returnResults) {
