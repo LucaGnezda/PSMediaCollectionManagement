@@ -1,12 +1,13 @@
-using module .\..\PS.MediaContentManagement\Using\ObjectModels\PS.MCM.ContentModelConfig.Class.psm1
-using module .\..\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
-using module .\..\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\ObjectModels\ContentModelConfig.Class.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
+using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
 
 BeforeAll {     
-    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaContentManagement\PS.MediaContentManagement.psm1 -Force
+    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
 
-    [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
-    [ModuleState]::SetTestingState([TestAttribute]::MockDestructiveActions)
+    [ConsoleExtensionsState]::RedirectToMockConsole = $true
+    [FilesystemExtensionsState]::MockDestructiveActions = $true
 
     $config = [ContentModelConfig]::new()
     $config.ConfigureForFilm()
@@ -14,7 +15,7 @@ BeforeAll {
 
 Describe "ContentModelConfig Unit Test" -Tag UnitTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Constructing with no parameters" {
@@ -180,5 +181,6 @@ Describe "ContentModelConfig Unit Test" -Tag UnitTest {
 
 AfterAll {
     Set-Location $PSScriptRoot
-    [ModuleState]::ClearTestingStates()
+    [ConsoleExtensionsState]::RedirectToMockConsole = $false
+    [FilesystemExtensionsState]::MockDestructiveActions = $false
 }
