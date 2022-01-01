@@ -13,13 +13,13 @@ Pretty simple really:
     # Unblock the zip
     # Extract to a module path (e.g. $env:USERPROFILE\Documents\WindowsPowerShell\Modules\)
 # Import the module.
-    Import-Module .\PS.MediaContentManagement
+    Import-Module .\PS.MediaCollectionManagement
 
 # Get commands in the module
-    Get-Command -Module PS.MediaContentManagement
+    Get-Command -Module PS.MediaCollectionManagement
 
 # Get help
-    Get-Help about_PS.MediaContentManagement
+    Get-Help about_PS.MediaCollectionManagement
 ```
 
 # Examples
@@ -74,7 +74,7 @@ Compare-ContentModels $contentModelA $contentModelB
 
 Verify Filesystem
 ```powershell
-# Load a content model
+# Validate content hashes against a content model
 Confirm-FilesystemHashes $contentModel
 ```
 
@@ -115,11 +115,14 @@ Things still to be done, in progress, or recently completed:
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
 | Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
+| Feature | Be able to compare a model directly with the filesystem | :heavy_minus_sign: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
 
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
 | Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
+| Codebase Improvement | Implementation of pseudo abstract and interface classes | :heavy_check_mark: |
+| Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :construction: |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
 | Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
@@ -137,9 +140,11 @@ Where:
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- 'Using' is flaky when a class uses another module to define enums which are then used a parameters in public methods. While the class itself behaves fine, the console gets a problematic experience where you can only refence one of the two definitions at a time. I believe this is due to the two different scopes (inner and console) resetting the scope for each other. 
-- Enums are also difficult when used as class method parameters in modules. To properly export enums from a module you need them to be defined with Add-Type, but classes need them defines in module files referenced by using. These two needs are incompatible, so instead this code defines them twice, once for the class definitions and once for console ease of use. These are then sync checked by parsing the enum type module file and comparing it with the exportable enums with Pester.
-- Currently the spellcheck features require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine. However the feature has implemented as a provider, that abstracts away implementation specifics. This will more easily allow other implementations to be substituted or added in the future. 
+- Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
+- PowerShell doesn't implement abstract classes or interfaces. To get around this limitation, this module implements pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
+- Interfaces then allow the module to implement dependency injection (DI) with formal contracts.
+- Currently the spellcheck features require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine. However the feature has implemented as a DI provider, that abstracts away implementation specifics. This will more easily allow other implementations to be substituted or added in the future. 
+- I know The code is still pretty messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. Now I can start to refactor with purpose towards 'go well' principles (thanks Bob).  
 
 # Developer tips
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
@@ -148,9 +153,10 @@ Where:
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
+- [unclebob](https://github.com/unclebob) and his amazing conference talks, for the inspiration I needed to start cleaning up the code and to work out how to implement pseudo interfaces. Now I can start implementing inversion of control, DI and modularisation. 
 - [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for inspiration on structuring modules
-- [gravejester](https://github.com/gravejester) for their string approximation functions.
-- Pretty much everyone on [StackOverflow](https://stackoverflow.com/), for pretty much having answers to every questions ever conceived.
+- [gravejester](https://github.com/gravejester) for the PowerShell implementation of Levenshtein string similarity functions.
+- Pretty much everyone on [StackOverflow](https://stackoverflow.com/), for pretty much having answers to every questions ever conceived (except PowerShell Interfaces :P).
 - The [Pester community](https://github.com/pester/Pester), for creating an awesome PowerShell testing framework.
 
 

@@ -1,0 +1,35 @@
+TOPIC
+    about_PS.MediaCollectionManagement
+
+SHORT DESCRIPTION
+    PS.MediaCollectionManagement allows you to model content with structured filenames and perform a range of management actions against them.
+
+LONG DESCRIPTION
+    PS.MediaCollectionManagement allows you to model content with structured filenames and perform a range of management actions against them.
+
+    You can find further information here:
+        https://github.com/LucaGnezda/PSMediaCollectionManagement/
+
+EXAMPLES
+    Example of how to build a model for Series
+        $contentModel = New-contentModel
+        $contentModel.Config.ConfigureForSeries()
+        $contentModel.Build($true, $true)
+
+    Example of how to compare this model and its file hashes against a known index
+        Compare-ContentModels $contentModel ".\Index.json"
+    
+    Example of how to analyse for naming issues, and correcting issues
+        $contentModel.AnalyseSeriesForPossibleLabellingIssues()
+        $contentModel.AlterSeries("Foo", "Bar")
+        $contentModel.AlterSeasonEpisodeFormat(2, 2, [SeasonEpisodePattern]::Uppercase_S0E0, $false)
+        $contentModel.RemodelFilenameFormat([FilenameElement]::Series, [FilenameElement]::SeasonEpisode)
+
+    Example of how to apply changes back to the filesystem and save the index
+        $contentModel.ApplyAllPendingFilenameChanges()
+        $contentModel.SaveIndex(".\Index2.json")
+    
+    You get the idea
+
+KEYWORDS
+    'Content', 'Media', 'Filesystem', 'Model'

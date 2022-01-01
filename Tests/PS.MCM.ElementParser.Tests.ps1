@@ -1,5 +1,5 @@
-using module .\..\PS.MediaContentManagement\Using\Helpers\PS.MCM.ElementParser.Abstract.psm1
-using module .\..\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Helpers\ContentSubjectParser.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
 
 BeforeAll { 
     
@@ -29,7 +29,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "15x12"; expected = $true}
     ) {
         # Test
-        [ElementParser]::IsValidSeasonEpisode($s) | Should -Be $expected
+        [ContentSubjectParser]::IsValidSeasonEpisode($s) | Should -Be $expected
     }
 
     It "IsSeasonEpisodePattern" -ForEach @(
@@ -62,7 +62,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "15X12"; p=[SeasonEpisodePattern]::Lowercase_0X0 ; expected = $false}
     ) {
         # Test
-        [ElementParser]::IsSeasonEpisodePattern($s, $p) | Should -Be $expected
+        [ContentSubjectParser]::IsSeasonEpisodePattern($s, $p) | Should -Be $expected
     }
 
     It "IsValidTrackNumber" -ForEach @(
@@ -75,7 +75,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "111"; expected = $true}
     ) {
         # Test
-        [ElementParser]::IsValidTrackNumber($s) | Should -Be $expected
+        [ContentSubjectParser]::IsValidTrackNumber($s) | Should -Be $expected
     }
 
     It "IsValidYear" -ForEach @(
@@ -89,7 +89,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "8"; expected = $false}
     ) {
         # Test
-        [ElementParser]::IsValidYear($s) | Should -Be $expected
+        [ContentSubjectParser]::IsValidYear($s) | Should -Be $expected
     }
 
     It "GetSeason" -ForEach @(
@@ -100,7 +100,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "15x12"; expected = 15}
     ) {
         # Test
-        [ElementParser]::GetSeason($s) | Should -Be $expected
+        [ContentSubjectParser]::GetSeason($s) | Should -Be $expected
     }
 
     It "GetEpisode" -ForEach @(
@@ -111,7 +111,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "15x12"; expected = 12}
     ) {
         # Test
-        [ElementParser]::GetEpisode($s) | Should -Be $expected
+        [ContentSubjectParser]::GetEpisode($s) | Should -Be $expected
     }
 
     It "SeasonEpisodeToString" -ForEach @(
@@ -149,7 +149,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{season = 11; episode = 12; padSeason = 2; padEpisode = 2; pattern = [SeasonEpisodePattern]::Lowercase_0X0; expected = "11x12"}
     ) {
         # Test
-        [ElementParser]::SeasonEpisodeToString($season, $episode, $padSeason, $padEpisode, $pattern) | Should -BeExactly $expected
+        [ContentSubjectParser]::SeasonEpisodeToString($season, $episode, $padSeason, $padEpisode, $pattern) | Should -BeExactly $expected
     }
 }
 
