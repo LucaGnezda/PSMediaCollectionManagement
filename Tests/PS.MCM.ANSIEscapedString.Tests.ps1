@@ -1,4 +1,4 @@
-using module .\..\PS.MediaContentManagement\Using\Helpers\PS.MCM.ANSIEscapedString.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\Helpers\ANSIEscapedString.Abstract.psm1
 
 BeforeAll { 
 

@@ -1,34 +1,34 @@
-using module .\..\PS.MediaContentManagement\Using\Helpers\PS.MCM.SpellcheckProvider.Abstract.psm1
-using module .\..\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Providers\MSWordCOMSpellcheckProvider.Class.psm1
+using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
 
 BeforeAll { 
-    [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
-    [ModuleState]::SetTestingState([TestAttribute]::MockDestructiveActions)
+    [ConsoleExtensionsState]::RedirectToMockConsole = $true
+    $spellcheckProvider = [MSWordCOMSpellcheckProvider]::New()
 }
 
 Describe "Spellcheck Unit Test" -Tag UnitTest {
 
     It "Spellcheck" {
         # Test
-        [SpellcheckProvider]::_WordInterop | Should -Be $null
+        $spellcheckProvider._WordInterop | Should -Be $null
         # Do
-        [SpellcheckProvider]::Initialise()
+        $spellcheckProvider.Initialise()
 
         # Test
-        [SpellcheckProvider]::_WordInterop | Should -BeOfType [System.MarshalByRefObject]
-        [SpellcheckProvider]::CheckSpelling("Apple") | Should -Be $true
-        [SpellcheckProvider]::CheckSpelling("Applee") | Should -Be $false
-        [SpellcheckProvider]::GetSuggestions("Applee") | Should -Contain "Apple"
+        $spellcheckProvider._WordInterop | Should -BeOfType [System.MarshalByRefObject]
+        $spellcheckProvider.CheckSpelling("Apple") | Should -Be $true
+        $spellcheckProvider.CheckSpelling("Applee") | Should -Be $false
+        $spellcheckProvider.GetSuggestions("Applee") | Should -Contain "Apple"
 
         # Do
-        [SpellcheckProvider]::Dispose()
+        $spellcheckProvider.Dispose()
 
         # Test
-        [SpellcheckProvider]::_WordInterop | Should -Be $null
+        $spellcheckProvider._WordInterop | Should -Be $null
     }
 }
 
 AfterAll {
     Set-Location $PSScriptRoot
-    [ModuleState]::ClearTestingStates()
+    [ConsoleExtensionsState]::RedirectToMockConsole = $false
 }

@@ -1,19 +1,20 @@
-using module .\..\PS.MediaContentManagement\Using\Helpers\PS.MCM.FileMetadataProperty.Class.psm1
-using module .\..\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
-using module .\..\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
+using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ObjectModels\FileMetadataProperty.Class.psm1
+using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
 
 BeforeAll { 
-    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaContentManagement\PS.MediaContentManagement.psm1 -Force
+    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
 
-    [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
-    [ModuleState]::SetTestingState([TestAttribute]::MockDestructiveActions)
+    [ConsoleExtensionsState]::RedirectToMockConsole = $true
+    [FilesystemExtensionsState]::MockDestructiveActions = $true
 
     Set-Location $PSScriptRoot\TestData\ContentTestA
 }
 
 Describe "Get-AvailableFileMetadataKeys" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
 
     It "Get All Keys" {
@@ -31,7 +32,7 @@ Describe "Get-FileMetadata" -Tag IntegrationTest {
     }
 
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Get All File Metadata" {
@@ -62,20 +63,9 @@ Describe "Get-FileMetadata" -Tag IntegrationTest {
     }
 }
 
-Describe "Call Function -  Get-LevenshteinDistance" -Tag IntegrationTest {
-    BeforeEach {
-        [ModuleState]::ResetMockConsole()
-    }
-    
-    It "Get Distance" {
-        # Do + Test
-        Get-LevenshteinDistance "Foo" "Bar" | Should -Be 3
-    }
-}
-
 Describe "Call Function - Rename-File" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Rename File - Rename conflict" {
@@ -104,7 +94,7 @@ Describe "Call Function - Copy-Model" -Tag IntegrationTest {
     }
 
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
 
     It "Copy Model" {
@@ -137,7 +127,7 @@ Describe "Call Function - Merge-Model" -Tag IntegrationTest {
     }
 
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
 
     It "Merge Model" {
@@ -163,7 +153,7 @@ Describe "Call Function - Compare-Model" -Tag IntegrationTest {
     }
 
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
 
     It "Compare Content Model - Model Model" {
@@ -203,7 +193,7 @@ Describe "Call Function - Compare-Model - Missing baseline hashes" -Tag Integrat
     }
 
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
 
     It "Compare Content Model - Unmatched without hashes" {
@@ -228,7 +218,7 @@ Describe "Call Function - Confirm-FilesystemHashes" -Tag IntegrationTest {
     }
 
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
 
     It "Validate Hashes" {
@@ -238,5 +228,6 @@ Describe "Call Function - Confirm-FilesystemHashes" -Tag IntegrationTest {
 
 AfterAll {
     Set-Location $PSScriptRoot
-    [ModuleState]::ClearTestingStates()
+    [ConsoleExtensionsState]::RedirectToMockConsole = $false
+    [FilesystemExtensionsState]::MockDestructiveActions = $false
 }

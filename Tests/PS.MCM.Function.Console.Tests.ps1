@@ -1,14 +1,14 @@
-using module .\..\PS.MediaContentManagement\Using\ModuleBehaviour\PS.MCM.ModuleState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
 
 BeforeAll { 
-    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaContentManagement\PS.MediaContentManagement.psm1 -Force
+    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
 
-    [ModuleState]::SetTestingState([TestAttribute]::SuppressConsoleOutput)
+    [ConsoleExtensionsState]::RedirectToMockConsole = $true
 }
 
 Describe "Write-ToConsole" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Write-ToConsole" {
@@ -20,16 +20,16 @@ Describe "Write-ToConsole" -Tag IntegrationTest {
         Write-ToConsole "Foo" "Bar" "Ecky"
 
         # Test
-        [ModuleState]::MockConsole[0] | Should -Be "  Hello World 1"
-        [ModuleState]::MockConsole[1] | Should -Be "  Hello World 2"
-        [ModuleState]::MockConsole[2] | Should -Be "  Hello World 3"
-        [ModuleState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
+        [ConsoleExtensionsState]::MockConsole[0] | Should -Be "  Hello World 1"
+        [ConsoleExtensionsState]::MockConsole[1] | Should -Be "  Hello World 2"
+        [ConsoleExtensionsState]::MockConsole[2] | Should -Be "  Hello World 3"
+        [ConsoleExtensionsState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
     }
 }
 
 Describe "Write-InfoToConsole" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Write-InfoToConsole" {
@@ -41,16 +41,16 @@ Describe "Write-InfoToConsole" -Tag IntegrationTest {
         Write-InfoToConsole "Foo" "Bar" "Ecky"
 
         # Test
-        [ModuleState]::MockConsole[0] | Should -Be "  Hello World 1"
-        [ModuleState]::MockConsole[1] | Should -Be "  Hello World 2"
-        [ModuleState]::MockConsole[2] | Should -Be "  Hello World 3"
-        [ModuleState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
+        [ConsoleExtensionsState]::MockConsole[0] | Should -Be "  Hello World 1"
+        [ConsoleExtensionsState]::MockConsole[1] | Should -Be "  Hello World 2"
+        [ConsoleExtensionsState]::MockConsole[2] | Should -Be "  Hello World 3"
+        [ConsoleExtensionsState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
     }
 }
 
 Describe "Write-WarnToConsole" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Write-WarnToConsole" {
@@ -62,16 +62,16 @@ Describe "Write-WarnToConsole" -Tag IntegrationTest {
         Write-WarnToConsole "Foo" "Bar" "Ecky"
 
         # Test
-        [ModuleState]::MockConsole[0] | Should -Be "  Hello World 1"
-        [ModuleState]::MockConsole[1] | Should -Be "  Hello World 2"
-        [ModuleState]::MockConsole[2] | Should -Be "  Hello World 3"
-        [ModuleState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
+        [ConsoleExtensionsState]::MockConsole[0] | Should -Be "  Hello World 1"
+        [ConsoleExtensionsState]::MockConsole[1] | Should -Be "  Hello World 2"
+        [ConsoleExtensionsState]::MockConsole[2] | Should -Be "  Hello World 3"
+        [ConsoleExtensionsState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
     }
 }
 
 Describe "Write-ErrorToConsole" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Write-ErrorToConsole" {
@@ -83,16 +83,16 @@ Describe "Write-ErrorToConsole" -Tag IntegrationTest {
         Write-ErrorToConsole "Foo" "Bar" "Ecky"
 
         # Test
-        [ModuleState]::MockConsole[0] | Should -Be "  Hello World 1"
-        [ModuleState]::MockConsole[1] | Should -Be "  Hello World 2"
-        [ModuleState]::MockConsole[2] | Should -Be "  Hello World 3"
-        [ModuleState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
+        [ConsoleExtensionsState]::MockConsole[0] | Should -Be "  Hello World 1"
+        [ConsoleExtensionsState]::MockConsole[1] | Should -Be "  Hello World 2"
+        [ConsoleExtensionsState]::MockConsole[2] | Should -Be "  Hello World 3"
+        [ConsoleExtensionsState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
     }
 }
 
 Describe "Write-SuccessToConsole" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Write-SuccessToConsole" {
@@ -104,16 +104,16 @@ Describe "Write-SuccessToConsole" -Tag IntegrationTest {
         Write-SuccessToConsole "Foo" "Bar" "Ecky"
 
         # Test
-        [ModuleState]::MockConsole[0] | Should -Be "  Hello World 1"
-        [ModuleState]::MockConsole[1] | Should -Be "  Hello World 2"
-        [ModuleState]::MockConsole[2] | Should -Be "  Hello World 3"
-        [ModuleState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
+        [ConsoleExtensionsState]::MockConsole[0] | Should -Be "  Hello World 1"
+        [ConsoleExtensionsState]::MockConsole[1] | Should -Be "  Hello World 2"
+        [ConsoleExtensionsState]::MockConsole[2] | Should -Be "  Hello World 3"
+        [ConsoleExtensionsState]::MockConsole[3] | Should -Be "  Foo Bar Ecky"
     }
 }
 
 Describe "Add-ConsoleIndent, Remove-ConsoleIndent, Reset-ConsoleIndent" -Tag IntegrationTest {
     BeforeEach {
-        [ModuleState]::ResetMockConsole()
+        [ConsoleExtensionsState]::ResetMockConsole()
     }
     
     It "Add-ConsoleIndent, Remove-ConsoleIndent, Reset-ConsoleIndent" {
@@ -135,19 +135,19 @@ Describe "Add-ConsoleIndent, Remove-ConsoleIndent, Reset-ConsoleIndent" -Tag Int
         Write-ToConsole "Hello World 7"
 
         # Test
-        [ModuleState]::MockConsole[0] | Should -Be "  Hello World 1"
-        [ModuleState]::MockConsole[1] | Should -Be "    Hello World 2"
-        [ModuleState]::MockConsole[2] | Should -Be "      Hello World 3"
-        [ModuleState]::MockConsole[3] | Should -Be "    Hello World 4"
-        [ModuleState]::MockConsole[4] | Should -Be "  Hello World 5"
-        [ModuleState]::MockConsole[5] | Should -Be "  Hello World 6"
-        [ModuleState]::MockConsole[6] | Should -Be "  Hello World 7"
+        [ConsoleExtensionsState]::MockConsole[0] | Should -Be "  Hello World 1"
+        [ConsoleExtensionsState]::MockConsole[1] | Should -Be "    Hello World 2"
+        [ConsoleExtensionsState]::MockConsole[2] | Should -Be "      Hello World 3"
+        [ConsoleExtensionsState]::MockConsole[3] | Should -Be "    Hello World 4"
+        [ConsoleExtensionsState]::MockConsole[4] | Should -Be "  Hello World 5"
+        [ConsoleExtensionsState]::MockConsole[5] | Should -Be "  Hello World 6"
+        [ConsoleExtensionsState]::MockConsole[6] | Should -Be "  Hello World 7"
     }
 }
 
 Describe "ToConsole - Colour tests" -Tag IntegrationTest {
     BeforeAll {
-        [ModuleState]::ClearTestingStates()
+        [ConsoleExtensionsState]::RedirectToMockConsole = $false
     }
     
     It "Write-SuccessToConsole" {

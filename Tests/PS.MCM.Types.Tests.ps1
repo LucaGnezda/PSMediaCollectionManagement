@@ -1,8 +1,8 @@
 BeforeAll { 
 
-    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaContentManagement\PS.MediaContentManagement.psm1 -Force
+    Import-Module .\..\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
 
-    $psScript = Get-Content $PSScriptRoot\..\PS.MediaContentManagement\Using\Types\PS.MCM.Types.psm1
+    $psScript = Get-Content $PSScriptRoot\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
 
     $e = [System.Collections.ObjectModel.Collection[System.Management.Automation.PSParseError]]::new()
     $tokens = [System.Management.Automation.PSParser]::Tokenize($psScript, [ref] $e)
