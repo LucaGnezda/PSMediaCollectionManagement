@@ -13,7 +13,6 @@
 #------------
 using module .\..\Types\Types.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
-#using module .\..\ObjectModels\ContentModel.Class.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Interfaces\IModelAnalysisService.Interface.psm1
 using module .\..\Interfaces\IModelManipulationService.Interface.psm1
