@@ -40,8 +40,14 @@ Describe "Actor Unit Test" -Tag UnitTest {
         $fooActor.PerformedIn.Matching("Foo")[0].Filename | Should -Be "Foo.test"
     }
 
-    It "Sorting Produced" {        
+    It "Sorting PerformedIn" {        
         $fooActor.PerformedIn.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
+    }
+
+    It "FindByFileName PerformedIn" {
+        # Test
+        $fooActor.PerformedIn.GetByFileName("Fooish.test").FileName | Should -Be "Fooish.test"
+        $fooActor.PerformedIn.GetByFileName("Fooish") | Should -BeNullOrEmpty
     }
 }
 

@@ -44,6 +44,12 @@ Describe "Artist Unit Test" -Tag UnitTest {
     It "Sorting Performed" {        
         $fooArtist.Performed.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
     }
+
+    It "FindByFileName Performed" {
+        # Test
+        $fooArtist.Performed.GetByFileName("Fooish.test").FileName | Should -Be "Fooish.test"
+        $fooArtist.Performed.GetByFileName("Fooish") | Should -BeNullOrEmpty
+    }
 }
 
 AfterAll {

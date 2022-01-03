@@ -196,6 +196,11 @@ class Content {
                     param ([String] $s)
                     return ($this | Where-Object {$_.Name -match $s})
                 } -Force
+
+                Add-Member -InputObject $this.Actors -MemberType ScriptMethod -Name GetByName -value {
+                    param ([String] $s)
+                    return ($this | Where-Object {$_.Name -ceq $s})
+                } -Force
             }
 
             # If required, instantiate the Artists Generic List and add Members 
@@ -209,6 +214,11 @@ class Content {
                 Add-Member -InputObject $this.Artists -MemberType ScriptMethod -Name Matching -value {
                     param ([String] $s)
                     return ($this | Where-Object {$_.Name -match $s})
+                } -Force
+
+                Add-Member -InputObject $this.Artists -MemberType ScriptMethod -Name GetByName -value {
+                    param ([String] $s)
+                    return ($this | Where-Object {$_.Name -ceq $s})
                 } -Force
             }
         }

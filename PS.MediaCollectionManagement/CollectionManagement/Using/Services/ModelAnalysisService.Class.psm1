@@ -14,6 +14,7 @@
 using module .\..\Interfaces\IStringSimilarityProvider.Interface.psm1
 using module .\..\Interfaces\ISpellcheckProvider.Interface.psm1
 using module .\..\Interfaces\IModelAnalysisService.Interface.psm1
+using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\SpellcheckResult.Class.psm1
 #endregion Using
@@ -40,6 +41,32 @@ class ModelAnalysisService : IModelAnalysisService {
 
     [void] SetSpellcheckProvider([ISpellcheckProvider] $provider) {
         $this.SpellcheckProvider = $provider
+    }
+
+    [Void] ModelSummary([IContentModel] $contentModel) {
+        [Timespan]$totalTimeSpan = 0
+
+        foreach ($content in $contentModel.Content) {
+            $totalTimeSpan += $content.TimeSpan
+        }
+
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Actors.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Artists.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Albums.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Series.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Studios.Count).PadLeft(13," ") " Content Items"
+        }
+        Write-InfoToConsole ([String]$contentModel.Content.Count).PadLeft(13," ") " Content Items"
+        Write-InfoToConsole ([String]([String]$totalTimeSpan.Days + "d " + $totalTimeSpan.ToString("hh\:mm\:ss") )).PadLeft(13," ") " Total Duration" 
     }
 
 

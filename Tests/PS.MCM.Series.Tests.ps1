@@ -44,6 +44,12 @@ Describe "Series Unit Test" -Tag UnitTest {
     It "Sorting Tracks" {        
         $fooSeries.Episodes.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
     }
+
+    It "FindByFileName Episodes" {
+        # Test
+        $fooSeries.Episodes.GetByFileName("Fooish.test").FileName | Should -Be "Fooish.test"
+        $fooSeries.Episodes.GetByFileName("Fooish") | Should -BeNullOrEmpty
+    }
 }
 
 AfterAll {

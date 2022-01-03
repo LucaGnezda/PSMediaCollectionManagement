@@ -44,6 +44,12 @@ Describe "Album Unit Test" -Tag UnitTest {
     It "Sorting Tracks" {        
         $fooAlbum.Tracks.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
     }
+
+    It "FindByFileName Tracks" {
+        # Test
+        $fooAlbum.Tracks.GetByFileName("Fooish.test").FileName | Should -Be "Fooish.test"
+        $fooAlbum.Tracks.GetByFileName("Fooish") | Should -BeNullOrEmpty
+    }
 }
 
 AfterAll {

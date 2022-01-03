@@ -12,6 +12,7 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
+using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Controllers\CollectionManagementController.Abstract.psm1
 using module .\..\Helpers\ContentComparer.Class.psm1
 using module .\..\Helpers\ContentSubjectParser.Abstract.psm1
@@ -31,7 +32,7 @@ using module .\..\..\..\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExt
 
 #region Class Definition
 #-----------------------
-class ContentModel {
+class ContentModel : IContentModel {
 
     #region Properties
     [System.Collections.Generic.List[Object]] $Actors
@@ -76,6 +77,11 @@ class ContentModel {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
             } -Force
+
+            Add-Member -InputObject $this.Actors -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
+            } -Force
         }
         else {
             $this.Actors = $null
@@ -96,6 +102,11 @@ class ContentModel {
             Add-Member -InputObject $this.Albums -MemberType ScriptMethod -Name Matching -value {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
+            } -Force
+
+            Add-Member -InputObject $this.Albums -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
             } -Force
         }
         else {
@@ -118,6 +129,11 @@ class ContentModel {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
             } -Force
+
+            Add-Member -InputObject $this.Artists -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
+            } -Force
         }
         else {
             $this.Artists = $null
@@ -138,6 +154,11 @@ class ContentModel {
             Add-Member -InputObject $this.Series -MemberType ScriptMethod -Name Matching -value {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
+            } -Force
+
+            Add-Member -InputObject $this.Series -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
             } -Force
         }
         else {
@@ -160,6 +181,11 @@ class ContentModel {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
             } -Force
+
+            Add-Member -InputObject $this.Studios -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
+            } -Force
         }
         else {
             $this.Studios = $null
@@ -179,6 +205,10 @@ class ContentModel {
             return ($this | Where-Object {$_.Title -match $s})
         } -Force
 
+        Add-Member -InputObject $this.Content -MemberType ScriptMethod -Name GetByFileName -value {
+            param ([String] $s)
+            return ($this | Where-Object {$_.FileName -ceq $s})
+        } -Force
     }
     #endregion Initialiser
 
@@ -605,179 +635,67 @@ class ContentModel {
     }
 
     [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement) {
+        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $false)
+    }
 
-        if (($swapElement -lt 0) -or ($swapElement -gt $this.config._FilenameFormat.Count - 1)) {
-            Write-WarnToConsole "First element index is out of range, abandoning action."
-            return $false
-        }
-
-        if (($withElement -lt 0) -or ($withElement -gt $this.config._FilenameFormat.Count - 1)) {
-            Write-WarnToConsole "Second element index is out of range, abandoning action."
-            return $false
-        }
-
-        [FilenameElement] $tempElement = $this.config._FilenameFormat[$swapElement]
-        $this.config._FilenameFormat[$swapElement] = $this.config._FilenameFormat[$withElement]
-        $this.config._FilenameFormat[$withElement] = $tempElement
-
-        foreach ($item in $this.Content) {
-            $item.UpdateContentBaseName()
-        }
-
-        return $true
+    [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $updateCorrespondingFilename)
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName) {
-        return $this.Alter($fromName, $toName, $false, [FilenameElement]::Actors)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Actors)
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return $this.Alter($fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Actors)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Actors)
     }
 
     [Bool] AlterAlbum ([String] $fromName, [String] $toName) {
-        return $this.Alter($fromName, $toName, $false, [FilenameElement]::Album)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Album)
     }
 
     [Bool] AlterAlbum ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return $this.Alter($fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Album)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Album)
     }
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName) {
-        return $this.Alter($fromName, $toName, $false,[FilenameElement]::Artists)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Artists)
     }
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return $this.Alter($fromName, $toName, $updateCorrespondingFilename,[FilenameElement]::Artists)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Artists)
     }
 
     [Bool] AlterSeries ([String] $fromName, [String] $toName) {
-        return $this.Alter($fromName, $toName, $false, [FilenameElement]::Series)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Series)
     }
 
     [Bool] AlterSeries ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return $this.Alter($fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Series)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Series)
     }
 
     [Bool] AlterStudio ([String] $fromName, [String] $toName) {
-        return $this.Alter($fromName, $toName, $false, [FilenameElement]::Studio)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Studio)
     }
 
     [Bool] AlterStudio ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return $this.Alter($fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Studio)
+        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Studio)
     }
 
+    [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern) {
+        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $false)
+    }
+    
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename) {
-
-        # Set starting state
-        [Int] $alterations = 0
-
-        # For each content item
-        foreach ($contentItem in $this.Content) {
-
-            # Generate what the format should look like
-            [String] $generatedElement = [ContentSubjectParser]::SeasonEpisodeToString($contentItem.season, $contentItem.episode, $padSeason, $padEpisode, $pattern)
-            
-            # If not null and the generated is different, update the SeasonEpisode and Basename
-            if ($null -eq $generatedElement) {
-                Write-WarnToConsole "Unexpected result while generating SeasonEpisode, skipping element."
-            }
-            elseif (($generatedElement -cne $contentItem.SeasonEpisode) -and ($null -ne $contentItem.Season) -and ($null -ne $contentItem.Episode)) {
-                
-                Write-InfoToConsole "Altering BaseName" $contentItem.BaseName
-
-                $contentItem.SeasonEpisode = $generatedElement
-                $contentItem.UpdateContentBaseName()
-                $alterations++
-
-                Write-InfoToConsole "               to" $contentItem.BaseName
-            }
-            else {
-                # Do nothing
-            }
-
-            # if the switch is set, also update the filename on the filesystem
-            if ($updateCorrespondingFilename.IsPresent) {
-                if ($contentItem.UpdateFileName()) {
-                    Write-InfoToConsole "Filename updated to" $contentItem.FileName
-                }
-            }
-        }
-
-        # Provide tips to console
-        if ($alterations) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has changed BaseName since it was first loaded. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.AlteredBaseName -eq `$true}"
-            Remove-ConsoleIndent
-        }
-        if ($alterations -and -not $updateCorrespondingFilename) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has pending Filename updates. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.PendingFilenameUpdate -eq `$true}"
-            Remove-ConsoleIndent
-        }
-
-        return $true
+        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $updateCorrespondingFilename)
     } 
 
-    [Bool] AlterTrackFormat([Int] $padtrack, [Bool] $updateCorrespondingFilename) {
+    [Bool] AlterTrackFormat([Int] $padTrack) {
+        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $false)
+    }
 
-        # Set starting state
-        [Int] $alterations = 0
-
-        # For each content item
-        foreach ($contentItem in $this.Content) {
-
-            # Generate what the format should look like
-            [String] $generatedElement = [ContentSubjectParser]::TrackToString($contentItem.track, $padtrack)
-            
-            # If not null and the generated is different, update the Track and Basename
-            if ($null -eq $generatedElement) {
-                Write-WarnToConsole "Unexpected result while generating SeasonEpisode, skipping element."
-            }
-            elseif (($generatedElement -ne $contentItem.TrackLabel) -and ($null -ne $contentItem.Track)) {
-                
-                Write-InfoToConsole "Altering BaseName" $contentItem.BaseName
-
-                $contentItem.TrackLabel = $generatedElement
-                $contentItem.UpdateContentBaseName()
-                $alterations++
-
-                Write-InfoToConsole "               to" $contentItem.BaseName
-            }
-            else {
-                # Do nothing
-            }
-
-            # if the switch is set, also update the filename on the filesystem
-            if ($updateCorrespondingFilename.IsPresent) {
-                if ($contentItem.UpdateFileName()) {
-                    Write-InfoToConsole "Filename updated to" $contentItem.FileName
-                }
-            }
-        }
-
-        # Provide tips to console
-        if ($alterations) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has changed BaseName since it was first loaded. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.AlteredBaseName -eq `$true}"
-            Remove-ConsoleIndent
-        }
-        if ($alterations -and -not $updateCorrespondingFilename) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has pending Filename updates. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.PendingFilenameUpdate -eq `$true}"
-            Remove-ConsoleIndent
-        }
-
-        return $true
-
+    [Bool] AlterTrackFormat([Int] $padTrack, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $updateCorrespondingFilename)
     }
 
     [Void] ApplyAllPendingFilenameChanges() {
@@ -793,11 +711,7 @@ class ContentModel {
     }
 
     [Void] Summary() {
-        [Timespan]$totalTimeSpan = 0
-        $this.Content | ForEach-Object {$totalTimeSpan += $_.TimeSpan}
-
-        Write-InfoToConsole ([String]$this.Content.Count).PadLeft(13," ") " Content Items"
-        Write-InfoToConsole ([String]([String]$totalTimeSpan.Days + "d " + $totalTimeSpan.ToString("hh\:mm\:ss") )).PadLeft(13," ") " Total Duration" 
+        [CollectionManagementController]::ModelSummary($this)
     }
 
     [Int[]] AnalyseActorsForPossibleLabellingIssues () {
@@ -1210,297 +1124,5 @@ class ContentModel {
 
     }
     #endregion Public Methods
-
-
-    #region Hidden Methods
-    [Object] Hidden GetCollectionByType ([FilenameElement] $filenameElement) {
-
-        switch ($filenameElement) {
-            {$_ -eq [FilenameElement]::Actors} {
-                return $this.Actors
-                break
-            }
-            {$_ -eq [FilenameElement]::Album} {
-                return $this.Albums
-                break
-            }
-            {$_ -eq [FilenameElement]::Artists} {
-                return $this.Artists
-                break
-            }
-            {$_ -eq [FilenameElement]::Series} {
-                return $this.Series
-                break
-            }
-            {$_ -eq [FilenameElement]::Studio} {
-                return $this.Studios
-                break
-            }
-            default {
-                # Do nothing
-            }
-        }
-        return $null
-    }
-
-    [Bool] Hidden Alter ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
-
-        $subjectCollection = $this.GetCollectionByType([FilenameElement] $filenameElement)
-        $fromObjectContent = $null
-        $toObjectContent = $null
-
-        # Check the subject is not null
-        if ($null -eq $subjectCollection) {
-            Write-WarnToConsole "$filenameElement is not initialised on this ContentModel, adandoning action."
-            return $false
-        }
-
-        # Set starting state
-        [Int]    $alterations = 0
-        [Object] $fromObject = ($subjectCollection | Where-Object {$_.Name -ceq $fromName})
-        [Object] $toObject = ($subjectCollection | Where-Object {$_.Name -ceq $toName})
-
-        # if the fromObject doesn't exist then do nothing
-        if ($null -eq $fromObject) {
-            Write-WarnToConsole "No item found, adandoning action."
-            return $false
-        }
-
-        # Get the fromObject's content
-        $fromObjectContent = $fromObject.GetRelatedContent()
-
-        # Lets make sure we won't cause a content colision. So ... foreach 'from Content' 
-        foreach ($fromObjectContentItem in $fromObjectContent) {
-
-            # determine the end state base name
-            $splitBaseName = ($fromObjectContentItem.BaseName -split $this.Config.FilenameSplitter).Trim()
-            $subjectSplitIndex = $this.Config.FilenameFormat.IndexOf($filenameElement)
-            $splitBaseName[$subjectSplitIndex] = $splitBaseName[$subjectSplitIndex].Replace($fromName, $toName)
-            $plannedBaseName = $splitBaseName -join $this.Config.FilenameSplitter
-
-            # if it already exists, error and return
-            if ($null -ne ($this.Content | Where-Object { $_ -ne $item -and $_.BaseName -ceq $plannedBaseName})) {
-                Write-WarnToConsole "This alteratinon will cause a collision with content already in the model, abandoning action."
-                return $false
-            }
-        }
-
-        # if there is no toObject, then we can just renamne the fromObject
-        if ($null -eq $toObject) {
-        
-            Write-InfoToConsole "Altering" $fromObject.Name "to" $toName
-        
-            $fromObject.Name = $toName
-        }
-        else {
-            Write-InfoToConsole "Migrating content from" $fromObject.Name "to" $toObject.Name
-
-            # Otherwise get the toObject's content
-            $toObjectContent = $toObject.GetRelatedContent()
-        }
-
-        # process each content item connected to the fromObject
-        foreach ($fromObjectContentItem in $fromObjectContent) {
-        
-            Write-InfoToConsole "  Altering BaseName" $fromObjectContentItem.BaseName
-
-            # if there is a toObject, and if its not the same object, then
-            if (($null -ne $toObject) -and ($fromObject -ne $toObject)) {
-                
-                # depending on the subject type ...
-                switch ($filenameElement) {
-                    {$_ -eq [FilenameElement]::Actors} {
-                        
-                        # remap content references
-                        for ($i = 0; $i -lt $fromObjectContentItem.Actors.Count; $i++) {
-                            if ($fromObjectContentItem.Actors[$i].Name -eq $fromName) {
-                                $fromObjectContentItem.Actors[$i] = $toObject
-                            }
-                        }
-
-                        # add the content to the toObject
-                        $toObjectContent.Add($fromObjectContentItem)
-                        break
-
-                    }
-                    {$_ -eq [FilenameElement]::Artists} {
-                        
-                        # remap content references
-                        for ($i = 0; $i -lt $fromObjectContentItem.Artists.Count; $i++) {
-                            if ($fromObjectContentItem.Artists[$i].Name -eq $fromName) {
-                                $fromObjectContentItem.Artists[$i] = $toObject
-                            }
-                        }
-
-                        # add the content to the toObject
-                        $toObjectContent.Add($fromObjectContentItem)
-                        break
-
-                    }
-                    {$_ -eq [FilenameElement]::Album} {
-
-                        # if the content model also models has studios, then re need to remap the relationship between studios and albums as well
-                        if ($null -ne $fromObject.ProducedBy) {
-                            foreach ($fromObjectStudio in $fromObject.ProducedBy) {
-                                for ($i = 0; $i -lt $fromObjectStudio.ProducedAlbums.Count; $i++) {
-                                    if ($fromObjectStudio.ProducedAlbums[$i].Name -ceq $fromObject.Name) {
-
-                                        if ($toObject -in $fromObjectStudio.ProducedAlbums) {
-                                            $fromObjectStudio.ProducedAlbums.Remove($fromObject)
-                                        }
-                                        else {
-                                            $fromObjectStudio.ProducedAlbums[$i] = $toObject
-                                        }
-                                        
-                                        if ($fromObjectStudio -notin $toObject.ProducedBy) {
-                                            $toObject.ProducedBy.Add($fromObjectStudio)
-                                        }
-                                    }
-                                }
-                            } 
-                        }
-                        
-                        # remap content reference
-                        $fromObjectContentItem.OnAlbum = $toObject
-
-                        # add the content to the toObject
-                        $toObjectContent.Add($fromObjectContentItem)
-
-                        break
-
-                    }
-                    {$_ -eq [FilenameElement]::Series} {
-
-                        # if the content model also models has studios, then re need to remap the relationship between studios and series as well
-                        if ($null -ne $fromObject.ProducedBy) {
-                            foreach ($fromObjectStudio in $fromObject.ProducedBy) {
-                                for ($i = 0; $i -lt $fromObjectStudio.ProducedSeries.Count; $i++) {
-                                    if ($fromObjectStudio.ProducedSeries[$i].Name -ceq $fromObject.Name) {
-
-                                        if ($toObject -in $fromObjectStudio.ProducedSeries) {
-                                            $fromObjectStudio.ProducedSeries.Remove($fromObject)
-                                        }
-                                        else {
-                                            $fromObjectStudio.ProducedSeries[$i] = $toObject
-                                        }
-                                        
-                                        if ($fromObjectStudio -notin $toObject.ProducedBy) {
-                                            $toObject.ProducedBy.Add($fromObjectStudio)
-                                        }
-                                    }
-                                }
-                            } 
-                        }
-                        
-                        # remap content reference
-                        $fromObjectContentItem.FromSeries = $toObject
-
-                        # add the content to the toObject
-                        $toObjectContent.Add($fromObjectContentItem)
-                        
-                        break
-
-                    }
-                    {$_ -eq [FilenameElement]::Studio} {
-                        
-                        # if the content model also models has albums, then re need to remap the relationship between studios and albums as well
-                        if ($null -ne $fromObject.ProducedAlbums) {
-                            foreach ($fromObjectAlbum in $fromObject.ProducedAlbums) {
-                                for ($i = 0; $i -lt $fromObjectAlbum.ProducedBy.Count; $i++) {
-                                    if ($fromObjectAlbum.ProducedBy[$i].Name -ceq $fromObject.Name) {
-                                        
-                                        if ($toObject -in $fromObjectAlbum.ProducedBy) {
-                                            $fromObjectAlbum.ProducedBy.Remove($fromObject)
-                                        }
-                                        else {
-                                            $fromObjectAlbum.ProducedBy[$i] = $toObject
-                                        }
-
-                                        if ($fromObjectAlbum -notin $toObject.ProducedAlbums) {
-                                            $toObject.ProducedAlbums.Add($fromObjectAlbum)
-                                        }
-                                    }
-                                }
-                            } 
-                        }
-
-                        # if the content model also models has series, then re need to remap the relationship between studios and series as well
-                        if ($null -ne $fromObject.ProducedSeries) {
-                            foreach ($fromObjectSeries in $fromObject.ProducedSeries) {
-                                for ($i = 0; $i -lt $fromObjectSeries.ProducedBy.Count; $i++) {
-                                    if ($fromObjectSeries.ProducedBy[$i].Name -ceq $fromObject.Name) {
-                                        
-                                        if ($toObject -in $fromObjectSeries.ProducedBy) {
-                                            $fromObjectSeries.ProducedBy.Remove($fromObject)
-                                        }
-                                        else {
-                                            $fromObjectSeries.ProducedBy[$i] = $toObject
-                                        }
-                                        
-                                        if ($fromObjectSeries -notin $toObject.ProducedSeries) {
-                                            $toObject.ProducedSeries.Add($fromObjectSeries)
-                                        }
-                                    }
-                                }
-                            } 
-                        }
-
-                        # remap content reference
-                        $fromObjectContentItem.ProducedBy = $toObject
-
-                        # add the content to the toObject
-                        $toObjectContent.Add($fromObjectContentItem)
-
-                        
-                        break
-
-                    }
-                    default {
-                        Write-WarnToConsole "Unsupport type, adandoning action."
-                        return $null
-                    }
-                }
-            }
-
-            # Update the basename and filename in the model
-            $fromObjectContentItem.UpdateContentBaseName()
-            Write-InfoToConsole "                 to" $fromObjectContentItem.BaseName
-
-            # if the switch is set, also update the filename on the filesystem
-            if ($updateCorrespondingFilename) {
-                if ($fromObjectContentItem.UpdateFileName()) {
-                    Write-InfoToConsole "Filename updated to" $fromObjectContentItem.FileName
-                }
-            }
-
-            $alterations++
-        }
-
-        # if there is a toObject, then we delete the fromObject
-        if (($null -ne $toObject) -and ($fromObject -ne $toObject)) {
-        
-            Write-InfoToConsole "Deleting" $fromObject.Name
-
-            $subjectCollection.Remove($fromObject)
-        }
-
-        # Provide tips to console
-        if ($alterations) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has changed BaseName since it was first loaded. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.AlteredBaseName -eq `$true}"
-            Remove-ConsoleIndent
-        }
-        if ($alterations -and -not $updateCorrespondingFilename) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has pending Filename updates. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.PendingFilenameUpdate -eq `$true}"
-            Remove-ConsoleIndent
-        }
-        return $true
-    }
-    #endregion Hidden Methods
 }
 #endregion Class Definition

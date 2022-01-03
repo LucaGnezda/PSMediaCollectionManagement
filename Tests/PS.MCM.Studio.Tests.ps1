@@ -44,6 +44,12 @@ Describe "Studio Unit Test" -Tag UnitTest {
     It "Sorting Produced" {        
         $fooStudio.Produced.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
     }
+
+    It "FindByFileName Produced" {
+        # Test
+        $fooStudio.Produced.GetByFileName("Fooish.test").FileName | Should -Be "Fooish.test"
+        $fooStudio.Produced.GetByFileName("Fooish") | Should -BeNullOrEmpty
+    }
 }
 
 AfterAll {

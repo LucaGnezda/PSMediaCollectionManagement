@@ -13,6 +13,7 @@
 #------------
 using module .\IBase.Interface.psm1
 using module .\IStringSimilarityProvider.Interface.psm1
+using module .\ISpellcheckProvider.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 #endregion Using
 
@@ -25,5 +26,8 @@ class IModelAnalysisService : IBase {
     }
 
     [void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) { }
+    [Void] Static ModelSummary () { }
+    [void] SetSpellcheckProvider([ISpellcheckProvider] $provider) { }
     [Int[]] AnalysePossibleLabellingIssues ([System.Collections.Generic.List[Object]] $subjectList, [Bool] $returnSummary) { return $null }
+    [Hashtable] SpellcheckContentTitles([System.Collections.Generic.List[Object]] $contentList, [Bool] $returnResults) { return $null }
 }

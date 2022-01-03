@@ -177,6 +177,28 @@ Describe "ContentModel Integration Test - Built Model" -Tag IntegrationTest {
         # Test
         $contentModelB.Content[0].Actors.Matching($matching).Name | Should -Be $expected
     }
+
+    It "Built Model - Actors.FindByName" {
+        # Test
+        $contentModelB.Actors.GetByName("Banana").Name | Should -Be "Banana"
+        $contentModelB.Actors.GetByName("banana") | Should -BeNullOrEmpty
+        $contentModelB.Actors.GetByName("Bananaa") | Should -BeNullOrEmpty
+        $contentModelB.Actors.GetByName("Banan") | Should -BeNullOrEmpty
+    }
+
+    It "Built Model - Studio.FindByName" {
+        # Test
+        $contentModelB.Studios.GetByName("Zim").Name | Should -Be "Zim"
+        $contentModelB.Studios.GetByName("zim") | Should -BeNullOrEmpty
+        $contentModelB.Studios.GetByName("Zimm") | Should -BeNullOrEmpty
+        $contentModelB.Studios.GetByName("Zi") | Should -BeNullOrEmpty
+    }
+
+    It "Built Model - Content.FindByFileName" {
+        # Test
+        $contentModelB.Content.GetByFileName("Foo - Cherry, Apple, Banana, Pear - Delta.mp4").FileName | Should -Be "Foo - Cherry, Apple, Banana, Pear - Delta.mp4"
+        $contentModelB.Content.GetByFileName("Foo - Cherry, Apple, Banana, Pear - Delta") | Should -BeNullOrEmpty
+    }
 }
 
 Describe "ContentModel Integration Test - Rebuilt Model" -Tag IntegrationTest {
@@ -324,7 +346,29 @@ Describe "ContentModel Integration Test - Rebuilt Model" -Tag IntegrationTest {
     ) {
         # Test
         $contentModelB.Content[0].Actors.Matching($matching).Name | Should -Be $expected
-    } 
+    }
+    
+    It "Rebuilt Model - Actors.FindByName" {
+        # Test
+        $contentModelB.Actors.GetByName("Banana").Name | Should -Be "Banana"
+        $contentModelB.Actors.GetByName("banana") | Should -BeNullOrEmpty
+        $contentModelB.Actors.GetByName("Bananaa") | Should -BeNullOrEmpty
+        $contentModelB.Actors.GetByName("Banan") | Should -BeNullOrEmpty
+    }
+
+    It "Rebuilt Model - Studio.FindByName" {
+        # Test
+        $contentModelB.Studios.GetByName("Zim").Name | Should -Be "Zim"
+        $contentModelB.Studios.GetByName("zim") | Should -BeNullOrEmpty
+        $contentModelB.Studios.GetByName("Zimm") | Should -BeNullOrEmpty
+        $contentModelB.Studios.GetByName("Zi") | Should -BeNullOrEmpty
+    }
+
+    It "Rebuilt Model - Content.FindByFileName" {
+        # Test
+        $contentModelB.Content.GetByFileName("Foo - Cherry, Apple, Banana, Pear - Delta.mp4").FileName | Should -Be "Foo - Cherry, Apple, Banana, Pear - Delta.mp4"
+        $contentModelB.Content.GetByFileName("Foo - Cherry, Apple, Banana, Pear - Delta") | Should -BeNullOrEmpty
+    }
 }
 
 Describe "ContentModel Integration Test - Rebuild Adds & Removes" -Tag IntegrationTest {
@@ -532,6 +576,28 @@ Describe "ContentModel Integration Test - Save & Load Model" -Tag IntegrationTes
         # Test
         $contentModelB.Content[0].Actors.Matching($matching).Name | Should -Be $expected
     } 
+
+    It "Loaded Model - Actors.FindByName" {
+        # Test
+        $contentModelB.Actors.GetByName("Banana").Name | Should -Be "Banana"
+        $contentModelB.Actors.GetByName("banana") | Should -BeNullOrEmpty
+        $contentModelB.Actors.GetByName("Bananaa") | Should -BeNullOrEmpty
+        $contentModelB.Actors.GetByName("Banan") | Should -BeNullOrEmpty
+    }
+
+    It "Loaded Model - Studio.FindByName" {
+        # Test
+        $contentModelB.Studios.GetByName("Zim").Name | Should -Be "Zim"
+        $contentModelB.Studios.GetByName("zim") | Should -BeNullOrEmpty
+        $contentModelB.Studios.GetByName("Zimm") | Should -BeNullOrEmpty
+        $contentModelB.Studios.GetByName("Zi") | Should -BeNullOrEmpty
+    }
+
+    It "Loaded Model - Content.FindByFileName" {
+        # Test
+        $contentModelB.Content.GetByFileName("Foo - Cherry, Apple, Banana, Pear - Delta.mp4").FileName | Should -Be "Foo - Cherry, Apple, Banana, Pear - Delta.mp4"
+        $contentModelB.Content.GetByFileName("Foo - Cherry, Apple, Banana, Pear - Delta") | Should -BeNullOrEmpty
+    }
 }
 
 Describe "ContentModel Integration Test - Model Variant - Series" -Tag IntegrationTest {
@@ -578,6 +644,14 @@ Describe "ContentModel Integration Test - Model Variant - Series" -Tag Integrati
         # Test
         $contentModelA.Series[0].Episodes.Matching($matching).Title | Should -Be $expected
     }
+
+    It "Model Variant - Series.FindByName" {
+        # Test
+        $contentModelA.Series.GetByName("Beta").Name | Should -Be "Beta"
+        $contentModelA.Series.GetByName("beta") | Should -BeNullOrEmpty
+        $contentModelA.Series.GetByName("Betaa") | Should -BeNullOrEmpty
+        $contentModelA.Series.GetByName("Bet") | Should -BeNullOrEmpty
+    }
 }
 
 Describe "ContentModel Integration Test - Model Variant - Album" -Tag IntegrationTest {
@@ -621,6 +695,14 @@ Describe "ContentModel Integration Test - Model Variant - Album" -Tag Integratio
     ) {
         # Test
         $contentModelB.Albums[0].Tracks.Matching($matching).Title | Should -Be $expected
+    }
+
+    It "Model Variant - Album.FindByName" {
+        # Test
+        $contentModelB.Albums.GetByName("Zim").Name | Should -Be "Zim"
+        $contentModelB.Albums.GetByName("zim") | Should -BeNullOrEmpty
+        $contentModelB.Albums.GetByName("Zimm") | Should -BeNullOrEmpty
+        $contentModelB.Albums.GetByName("Zi") | Should -BeNullOrEmpty
     }
 }
 
@@ -673,6 +755,14 @@ Describe "ContentModel Integration Test - Model Variant - Artist" -Tag Integrati
     ) {
         # Test
         $contentModelB.Artists[0].Performed.Matching($matching).Title | Should -Be $expected
+    }
+
+    It "Model Variant - Artist.FindByName" {
+        # Test
+        $contentModelB.Artists.GetByName("Banana").Name | Should -Be "Banana"
+        $contentModelB.Artists.GetByName("banana") | Should -BeNullOrEmpty
+        $contentModelB.Artists.GetByName("Bananaa") | Should -BeNullOrEmpty
+        $contentModelB.Artists.GetByName("Banan") | Should -BeNullOrEmpty
     }
 }
 
