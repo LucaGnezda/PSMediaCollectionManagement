@@ -14,7 +14,6 @@
 using module .\..\Types\Types.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Controllers\CollectionManagementController.Abstract.psm1
-using module .\..\Helpers\ContentComparer.Class.psm1
 using module .\..\Helpers\ContentSubjectParser.Abstract.psm1
 using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
 using module .\ContentModelConfig.Class.psm1
@@ -24,6 +23,7 @@ using module .\Artist.Class.psm1
 using module .\Series.Class.psm1
 using module .\Studio.Class.psm1
 using module .\Content.Class.psm1
+using module .\ContentComparer.Class.psm1
 using module .\SpellcheckResult.Class.psm1
 using module .\..\..\..\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
 

@@ -17,8 +17,8 @@ using module .\IBase.Interface.psm1
 
 #region Interface Definition
 #-----------------------
-class IModelPersistenceService : IBase {
-    IModelPersistenceService () {
-        $this.AssertAsInterface([IModelPersistenceService])
+class IModelPersistenceHandler : IBase {
+    IModelPersistenceHandler () {
+        $this.AssertAsInterface([IModelPersistenceHandler])
     }
 }

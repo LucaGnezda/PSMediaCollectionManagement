@@ -1,6 +1,6 @@
 #region Header
 #
-# About: Services Layer Class for PS.MediaCollectionManagement Module 
+# About: Handlers Layer Class for PS.MediaCollectionManagement Module 
 #
 # Author: Luca Gnezda 
 #
@@ -12,7 +12,7 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
-using module .\..\Interfaces\IModelManipulationService.Interface.psm1
+using module .\..\Interfaces\IModelManipulationHandler.Interface.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Helpers\ContentSubjectParser.Abstract.psm1
 using module .\..\ObjectModels\Actor.Class.psm1
@@ -27,7 +27,7 @@ using module .\..\ObjectModels\Studio.Class.psm1
 
 #region Class Definition
 #-----------------------
-class ModelManipulationService : IModelManipulationService {
+class ModelManipulationHandler : IModelManipulationHandler {
 
     #region Properties
     [IContentModel] $ContentModel
@@ -35,7 +35,7 @@ class ModelManipulationService : IModelManipulationService {
 
 
     #region Constructors
-    ModelManipulationService ([IContentModel] $contentModel) {
+    ModelManipulationHandler ([IContentModel] $contentModel) {
         $this.ContentModel = $contentModel
     }
     #endregion Constructors
@@ -214,7 +214,7 @@ class ModelManipulationService : IModelManipulationService {
         return $null
     }
 
-    [Bool] ValidForAlter ([String] $fromName, [String] $toName, [FilenameElement] $filenameElement) {
+    [Bool] IsValidForAlter ([String] $fromName, [String] $toName, [FilenameElement] $filenameElement) {
         
         [System.Collections.Generic.List[Object]] $subjectList = $this.GetCollectionByType([FilenameElement] $filenameElement)
         
@@ -381,7 +381,7 @@ class ModelManipulationService : IModelManipulationService {
 
     [Bool] Alter ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
 
-        if (-not $this.ValidForAlter($fromName, $toName, $filenameElement)) {
+        if (-not $this.IsValidForAlter($fromName, $toName, $filenameElement)) {
             return $false
         }
 

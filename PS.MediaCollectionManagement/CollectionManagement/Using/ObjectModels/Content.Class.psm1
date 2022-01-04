@@ -69,7 +69,7 @@ class Content {
         $this.Init($fileName, $baseName, $extension, $config)
     }
     
-    [void] Hidden Init(
+    [Void] Hidden Init(
         [String]                    $fileName,
         [String]                    $baseName,
         [String]                    $extension,
@@ -145,8 +145,8 @@ class Content {
             if ($seasonEpisodeSplitIndex -ge 0) {
                 if ([ContentSubjectParser]::IsValidSeasonEpisode($splitBaseName[$seasonEpisodeSplitIndex].Trim())) {
                     
-                    $this.Season = [ContentSubjectParser]::GetSeason($splitBaseName[$seasonEpisodeSplitIndex].Trim())
-                    $this.Episode = [ContentSubjectParser]::GetEpisode($splitBaseName[$seasonEpisodeSplitIndex].Trim())
+                    $this.Season = [ContentSubjectParser]::GetSeasonFromString($splitBaseName[$seasonEpisodeSplitIndex].Trim())
+                    $this.Episode = [ContentSubjectParser]::GetEpisodeFromString($splitBaseName[$seasonEpisodeSplitIndex].Trim())
                     $this.SeasonEpisode = $splitBaseName[$seasonEpisodeSplitIndex].Trim()
                 }
                 else {

@@ -100,7 +100,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "15x12"; expected = 15}
     ) {
         # Test
-        [ContentSubjectParser]::GetSeason($s) | Should -Be $expected
+        [ContentSubjectParser]::GetSeasonFromString($s) | Should -Be $expected
     }
 
     It "GetEpisode" -ForEach @(
@@ -111,7 +111,7 @@ Describe "SeasonEpisodeParser Unit Test" -Tag UnitTest {
         @{s = "15x12"; expected = 12}
     ) {
         # Test
-        [ContentSubjectParser]::GetEpisode($s) | Should -Be $expected
+        [ContentSubjectParser]::GetEpisodeFromString($s) | Should -Be $expected
     }
 
     It "SeasonEpisodeToString" -ForEach @(

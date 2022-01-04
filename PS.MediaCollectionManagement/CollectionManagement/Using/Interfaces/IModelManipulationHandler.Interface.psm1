@@ -18,9 +18,9 @@ using module .\IBase.Interface.psm1
 
 #region Interface Definition
 #-----------------------
-class IModelManipulationService : IBase {
-    IModelManipulationService () {
-        $this.AssertAsInterface([IModelManipulationService])
+class IModelManipulationHandler : IBase {
+    IModelManipulationHandler () {
+        $this.AssertAsInterface([IModelManipulationHandler])
     }
 
     [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) { return $null }

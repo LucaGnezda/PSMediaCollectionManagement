@@ -20,14 +20,14 @@ using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 
 #region Interface Definition
 #-----------------------
-class IModelAnalysisService : IBase {
-    IModelAnalysisService () {
-        $this.AssertAsInterface([IModelAnalysisService])
+class IModelAnalysisHandler : IBase {
+    IModelAnalysisHandler () {
+        $this.AssertAsInterface([IModelAnalysisHandler])
     }
 
-    [void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) { }
-    [Void] Static ModelSummary () { }
-    [void] SetSpellcheckProvider([ISpellcheckProvider] $provider) { }
+    [Void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) { }
+    [Void] Static ModelSummary() { }
+    [Void] SetSpellcheckProvider([ISpellcheckProvider] $provider) { }
     [Int[]] AnalysePossibleLabellingIssues ([System.Collections.Generic.List[Object]] $subjectList, [Bool] $returnSummary) { return $null }
     [Hashtable] SpellcheckContentTitles([System.Collections.Generic.List[Object]] $contentList, [Bool] $returnResults) { return $null }
 }

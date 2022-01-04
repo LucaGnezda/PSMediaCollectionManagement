@@ -1,6 +1,6 @@
 #region Header
 #
-# About: Services Layer Class for PS.MediaCollectionManagement Module 
+# About: Handlers Layer Class for PS.MediaCollectionManagement Module 
 #
 # Author: Luca Gnezda 
 #
@@ -13,7 +13,7 @@
 #------------
 using module .\..\Interfaces\IStringSimilarityProvider.Interface.psm1
 using module .\..\Interfaces\ISpellcheckProvider.Interface.psm1
-using module .\..\Interfaces\IModelAnalysisService.Interface.psm1
+using module .\..\Interfaces\IModelAnalysisHandler.Interface.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\SpellcheckResult.Class.psm1
@@ -22,7 +22,7 @@ using module .\..\ObjectModels\SpellcheckResult.Class.psm1
 
 #region Class Definition
 #-----------------------
-class ModelAnalysisService : IModelAnalysisService {
+class ModelAnalysisHandler : IModelAnalysisHandler {
 
     #region Properties
     [IStringSimilarityProvider] $StringSimilarityProvider
@@ -35,11 +35,11 @@ class ModelAnalysisService : IModelAnalysisService {
     
     
     #region Methods
-    [void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) {
+    [Void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) {
         $this.StringSimilarityProvider = $provider
     }
 
-    [void] SetSpellcheckProvider([ISpellcheckProvider] $provider) {
+    [Void] SetSpellcheckProvider([ISpellcheckProvider] $provider) {
         $this.SpellcheckProvider = $provider
     }
 

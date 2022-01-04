@@ -1,6 +1,6 @@
 #region Header
 #
-# About: Services Layer Class for PS.MediaCollectionManagement Module 
+# About: Handlers Layer Class for PS.MediaCollectionManagement Module 
 #
 # Author: Luca Gnezda 
 #
@@ -11,13 +11,13 @@
 
 #region Using
 #------------
-using module .\..\Interfaces\IModelPersistenceService.Interface.psm1
+using module .\..\Interfaces\IModelPersistenceHandler.Interface.psm1
 #endregion Using
 
 
 #region Class Definition
 #-----------------------
-class ModelPersistenceService : IModelPersistenceService {
+class ModelPersistenceHandler : IModelPersistenceHandler {
 
     #region Properties
     #endregion Properties

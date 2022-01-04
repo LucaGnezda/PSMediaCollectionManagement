@@ -68,7 +68,7 @@ class ContentSubjectParser
         return $s -match [ContentSubjectParser]::_validYearRegexPattern
     }
 
-    [System.Nullable[Int]] static GetSeason($s) {
+    [System.Nullable[Int]] static GetSeasonFromString($s) {
         if (([ContentSubjectParser]::IsSeasonEpisodePattern($s, [SeasonEpisodePattern]::Uppercase_S0E0)) -or 
             ([ContentSubjectParser]::IsSeasonEpisodePattern($s, [SeasonEpisodePattern]::Lowercase_S0E0))) {
             return [Int](($s -split "S") -split "E")[1]
@@ -82,7 +82,7 @@ class ContentSubjectParser
         }
     }
 
-    [System.Nullable[Int]] static GetEpisode($s) {
+    [System.Nullable[Int]] static GetEpisodeFromString($s) {
         if (([ContentSubjectParser]::IsSeasonEpisodePattern($s, [SeasonEpisodePattern]::Uppercase_S0E0)) -or 
             ([ContentSubjectParser]::IsSeasonEpisodePattern($s, [SeasonEpisodePattern]::Lowercase_S0E0))) {
             return [Int](($s -split "S") -split "E")[2]
