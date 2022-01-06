@@ -19,7 +19,12 @@ using module .\..\Interfaces\IModelManipulationHandler.Interface.psm1
 using module .\..\Interfaces\IStringSimilarityProvider.Interface.psm1
 using module .\..\Interfaces\ISpellcheckProvider.Interface.psm1
 using module .\..\Handlers\ModelAnalysisHandler.Class.psm1
-using Module .\..\Handlers\ModelManipulationHandler.Class.psm1
+using module .\..\Handlers\ModelManipulationHandler.Class.psm1
+using module .\..\BusinessObjects\ActorBO.Class.psm1
+using module .\..\BusinessObjects\AlbumBO.Class.psm1
+using module .\..\BusinessObjects\ArtistBO.Class.psm1
+using module .\..\BusinessObjects\SeriesBO.Class.psm1
+using module .\..\BusinessObjects\studioBO.Class.psm1
 using module .\..\Providers\LevenshteinStringSimilarityProvider.Class.psm1
 using module .\..\Providers\MSWordCOMSpellcheckProvider.Class.psm1
 #endregion Using
@@ -71,11 +76,44 @@ class CollectionManagementController {
         return $handler.SpellcheckContentTitles($ContentList, $returnResults)
     }
 
-    [Bool] Static Alter ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
+    [Bool] Static AlterActor ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
 
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        $handler.SetContentSubjectBO([ActorBO]::new())
+        
+        return $handler.Alter($contentModel.Actors, $fromName, $toName, $updateCorrespondingFilename, $filenameElement)
+    }
 
-        return $handler.Alter($fromName, $toName, $updateCorrespondingFilename, $filenameElement)
+    [Bool] Static AlterAlbum ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
+
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        $handler.SetContentSubjectBO([AlbumBO]::new())
+
+        return $handler.Alter($contentModel.Albums, $fromName, $toName, $updateCorrespondingFilename, $filenameElement)
+    }
+
+    [Bool] Static AlterArtist ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
+
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        $handler.SetContentSubjectBO([ArtistBO]::new())
+
+        return $handler.Alter($contentModel.Artists, $fromName, $toName, $updateCorrespondingFilename, $filenameElement)
+    }
+
+    [Bool] Static AlterSeries ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
+
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        $handler.SetContentSubjectBO([SeriesBO]::new())
+
+        return $handler.Alter($contentModel.Series, $fromName, $toName, $updateCorrespondingFilename, $filenameElement)
+    }
+
+    [Bool] Static AlterStudio ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [FilenameElement] $filenameElement) {
+
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        $handler.SetContentSubjectBO([StudioBO]::new())
+
+        return $handler.Alter($contentModel.Studios, $fromName, $toName, $updateCorrespondingFilename, $filenameElement)
     }
 
     [Bool] Static RemodelFilenameFormat ([IContentModel] $contentModel, [Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) { 

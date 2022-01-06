@@ -13,7 +13,6 @@
 #------------
 using module .\..\Types\Types.psm1
 using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
-using module .\..\Helpers\ContentSubjectParser.Abstract.psm1
 #endregion Using
 
 

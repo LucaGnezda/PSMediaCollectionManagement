@@ -1,7 +1,6 @@
 using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
 using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
 using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
-using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Helpers\ContentSubjectParser.Abstract.psm1
 
 BeforeAll { 
     Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force

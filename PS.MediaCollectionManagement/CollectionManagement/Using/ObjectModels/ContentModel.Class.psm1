@@ -14,7 +14,6 @@
 using module .\..\Types\Types.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Controllers\CollectionManagementController.Abstract.psm1
-using module .\..\Helpers\ContentSubjectParser.Abstract.psm1
 using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
 using module .\ContentModelConfig.Class.psm1
 using module .\Actor.Class.psm1
@@ -643,43 +642,43 @@ class ContentModel : IContentModel {
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Actors)
+        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $false, [FilenameElement]::Actors)
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Actors)
+        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Actors)
     }
 
     [Bool] AlterAlbum ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Album)
+        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $false, [FilenameElement]::Album)
     }
 
     [Bool] AlterAlbum ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Album)
+        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Album)
     }
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Artists)
+        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $false, [FilenameElement]::Artists)
     }
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Artists)
+        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Artists)
     }
 
     [Bool] AlterSeries ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Series)
+        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $false, [FilenameElement]::Series)
     }
 
     [Bool] AlterSeries ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Series)
+        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Series)
     }
 
     [Bool] AlterStudio ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $false, [FilenameElement]::Studio)
+        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $false, [FilenameElement]::Studio)
     }
 
     [Bool] AlterStudio ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::Alter($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Studio)
+        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $updateCorrespondingFilename, [FilenameElement]::Studio)
     }
 
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern) {
@@ -973,7 +972,7 @@ class ContentModel : IContentModel {
                 }
             }
 
-            # Process Album-Studio cross relationship, if both are part of filename, and both have been identified
+            # Process Album-Studio cross relationship, if both are part of filename
             if (($albumSplitIndex -ge 0) -and ($studioSplitIndex -ge 0) -and ($null -ne $album) -and ($null -ne $studio)) {
                 
                 # two way link the Album and studio if not already known
@@ -991,7 +990,7 @@ class ContentModel : IContentModel {
                 } 
             }
 
-            # Process Series-Studio cross relationship, if bot hare part of filename
+            # Process Series-Studio cross relationship, if both hare part of filename
             if (($seriesSplitIndex -ge 0) -and ($studioSplitIndex -ge 0) -and ($null -ne $seriesObj) -and ($null -ne $studio)) {
                 
                 # two way link the Album and studio if not already known

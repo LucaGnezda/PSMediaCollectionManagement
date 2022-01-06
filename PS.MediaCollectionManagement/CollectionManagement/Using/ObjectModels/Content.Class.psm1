@@ -19,7 +19,7 @@ using module .\Artist.Class.psm1
 using module .\Series.Class.psm1
 using module .\Studio.Class.psm1
 using module .\ContentModelConfig.Class.psm1
-using module .\..\Helpers\ContentSubjectParser.Abstract.psm1
+using module .\..\BusinessObjects\ContentBO.Class.psm1
 using module .\..\..\..\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
 #endregion Using
 
@@ -97,6 +97,8 @@ class Content {
         $this.Year = $null
 
         # Set starting state
+        [ContentBO] $contentBO = [ContentBO]::new()
+        
         [System.Array]$splitBaseName = [System.Array]($baseName -split $config.FilenameSplitter).Trim()
 
         [Int] $titleSplitIndex = -1
@@ -143,10 +145,10 @@ class Content {
 
             # If present, set the season and episode
             if ($seasonEpisodeSplitIndex -ge 0) {
-                if ([ContentSubjectParser]::IsValidSeasonEpisode($splitBaseName[$seasonEpisodeSplitIndex].Trim())) {
+                if ($contentBO.IsValidSeasonEpisode($splitBaseName[$seasonEpisodeSplitIndex].Trim())) {
                     
-                    $this.Season = [ContentSubjectParser]::GetSeasonFromString($splitBaseName[$seasonEpisodeSplitIndex].Trim())
-                    $this.Episode = [ContentSubjectParser]::GetEpisodeFromString($splitBaseName[$seasonEpisodeSplitIndex].Trim())
+                    $this.Season = $contentBO.GetSeasonFromString($splitBaseName[$seasonEpisodeSplitIndex].Trim())
+                    $this.Episode = $contentBO.GetEpisodeFromString($splitBaseName[$seasonEpisodeSplitIndex].Trim())
                     $this.SeasonEpisode = $splitBaseName[$seasonEpisodeSplitIndex].Trim()
                 }
                 else {
@@ -160,7 +162,7 @@ class Content {
 
             # If present, set the track number
             if ($trackSplitIndex -ge 0) {
-                if ([ContentSubjectParser]::IsValidTrackNumber($splitBaseName[$trackSplitIndex].Trim())) {
+                if ($contentBO.IsValidTrackNumber($splitBaseName[$trackSplitIndex].Trim())) {
                     $this.Track = [Int]$splitBaseName[$trackSplitIndex].Trim()
                     $this.TrackLabel = $splitBaseName[$trackSplitIndex].Trim()
                 }
@@ -174,7 +176,7 @@ class Content {
 
             # If present, set the year
             if ($yearSplitIndex -ge 0) {
-                if ([ContentSubjectParser]::IsValidYear($splitBaseName[$trackSplitIndex].Trim())) {
+                if ($contentBO.IsValidYear($splitBaseName[$trackSplitIndex].Trim())) {
                     $this.Year = [Int]$splitBaseName[$trackSplitIndex].Trim()
                 }
                 else {
@@ -535,39 +537,6 @@ class Content {
         $this.Warnings.Clear()
     }
     #endregion Public Methods
-
-
-    #region Hidden Methods
-    [Object] Hidden GetCollectionByType ([FilenameElement] $filenameElement) {
-
-        switch ($filenameElement) {
-            {$_ -eq [FilenameElement]::Actors} {
-                return $this.Actors
-                break
-            }
-            {$_ -eq [FilenameElement]::Album} {
-                return $this.OnAlbum
-                break
-            }
-            {$_ -eq [FilenameElement]::Artists} {
-                return $this.Artists
-                break
-            }
-            {$_ -eq [FilenameElement]::Series} {
-                return $this.FromSeries
-                break
-            }
-            {$_ -eq [FilenameElement]::Studio} {
-                return $this.ProducedBy
-                break
-            }
-            default {
-                # Do nothing
-            }
-        }
-        return $null
-    }
-    #endregion Hidden Methods
-
+    
 }
 #endregion Class Definition
