@@ -11,14 +11,14 @@
 
 #region Using
 #------------
+using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
 #endregion Using
 
 
 
 #region Class Definition
 #-----------------------
-class ANSIEscapedString
-{
+class ANSIEscapedString : IsAbstract {
     #region Properties
     [String] static hidden $_e = [Char]27
     [String] static hidden $_escapeRegex = "\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])"
@@ -29,11 +29,7 @@ class ANSIEscapedString
 
     #region Constructors
     ANSIEscapedString () {
-
-        # Prevent instantiation of this class
-        if ($this.GetType() -eq [ANSIEscapedString]) {
-            throw [System.NotSupportedException] "System.NotSupportedException: Cannot instantiate an abstract class"
-        }
+        $this.AssertAsAbstract([ANSIEscapedString])
     } 
     #endregion Constructors
 

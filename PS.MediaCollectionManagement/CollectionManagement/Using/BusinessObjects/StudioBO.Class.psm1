@@ -16,6 +16,7 @@ using module .\..\Interfaces\IContentSubjectBO.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\Studio.Class.psm1
 using module .\..\ObjectModels\Content.Class.psm1
+using module .\..\ObjectModels\ContentModelConfig.Class.psm1
 #endregion Using
 
 
@@ -28,17 +29,29 @@ using module .\..\ObjectModels\Content.Class.psm1
 #region Class Definition
 #-----------------------
 class StudioBO : IContentSubjectBO {
+    
     #region Properties
+    [ContentModelConfig] $Config
     #endregion Properties
 
 
     #region Constructors
+    StudioBO([ContentModelConfig] $config) {
+        if (-not $config.IsFilenameFormatLocked) {
+            throw [System.InvalidOperationException] "System.InvalidOperationException: ContentBO Cannot be instantiated successfully a without a committed Filename Format."
+        }
+        $this.Config = $config
+    }
     #endregion Constructors
 
 
     #region Methods
     [Type] ActsOnType() { 
         return [Studio]
+    }
+
+    [FilenameElement] ActsOnFilenameElement() {
+        return [FilenameElement]::Studio
     }
 
     [Void] ReplaceSubjectLinkedToContent([Content] $content, [ContentSubjectBase] $replace, [ContentSubjectBase] $with) {
@@ -105,6 +118,57 @@ class StudioBO : IContentSubjectBO {
                 }
             }
         } 
+    }
+
+    [ContentSubjectBase] AddStudioRelationshipsWithContent([Content] $content, [System.Collections.Generic.List[ContentSubjectBase]] $studiosList, [String] $studioNameToAdd) {
+
+        # Decorate Studios that are actually tags
+        if ($studioNameToAdd -in $this.Config.DecorateAsTags){
+            $studioNameToAdd = $this.Config.TagOpenDelimiter + $studioNameToAdd + $this.Config.TagCloseDelimiter
+        }
+        
+        # If the Studio name already exists, grab that one, otherwise create a new Studio
+        if ($studiosList.Count -eq 0) {
+            $studio = [Studio]::new($studioNameToAdd, $this.Config.IncludeAlbums, $this.Config.IncludeSeries)
+            $studiosList.Add($studio)
+        }
+        elseif ($studioNameToAdd -cin $studiosList.Name) {
+            $studio = $studiosList.Find({$args[0].Name -ceq $studioNameToAdd})
+        }
+        else {
+            $studio = [Studio]::new($studioNameToAdd, $this.Config.IncludeAlbums, $this.Config.IncludeSeries)
+            $studiosList.Add($studio)
+        } 
+
+        # two way link the Studio and content objects
+        $content.ProducedBy = $studio
+        $studio.Produced.Add($content)
+
+        return $studio
+    }
+
+    [Void] RemoveStudioRelationshipsWithContentAndCleanup([System.Collections.Generic.List[ContentSubjectBase]] $studiosList, [Content] $contentToRemove) {
+
+        # For the studio linked to the content
+        $studio = $contentToRemove.ProducedBy
+
+        # Delete the reference back to the content to be deleted
+        $studio.Produced.Remove($contentToRemove)
+
+        # If no references remain, delete the studio too
+        if ($studio.Produced.Count -eq 0) {
+            $studiosList.Remove($studio)
+
+            # And if part of the model, remove the cross reference from the album
+            if ($null -ne $contentToRemove.OnAlbum) {
+                $contentToRemove.OnAlbum.ProducedBy.Remove($studio)
+            }
+
+            # And if part of the model, remove the cross reference from the series
+            if ($null -ne $contentToRemove.FromSeries) {
+                $contentToRemove.FromSeries.ProducedBy.Remove($studio)
+            }
+        }
     }
     #endregion Methods
 

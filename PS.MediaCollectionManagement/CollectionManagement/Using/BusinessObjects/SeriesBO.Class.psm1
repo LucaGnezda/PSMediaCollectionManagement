@@ -16,6 +16,7 @@ using module .\..\Interfaces\IContentSubjectBO.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\Series.Class.psm1
 using module .\..\ObjectModels\Content.Class.psm1
+using module .\..\ObjectModels\ContentModelConfig.Class.psm1
 #endregion Using
 
 
@@ -28,17 +29,29 @@ using module .\..\ObjectModels\Content.Class.psm1
 #region Class Definition
 #-----------------------
 class SeriesBO : IContentSubjectBO {
+    
     #region Properties
+    [ContentModelConfig] $Config
     #endregion Properties
 
 
     #region Constructors
+    SeriesBO([ContentModelConfig] $config) {
+        if (-not $config.IsFilenameFormatLocked) {
+            throw [System.InvalidOperationException] "System.InvalidOperationException: ContentBO Cannot be instantiated successfully a without a committed Filename Format."
+        }
+        $this.Config = $config
+    }
     #endregion Constructors
 
 
     #region Methods
     [Type] ActsOnType() { 
         return [Series]
+    }
+
+    [FilenameElement] ActsOnFilenameElement() {
+        return [FilenameElement]::Series
     }
 
     [Void] ReplaceSubjectLinkedToContent([Content] $content, [ContentSubjectBase] $replace, [ContentSubjectBase] $with) {
@@ -80,6 +93,53 @@ class SeriesBO : IContentSubjectBO {
                 }
             }
         } 
+    }
+
+    [ContentSubjectBase] AddSeriesRelationshipsWithContent([Content] $content, [System.Collections.Generic.List[ContentSubjectBase]] $seriesList, [String] $seriesNameToAdd) {
+
+        # Decorate Series that are actually tags
+        if ($seriesNameToAdd -in $this.Config.DecorateAsTags){
+            $seriesNameToAdd = $this.Config.TagOpenDelimiter + $seriesNameToAdd + $this.Config.TagCloseDelimiter
+        }
+        
+        # If the Series name already exists, grab that one, otherwise create a new Series
+        if ($seriesList.Count -eq 0) {
+            $seriesObj = [Series]::new($seriesNameToAdd, $this.Config.IncludeStudios)
+            $seriesList.Add($seriesObj)
+        }
+        elseif ($seriesNameToAdd -cin $seriesList.Name) {
+            $seriesObj = $seriesList.Find({$args[0].Name -ceq $seriesNameToAdd})
+        }
+        else {
+            $seriesObj = [Series]::new($seriesNameToAdd, $this.Config.IncludeStudios)
+            $seriesList.Add($seriesObj)
+        } 
+
+        # two way link the Series and content objects
+        $content.FromSeries = $seriesObj
+        $seriesObj.Episodes.Add($content)
+
+        return $seriesObj
+    }
+
+    [Void] RemoveSeriesRelationshipsWithContentAndCleanup([System.Collections.Generic.List[ContentSubjectBase]] $seriesList, [Content] $contentToRemove) {
+
+        # For the series linked to the content
+        $seriesObj = $contentToRemove.FromSeries
+
+        # Delete the reference back to the content to be deleted
+        $seriesObj.Episodes.Remove($contentToRemove)
+
+        # If no references remain, delete the series too
+        if ($seriesObj.Track.Count -eq 0) {
+            $seriesList.Remove($seriesObj)
+
+            # And if part of the model, remove the cross reference from the studio
+            if ($null -ne $contentToRemove.ProducedBy) {
+                $contentToRemove.ProducedBy.ProducedSeries.Remove($seriesObj)
+            }
+        }
+        
     }
     #endregion Methods
 

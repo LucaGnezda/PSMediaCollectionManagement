@@ -16,14 +16,14 @@
 
 #region Interface Definition
 #---------------------------
-class IBase {
+class IsInterface {
 
     #region Properties
     #endregion Properties
 
     #region Constructors
-    IBase () {
-        $this.AssertAsInterface([IBase])
+    IsInterface () {
+        $this.AssertAsInterface([IsInterface])
     }
     #endregion Constructors
     

@@ -12,14 +12,14 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
-using module .\IBase.Interface.psm1
+using module .\..\..\..\Shared\Using\Base\IsInterface.Class.psm1
 using module .\..\ObjectModels\Content.Class.psm1
 #endregion Using
 
 
 #region Interface Definition
 #-----------------------
-class IContentModel : IBase {
+class IContentModel : IsInterface {
     IContentModel () {
         $this.AssertAsInterface([IContentModel])
     }
@@ -68,7 +68,5 @@ class IContentModel : IBase {
     [Int[]] AnalyseStudiosForPossibleLabellingIssues ([Bool] $returnSummary) { return $null }
     [Void] SpellcheckContentTitles() { }
     [Hashtable] SpellcheckContentTitles([Bool] $returnResults) { return $null }
-    [Content] AddContentToModel([System.IO.FileInfo] $file) { return $null }
-    [Content] AddContentToModel([String] $filename, [String] $basename, [String] $extension) { return $null } 
     [Void] RemoveContentFromModel([String] $filename) { }
 }

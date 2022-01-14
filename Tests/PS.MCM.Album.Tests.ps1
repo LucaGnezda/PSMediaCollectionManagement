@@ -4,7 +4,7 @@ using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Object
 using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
 using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
 using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
-
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\BusinessObjects\ContentBO.Class.psm1
 
 BeforeAll { 
     Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
@@ -14,12 +14,16 @@ BeforeAll {
     
     $config = [ContentModelConfig]::new()  
     $config.ConfigureForFilm()
+    $config.LockFilenameFormat()
+
+    $contentBO = [ContentBO]::new($config)
 
     $nullAlbum = [Album]::new()
     $fooAlbum = [Album]::new("Foo", $true)
-    $fooAlbum.Tracks.Add([Content]::new("Foo.test", "Foo", ".test", $config))
-    $fooAlbum.Tracks.Add([Content]::new("Fooish.test", "Fooish", ".test", $config))
-    $fooAlbum.Tracks.Add([Content]::new("Bar.test", "Bar", ".test", $config))
+
+    $fooAlbum.Tracks.Add($contentBO.CreateContentObject("Foo.test", "Foo", ".test"))
+    $fooAlbum.Tracks.Add($contentBO.CreateContentObject("Fooish.test", "Fooish", ".test"))
+    $fooAlbum.Tracks.Add($contentBO.CreateContentObject("Bar.test", "Bar", ".test"))
 }
 
 Describe "Album Unit Test" -Tag UnitTest {

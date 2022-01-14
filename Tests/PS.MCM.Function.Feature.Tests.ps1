@@ -222,7 +222,7 @@ Describe "Call Function - Confirm-FilesystemHashes" -Tag IntegrationTest {
     }
 
     It "Validate Hashes" {
-        Confirm-FilesystemHashes $contentModelB -ReturnSummary | Should -Be @(2, 1, 3)
+        Test-FilesystemHashes $contentModelB -ReturnSummary | Should -Be @(2, 1, 3)
     }
 }
 

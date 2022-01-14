@@ -11,6 +11,7 @@
 
 #region Using
 #------------
+using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
 #endregion Using
 
 
@@ -22,7 +23,7 @@
 
 #region Abstract (sortof) Class Definition
 #-----------------------------------------
-class FilesystemExtensionsState {
+class FilesystemExtensionsState : IsAbstract {
       
     #region Static Properties
 
@@ -34,11 +35,7 @@ class FilesystemExtensionsState {
 
     #region Constructors
     FilesystemExtensionsState () {
-
-        # Prevent instantiation of this class
-        if ($this.GetType() -eq [FilesystemExtensionsState]) {
-            throw [System.NotSupportedException] "System.NotSupportedException: Cannot instantiate an abstract class"
-        }
+        $this.AssertAsAbstract([FilesystemExtensionsState])
     } 
     #endregion Constructors
 
