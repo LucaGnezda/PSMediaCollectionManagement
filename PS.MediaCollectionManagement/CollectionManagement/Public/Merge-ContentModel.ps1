@@ -1,6 +1,5 @@
 using module .\..\Using\ObjectModels\ContentModel.Class.psm1
 using module .\..\Using\ObjectModels\ContentComparer.Class.psm1
-#using module .\..\Using\Types\Types.psm1
 
 <#
     .SYNOPSIS

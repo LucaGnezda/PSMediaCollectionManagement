@@ -1,4 +1,3 @@
-#using module .\..\Using\Interfaces\IContentModel.Interface.psm1
 using module .\..\Using\Controllers\CollectionManagementController.Abstract.psm1
 using module .\..\Using\ObjectModels\ContentModel.Class.psm1
 

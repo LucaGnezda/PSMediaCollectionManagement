@@ -16,9 +16,7 @@ using module .\..\Interfaces\IModelManipulationHandler.Interface.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Interfaces\IContentSubjectBO.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
-#using module .\..\ObjectModels\Actor.Class.psm1
 using module .\..\ObjectModels\Album.Class.psm1
-#using module .\..\ObjectModels\Artist.Class.psm1
 using module .\..\ObjectModels\Content.Class.psm1
 using module .\..\ObjectModels\Series.Class.psm1
 using module .\..\ObjectModels\Studio.Class.psm1

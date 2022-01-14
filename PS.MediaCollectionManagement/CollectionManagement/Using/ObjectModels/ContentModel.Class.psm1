@@ -16,11 +16,6 @@ using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Controllers\CollectionManagementController.Abstract.psm1
 using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
 using module .\ContentModelConfig.Class.psm1
-#using module .\Actor.Class.psm1
-#using module .\Album.Class.psm1
-#using module .\Artist.Class.psm1
-#using module .\Series.Class.psm1
-#using module .\Studio.Class.psm1
 using module .\Content.Class.psm1
 using module .\ContentSubjectBase.Class.psm1
 using module .\ContentComparer.Class.psm1

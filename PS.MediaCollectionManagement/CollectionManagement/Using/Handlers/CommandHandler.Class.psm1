@@ -12,7 +12,6 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
-#using module .\ModelAnalysisHandler.Class.psm1
 using module .\ModelManipulationHandler.Class.psm1
 using module .\ModelPersistenceHandler.Class.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1

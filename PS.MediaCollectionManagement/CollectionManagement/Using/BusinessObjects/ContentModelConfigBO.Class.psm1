@@ -11,7 +11,6 @@
 
 #region Using
 #------------
-#using module .\..\Types\Types.psm1
 using module .\..\ObjectModels\ContentModelConfig.Class.psm1
 #endregion Using
 
