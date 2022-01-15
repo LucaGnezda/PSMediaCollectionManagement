@@ -370,7 +370,7 @@ class CommandHandler : ICommandHandler {
             if (Test-Path -PathType Leaf $inputToCompare) {
                 $inputIsAFile = $true
             }
-            elseif (Test-Path -PathType Leaf $inputToCompare) {
+            elseif (Test-Path -PathType Container $inputToCompare) {
                 $inputIsAPath = $true
             }
             else {

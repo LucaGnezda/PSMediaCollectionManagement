@@ -15,6 +15,12 @@ using module .\..\Types\Types.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
+using module .\..\Interfaces\IModelManipulationHandler.Interface.psm1
+using module .\..\Interfaces\IModelPersistenceHandler.Interface.psm1
+using module .\..\Interfaces\IModelAnalysisHandler.Interface.psm1
+using module .\..\Interfaces\ICommandHandler.Interface.psm1
+using module .\..\Interfaces\IStringSimilarityProvider.Interface.psm1
+using module .\..\Interfaces\ISpellcheckProvider.Interface.psm1
 using module .\..\Handlers\ModelAnalysisHandler.Class.psm1
 using module .\..\Handlers\ModelPersistenceHandler.Class.psm1
 using module .\..\Handlers\ModelManipulationHandler.Class.psm1
@@ -47,28 +53,28 @@ class CollectionManagementController : IsAbstract {
 
     #region Static Methods
     [Void] Static Build([IContentModel] $contentModel, [Bool] $loadProperties, [Bool] $generateHash) {
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
         
         $handler.Build($loadProperties, $generateHash)
     }
 
     [Void] Static Rebuild([IContentModel] $contentModel, [Bool] $loadProperties, [Bool] $generateHash) {
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
         
         $handler.Rebuild($loadProperties, $generateHash)
     }
 
     [Void] Static Load([IContentModel] $contentModel, [String] $indexFilePath, [Bool] $loadProperties, [Bool] $generateHash) {
-        [ModelPersistenceHandler] $persistenceHandler = [ModelPersistenceHandler]::new()
-        [ModelManipulationHandler] $manipulationHandler = [ModelManipulationHandler]::new($contentModel)
+        [IModelPersistenceHandler] $persistenceHandler = [ModelPersistenceHandler]::new()
+        [IModelManipulationHandler] $manipulationHandler = [ModelManipulationHandler]::new($contentModel)
         
         $persistenceHandler.LoadConfigFromIndexFile($indexFilePath, $contentModel)
         $manipulationHandler.Load($persistenceHandler.RetrieveDataFromIndexFile($indexFilePath), $loadProperties, $generateHash)
     }
 
     [Void] Static Save([IContentModel] $contentModel, [String] $indexFilePath, [Bool] $loadProperties, [Bool] $generateHash) {
-        [ModelPersistenceHandler] $persistenceHandler = [ModelPersistenceHandler]::new()
-        [ModelManipulationHandler] $manipulationHandler = [ModelManipulationHandler]::new($contentModel)
+        [IModelPersistenceHandler] $persistenceHandler = [ModelPersistenceHandler]::new()
+        [IModelManipulationHandler] $manipulationHandler = [ModelManipulationHandler]::new($contentModel)
         
         $manipulationHandler.FillPropertiesAndHashWhereMissing($loadProperties, $generateHash)
         $persistenceHandler.SaveToIndexFile($indexFilePath, $contentModel)
@@ -76,98 +82,98 @@ class CollectionManagementController : IsAbstract {
 
     [Bool] Static AlterActor ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
 
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
         
         return $handler.AlterSubject([ActorBO]::new($contentModel.Config), $contentModel.Actors, $fromName, $toName, $updateCorrespondingFilename)
     }
 
     [Bool] Static AlterAlbum ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
 
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         return $handler.AlterSubject([AlbumBO]::new($contentModel.Config), $contentModel.Albums, $fromName, $toName, $updateCorrespondingFilename)
     }
 
     [Bool] Static AlterArtist ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
 
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         return $handler.AlterSubject([ArtistBO]::new($contentModel.Config), $contentModel.Artists, $fromName, $toName, $updateCorrespondingFilename)
     }
 
     [Bool] Static AlterSeries ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
 
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         return $handler.AlterSubject([SeriesBO]::new($contentModel.Config), $contentModel.Series, $fromName, $toName, $updateCorrespondingFilename)
     }
 
     [Bool] Static AlterStudio ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
 
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         return $handler.AlterSubject([StudioBO]::new($contentModel.Config), $contentModel.Studios, $fromName, $toName, $updateCorrespondingFilename)
     }
 
     [Bool] Static RemodelFilenameFormat ([IContentModel] $contentModel, [Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) { 
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         return $handler.RemodelFilenameFormat($swapElement, $withElement, $updateCorrespondingFilename)
     }
 
     [Bool] Static AlterSeasonEpisodeFormat ([IContentModel] $contentModel, [Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename) {
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         return $handler.AlterSeasonEpisodeFormat($padSeason, $padEpisode, $pattern, $updateCorrespondingFilename)
     }
 
     [Bool] Static AlterTrackFormat ([IContentModel] $contentModel, [Int] $padTrack, [Bool] $updateCorrespondingFilename) { 
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         return $handler.AlterTrackFormat($padTrack, $updateCorrespondingFilename)
     }
 
     [Void] ApplyAllPendingFilenameChanges([IContentModel] $contentModel) {
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         $handler.ApplyAllPendingFilenameChanges()
     }
 
     [Void] Static RemoveContentFromModel([IContentModel] $contentModel, $filename) {
-        [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
+        [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
         
         $handler.RemoveContentFromModel($filename)
     }
 
     [IContentModel] Static CopyModel([IContentModel] $contentModel) {
-        [CommandHandler] $handler = [CommandHandler]::new()
+        [ICommandHandler] $handler = [CommandHandler]::new()
 
         return $handler.CopyModel($contentModel)
     }
 
     [IContentModel] Static MergeModel([IContentModel] $contentModelA, [IContentModel] $contentModelB) {
-        [CommandHandler] $handler = [CommandHandler]::new()
+        [ICommandHandler] $handler = [CommandHandler]::new()
 
         return $handler.MergeModels($contentModelA, $contentModelB)
     }
 
     [System.Array] Static Compare([Object] $baseline, [Object] $comparison, [Bool] $returnSummary) {
-        [CommandHandler] $handler = [CommandHandler]::new()
+        [ICommandHandler] $handler = [CommandHandler]::new()
         
         return $handler.Compare($baseline, $comparison, $returnSummary)
     }
 
     [Void] Static ModelSummary ([IContentModel] $contentModel) {
         
-        [ModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
+        [IModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
         
         $handler.ModelSummary($contentModel)
     }
 
     [Int[]] Static AnalysePossibleLabellingIssues ([System.Collections.Generic.List[ContentSubjectBase]] $subjectList, [Bool] $returnSummary) {
         
-        [ModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
-        [LevenshteinStringSimilarityProvider] $stringSimilarityProvider = [LevenshteinStringSimilarityProvider]::new()
+        [IModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
+        [IStringSimilarityProvider] $stringSimilarityProvider = [LevenshteinStringSimilarityProvider]::new()
         $handler.SetStringSimilarityProvider($stringSimilarityProvider)
 
         return $handler.AnalysePossibleLabellingIssues([System.Collections.Generic.List[ContentSubjectBase]] $subjectList, [Bool] $returnSummary)
@@ -175,8 +181,8 @@ class CollectionManagementController : IsAbstract {
 
     [Hashtable] Static SpellcheckContentTitles ([System.Collections.Generic.List[Object]] $ContentList, [Bool] $returnResults) {
 
-        [ModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
-        [MSWordCOMSpellcheckProvider] $spellcheckProvider = [MSWordCOMSpellcheckProvider]::new()
+        [IModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
+        [ISpellcheckProvider] $spellcheckProvider = [MSWordCOMSpellcheckProvider]::new()
         $handler.SetSpellcheckProvider($spellcheckProvider)
 
         return $handler.SpellcheckContentTitles($ContentList, $returnResults)
@@ -184,7 +190,7 @@ class CollectionManagementController : IsAbstract {
 
     [System.Array] Static TestFilesystemHashes ([IContentModel] $contentModel, [Bool] $returnSummary) {
         
-        [ModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
+        [IModelAnalysisHandler] $handler = [ModelAnalysisHandler]::new()
         
         return $handler.TestFilesystemHashes($contentModel, $returnSummary)
     }
