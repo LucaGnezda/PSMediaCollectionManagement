@@ -63,13 +63,16 @@ enum ExportableAttribute {
 }
 
 enum ContentWarning {
-    PartialLoad = 1
-    NonCompliantFilename = 2
-    ErrorLoadingProperties = 3
-    FileNotFound = 4
-    UnsupportedFileExtension = 5
-    DuplicateDetectedInSources = 6
-    MergeConflictsInData = 7
+    NonCompliantFilename = 1                  # Set whenever the filename does not match the selected filename configuration, or when loading subject info results in an error
+    SubjectInfoSkipped = 2                    # Set whenever subject info could not be loaded (typically the result of a non compliant filename)
+    SubjectInfoNotFullyLoaded = 3             # Set whenever subject info was attempted, but could not be fully loaded (typically the result of a malformed filename element)
+    PropertyInfoLoadingError = 4              # Set whenever an error prevents loading of all properties
+    PropertyInfoFileNotFound = 5              # Set whenever property info could not be loaded because the file could not be found
+    PropertyInfoUnsupportedFileExtension = 6  # Set whenever file propoerties are requested for a file extention that is not currently supported by MediaCollectionManagement
+    HashLoadingError = 7                      # Set whenever an error occurs while generating a hash
+    HashFileNotFound = 8                      # Set whenever a hash could not be generated because the file could not be found
+    DuplicateDetectedInSources = 9            # Set whenever a duplicate file load is attempted
+    MergeConflictsInData = 10                 # Set whenever a duplicate is found during a load or merge, but the file properties differ
 }
 
 enum SeasonEpisodePattern {

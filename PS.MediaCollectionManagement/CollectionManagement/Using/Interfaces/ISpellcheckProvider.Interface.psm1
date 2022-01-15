@@ -11,13 +11,13 @@
 
 #region Using
 #------------
-using module .\IBase.Interface.psm1
+using module .\..\..\..\Shared\Using\Base\IsInterface.Class.psm1
 #endregion Using
 
 
 #region Interface Definition
 #-----------------------
-class ISpellcheckProvider : IBase {
+class ISpellcheckProvider : IsInterface {
     ISpellcheckProvider () {
         $this.AssertAsInterface([ISpellcheckProvider])
     }

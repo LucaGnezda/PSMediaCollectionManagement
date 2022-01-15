@@ -1,6 +1,6 @@
 #region Header
 #
-# About: Services Layer Class for PS.MediaCollectionManagement Module 
+# About: Handlers Layer Class for PS.MediaCollectionManagement Module 
 #
 # Author: Luca Gnezda 
 #
@@ -13,15 +13,17 @@
 #------------
 using module .\..\Interfaces\IStringSimilarityProvider.Interface.psm1
 using module .\..\Interfaces\ISpellcheckProvider.Interface.psm1
-using module .\..\Interfaces\IModelAnalysisService.Interface.psm1
+using module .\..\Interfaces\IModelAnalysisHandler.Interface.psm1
+using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\SpellcheckResult.Class.psm1
+using module .\..\BusinessObjects\ContentBO.Class.psm1
 #endregion Using
 
 
 #region Class Definition
 #-----------------------
-class ModelAnalysisService : IModelAnalysisService {
+class ModelAnalysisHandler : IModelAnalysisHandler {
 
     #region Properties
     [IStringSimilarityProvider] $StringSimilarityProvider
@@ -33,17 +35,43 @@ class ModelAnalysisService : IModelAnalysisService {
     #endregion Constructors
     
     
-    #region Methods
-    [void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) {
+    #region Implemented Methods
+    [Void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) {
         $this.StringSimilarityProvider = $provider
     }
 
-    [void] SetSpellcheckProvider([ISpellcheckProvider] $provider) {
+    [Void] SetSpellcheckProvider([ISpellcheckProvider] $provider) {
         $this.SpellcheckProvider = $provider
     }
 
+    [Void] ModelSummary([IContentModel] $contentModel) {
+        [Timespan]$totalTimeSpan = 0
 
-    [Int[]] AnalysePossibleLabellingIssues ([System.Collections.Generic.List[Object]] $subjectList, [Bool] $returnSummary) {
+        foreach ($content in $contentModel.Content) {
+            $totalTimeSpan += $content.TimeSpan
+        }
+
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Actors.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Artists.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Albums.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Series.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Studios.Count).PadLeft(13," ") " Content Items"
+        }
+        Write-InfoToConsole ([String]$contentModel.Content.Count).PadLeft(13," ") " Content Items"
+        Write-InfoToConsole ([String]([String]$totalTimeSpan.Days + "d " + $totalTimeSpan.ToString("hh\:mm\:ss") )).PadLeft(13," ") " Total Duration" 
+    }
+
+
+    [Int[]] AnalysePossibleLabellingIssues ([System.Collections.Generic.List[ContentSubjectBase]] $subjectList, [Bool] $returnSummary) {
         
         # Initialise
         [Int] $itemCount = $subjectList.Count
@@ -220,6 +248,63 @@ class ModelAnalysisService : IModelAnalysisService {
         }
     }
 
+    [System.Array] TestFilesystemHashes ([IContentModel] $contentModel, [Bool] $ReturnSummary) {
+
+        [System.Collections.Generic.List[Object]] $output = [System.Collections.Generic.List[Object]]::new()
+        [Int] $verified = 0
+        [Int] $discrepancy = 0
+        [Int] $i = 0
+        [ContentBO] $contentBO = [ContentBO]::new($contentModel.Config)
+
+        # for each file
+        foreach ($item in $contentModel.Content) {    
+            
+            # Show a progress bar
+            Write-Progress -Activity "Verifying Filesystem Hashes" -Status ("Processing Item: " + ($i + 1) + " | " + $item.FileName) -PercentComplete (($i * 100) / $contentModel.Content.count)
+
+            if ($contentBO.CheckFilesystemHash($item, $null, $true)) {
+                $outputRow = [PSCustomObject]::new()
+                $outputRow | Add-Member NoteProperty "Content" $item.FileName
+                $outputRow | Add-Member NoteProperty "Verified" "[X]"
+                $outputRow | Add-Member NoteProperty "Color" 92 # Green
+
+                $verified++
+            }
+            else {
+                $outputRow = [PSCustomObject]::new()
+                $outputRow | Add-Member NoteProperty "Content" $item.FileName
+                $outputRow | Add-Member NoteProperty "Verified" "[X]"
+                $outputRow | Add-Member NoteProperty "Color" 95 # Magenta
+
+                $discrepancy++
+            }
+
+            $output.Add($outputRow)
+
+            # Increment the counter
+            $i++
+        
+        }
+
+        # Hide the progress bar
+        Write-Progress -Activity "Verifying Filesystem Hashes" -Completed
+
+        $h = Get-Host
+        $screenWidth = $h.UI.RawUI.WindowSize.Width
+        $filenameWidth = [Int]($screenWidth - 9) - 2
+
+        if ($ReturnSummary) {
+            return @($verified, $discrepancy, $contentModel.Content.Count)
+        }
+        else {
+            Write-FormattedTableToConsole -ColumnHeadings @("Verified", "Content") -ColumnProperties @("Verified", "Content") -ColumnWidths @(9, $filenameWidth) -ColumnColors @(0, 0) -AcceptColumnColorsFromInputIfAvailable @($true, $true) -Object $output
+            return $null
+        }
+    }
+
+    #endregion Implemented Methods
+
+    #region Internal Methods
     [Void] Hidden DisplaySpellcheckSuggestions([System.Collections.Hashtable] $spellcheckResults) {
 
         [Int] $maxWordLength = 0
@@ -255,6 +340,7 @@ class ModelAnalysisService : IModelAnalysisService {
             }
         }
     }
-    #endregion Methods
+
+    #endregion Internal Methods
 }
 #endregion Class Definition

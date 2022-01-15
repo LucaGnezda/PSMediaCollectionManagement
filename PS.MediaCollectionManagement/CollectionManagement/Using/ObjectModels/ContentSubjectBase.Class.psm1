@@ -50,6 +50,11 @@ class ContentSubjectBase {
             param ([String] $s)
             return ($this | Where-Object {$_.Title -match $s})
         } -Force
+
+        Add-Member -InputObject $this._Content -MemberType ScriptMethod -Name GetByFileName -value {
+            param ([String] $s)
+            return ($this | Where-Object {$_.FileName -ceq $s})
+        } -Force
     }
     #endregion Constructors
     

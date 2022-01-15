@@ -12,6 +12,7 @@
 #region Using
 #------------
 using module .\ConsoleExtensionsSettings.Abstract.psm1
+using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
 #endregion Using
 
 
@@ -24,7 +25,7 @@ using module .\ConsoleExtensionsSettings.Abstract.psm1
 
 #region Abstract (sortof) Class Definition
 #-----------------------------------------
-class ConsoleExtensionsState {
+class ConsoleExtensionsState : IsAbstract {
     
     #region Static Properties
     # These are used by the function commands to help manage state when format console output.
@@ -38,11 +39,7 @@ class ConsoleExtensionsState {
 
     #region Constructors
     ConsoleExtensionsState () {
-
-        # Prevent instantiation of this class
-        if ($this.GetType() -eq [ConsoleExtensionsState]) {
-            throw [System.NotSupportedException] "System.NotSupportedException: Cannot instantiate an abstract class"
-        }
+        $this.AssertAsAbstract([ConsoleExtensionsState])
     } 
     #endregion Constructors
 
