@@ -63,6 +63,11 @@ class Series : ContentSubjectBase {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
             } -Force
+
+            Add-Member -InputObject $this.ProducedBy -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
+            } -Force
         }
 
         # Set the detault table column order

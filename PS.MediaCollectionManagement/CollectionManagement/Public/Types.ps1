@@ -59,13 +59,16 @@ public enum ExportableAttribute {
 
 Add-Type @'
 public enum ContentWarning {
-    PartialLoad = 1,
-    NonCompliantFilename = 2,
-    ErrorLoadingProperties = 3,
-    FileNotFound = 4,
-    UnsupportedFileExtension = 5,
-    DuplicateDetectedInSources = 6,
-    MergeConflictsInData = 7
+    NonCompliantFilename = 1,             
+    SubjectInfoSkipped = 2,      
+    SubjectInfoNotFullyLoaded = 3,      
+    PropertyInfoLoadingError = 4,           
+    PropertyInfoFileNotFound = 5,    
+    PropertyInfoUnsupportedFileExtension = 6,  
+    HashLoadingError = 7,       
+    HashFileNotFound = 8,        
+    DuplicateDetectedInSources = 9,
+    MergeConflictsInData = 10
 }
 '@
 

@@ -4,6 +4,7 @@ using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Object
 using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
 using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
 using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\BusinessObjects\ContentBO.Class.psm1
 
 BeforeAll { 
     Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
@@ -13,12 +14,16 @@ BeforeAll {
 
     $config = [ContentModelConfig]::new()  
     $config.ConfigureForFilm()
+    $config.LockFilenameFormat()
+
+    $contentBO = [ContentBO]::new($config)
 
     $nullActor = [Actor]::new()
     $fooActor = [Actor]::new("Foo")
-    $fooActor.PerformedIn.Add([Content]::new("Foo.test", "Foo", ".test", $config))
-    $fooActor.PerformedIn.Add([Content]::new("Fooish.test", "Fooish", ".test", $config))
-    $fooActor.PerformedIn.Add([Content]::new("Bar.test", "Bar", ".test", $config))
+
+    $fooActor.PerformedIn.Add($contentBO.CreateContentObject("Foo.test", "Foo", ".test"))
+    $fooActor.PerformedIn.Add($contentBO.CreateContentObject("Fooish.test", "Fooish", ".test"))
+    $fooActor.PerformedIn.Add($contentBO.CreateContentObject("Bar.test", "Bar", ".test"))
 }
 
 Describe "Actor Unit Test" -Tag UnitTest {
@@ -40,8 +45,14 @@ Describe "Actor Unit Test" -Tag UnitTest {
         $fooActor.PerformedIn.Matching("Foo")[0].Filename | Should -Be "Foo.test"
     }
 
-    It "Sorting Produced" {        
+    It "Sorting PerformedIn" {        
         $fooActor.PerformedIn.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
+    }
+
+    It "FindByFileName PerformedIn" {
+        # Test
+        $fooActor.PerformedIn.GetByFileName("Fooish.test").FileName | Should -Be "Fooish.test"
+        $fooActor.PerformedIn.GetByFileName("Fooish") | Should -BeNullOrEmpty
     }
 }
 
