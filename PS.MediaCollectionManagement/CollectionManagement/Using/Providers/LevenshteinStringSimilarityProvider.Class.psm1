@@ -26,9 +26,7 @@ using module .\..\Interfaces\IStringSimilarityProvider.Interface.psm1
 #-----------------------
 class LevenshteinStringSimilarityProvider : IStringSimilarityProvider {
 
-    #region Properties
-    [Double[]] Hidden $_sensitivityBandBoundaries
-    
+    #region Properties    
     #endregion Properties
 
 

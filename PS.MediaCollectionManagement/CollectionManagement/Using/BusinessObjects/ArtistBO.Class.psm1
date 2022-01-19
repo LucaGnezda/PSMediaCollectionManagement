@@ -71,8 +71,7 @@ class ArtistBO : IContentSubjectBO {
                 $content.Artists[$i] = $withArtist
             }
         }
-        $withArtist.Performed.Add($content)
-        break
+        $withArtist.Performed.Add($content)        
     }
 
     [Void] AddArtistRelationshipsWithContent([Content] $content, [System.Collections.Generic.List[ContentSubjectBase]] $artistsList, [String[]] $artistNamesToAdd) {

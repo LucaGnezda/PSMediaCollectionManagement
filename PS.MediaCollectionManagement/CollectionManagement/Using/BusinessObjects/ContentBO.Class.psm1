@@ -12,6 +12,7 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
+using module .\..\Interfaces\IFilesystemProvider.Interface.psm1
 using module .\..\ObjectModels\Content.Class.psm1
 using module .\..\ObjectModels\ContentModelConfig.Class.psm1
 using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
@@ -292,15 +293,15 @@ class ContentBO
         $content.PendingFilenameUpdate = $true
     }
 
-    [Bool] UpdateFileName([Content] $content) {
+    [Bool] UpdateFileName([Content] $content, [IFilesystemProvider] $filesystemProvider) {
     
         # If change pending and the file exists
-        if ($content.PendingFilenameUpdate -eq $true -and $this.FileExists($content)) {
+        if ($content.PendingFilenameUpdate -eq $true -and $filesystemProvider.FileExists($content.FileName)) {
             # Generate the new filename
             $newFileName = ($content.BaseName + $content.Extension) 
 
             # Attempt to apply the new filename and update properties if successful
-            if (Rename-File $content.FileName $newFileName) {
+            if ($filesystemProvider.UpdateFileName($content.FileName, $newFileName)) {
                 $content.FileName = $newFileName
                 $content.PendingFilenameUpdate = $false
                 return $true
@@ -312,28 +313,12 @@ class ContentBO
         return $false
     }
 
-    [Bool] InstantiatePersistantFilesystemShellIfNotPresent() {
-        return Initialize-PersistentFilesystemShell
-    }
-
-    [Bool] IsFilesystemShellInstantiated() {
-        return Test-PersistentFilesystemShellExistence
-    }
-
-    [Void] DisposePersistantFilesystemShellIfPresent() {
-        Remove-PersistentFilesystemShell
-    }
-
-    [Bool] FileExists([Content] $content) {
-        return Test-Path $content.FileName
-    }
-
-    [Void] FillPropertiesWhereMissing([Content] $content, [System.IO.FileInfo] $file, [Bool] $silently) {
+    [Void] FillPropertiesWhereMissing([Content] $content, [System.IO.FileInfo] $file, [IFilesystemProvider] $filesystemProvider) {
         
-        # If we don't have a COM Shell, instantiate one. If we do remember so we can dispose it when done.
-        $disposeWhenDone = $this.InstantiatePersistantFilesystemShellIfNotPresent()
-
-        if ($null -eq $file) { $file = Get-ChildItem -File $content.FileName -ErrorAction SilentlyContinue }
+        # if the file wasn't passed in get it from the provider 
+        if ($null -eq $file) {
+            $file = $filesystemProvider.GetFileIfExists($content.FileName)
+        }
 
         # try to load
         try {
@@ -343,23 +328,28 @@ class ContentBO
                 {$_ -in [CollectionManagementDefaults]::DEFAULT_VIDEO_EXTENSIONS()} {
 
                     if ($null -eq $content.FrameWidth) {
-                        $content.FrameWidth = (Get-FileMetadata $file 316).Value
+                        #$content.FrameWidth = (Get-FileMetadata $file 316).Value
+                        $content.FrameWidth = $filesystemProvider.GetFileMetadataProperty($file, 316).Value
                     }
 
                     if ($null -eq $content.FrameHeight) { 
-                        $content.FrameHeight = (Get-FileMetadata $file 314).Value
+                        #$content.FrameHeight = (Get-FileMetadata $file 314).Value
+                        $content.FrameHeight = $filesystemProvider.GetFileMetadataProperty($file, 314).Value
                     }
 
                     if ([String]::IsNullOrEmpty($content.FrameRate)) {
-                        $content.FrameRate = (Get-FileMetadata $file 315).Value
+                        #$content.FrameRate = (Get-FileMetadata $file 315).Value
+                        $content.FrameRate = $filesystemProvider.GetFileMetadataProperty($file, 315).Value
                     }
 
                     if ($null -eq $content.TimeSpan) {
-                        $content.TimeSpan = [TimeSpan](Get-FileMetadata $file 27).Value
+                        #$content.TimeSpan = [TimeSpan](Get-FileMetadata $file 27).Value
+                        $content.TimeSpan = $filesystemProvider.GetFileMetadataProperty($file, 27).Value
                     }
 
                     if ([String]::IsNullOrEmpty($content.BitRate)) {
-                        $content.BitRate = (Get-FileMetadata $file 320).Value
+                        #$content.BitRate = (Get-FileMetadata $file 320).Value
+                        $content.BitRate = $filesystemProvider.GetFileMetadataProperty($file, 320).Value
                     }
 
                     if (($null -eq $content.FrameWidth) -or 
@@ -380,11 +370,13 @@ class ContentBO
                 {$_ -in [CollectionManagementDefaults]::DEFAULT_AUDIO_EXTENSIONS()} {
                 
                     if ($null -eq $content.TimeSpan) {
-                        $content.TimeSpan = [TimeSpan](Get-FileMetadata $file 27).Value
+                        #$content.TimeSpan = [TimeSpan](Get-FileMetadata $file 27).Value
+                        $content.TimeSpan = $filesystemProvider.GetFileMetadataProperty($file, 27).Value
                     }
 
                     if ([String]::IsNullOrEmpty($content.BitRate)) {
-                        $content.BitRate = (Get-FileMetadata $file 28).Value
+                        #$content.BitRate = (Get-FileMetadata $file 28).Value
+                        $content.BitRate = $filesystemProvider.GetFileMetadataProperty($file, 3286).Value
                     }
 
                     if (($null -eq $content.TimeSpan) -or
@@ -400,7 +392,7 @@ class ContentBO
                     break
                 }
                 default {
-                    if (-not $silently) {
+                    if (-not $filesystemProvider.ActingSilently) {
                         Write-WarnToConsole "Warning: Unsupported file extension detected, unable to load properties." ($null -eq $file)
                     }
                     $content.AddWarning([ContentWarning]::PropertyInfoLoadingError)
@@ -411,36 +403,34 @@ class ContentBO
         catch {
             # Check we have a file
             if ($null -eq $file) {
-                if (-not $silently) {
+                if (-not $filesystemProvider.ActingSilently) {
                     Write-WarnToConsole "Warning: File does not exist, unable to load properties."
                 }
                 $content.AddWarning([ContentWarning]::PropertyInfoLoadingError)
                 $content.AddWarning([ContentWarning]::PropertyInfoFileNotFound)
             }
             else {
-                if (-not $silently) {
+                if (-not $filesystemProvider.ActingSilently) {
                     Write-ErrorToConsole "Unexpected Error: Unable to load properties."
                 }
                 $content.AddWarning([ContentWarning]::PropertyInfoLoadingError)
             }
         }
 
-        if ($disposeWhenDone) {
-            $this.DisposePersistantFilesystemShellIfPresent()
-        }
-
         return
     }
 
-    [Void] GenerateHashIfMissing([Content] $content, [System.IO.FileInfo] $file, [Bool] $silently) {
+    [Void] GenerateHashIfMissing([Content] $content, [System.IO.FileInfo] $file, [IFilesystemProvider] $filesystemProvider) {
 
-        if ($null -eq $file) { $file = Get-ChildItem -File $content.FileName -ErrorAction SilentlyContinue }
+        # if the file wasn't passed in get it from the provider 
+        if ($null -eq $file) {
+            $file = $filesystemProvider.GetFileIfExists($content.FileName)
+        }
 
         # try to generate
         try {
             if ([String]::IsNullOrEmpty($content.Hash)) {
-                if ($null -eq $file) { Get-ChildItem $content.FileName }
-                $content.Hash = (Get-FileHash $file.FullName -Algorithm MD5).Hash
+                $content.Hash = $filesystemProvider.GenerateHash($file)
 
                 if ($null -eq $content.Hash) {
                     $content.AddWarning([ContentWarning]::HashLoadingError)
@@ -453,59 +443,20 @@ class ContentBO
         catch {
             # Check we have a file
             if ($null -eq $file) {
-                if (-not $silently) {
+                if (-not $filesystemProvider.ActingSilently) {
                     Write-WarnToConsole "Warning: File does not exist, unable to generate hash."
                 }
                 $content.AddWarning([ContentWarning]::HashLoadingError)
                 $content.AddWarning([ContentWarning]::HashFileNotFound)
             }
             else {
-                if (-not $silently) {
+                if (-not $filesystemProvider.ActingSilently) {
                     Write-ErrorToConsole "Unexpected Error: Unable to generate hash."
                 }
                 $content.AddWarning([ContentWarning]::HashLoadingError)
             }
         }
         return
-    }
-
-    [Bool] CheckFilesystemHash([Content] $content, [System.IO.FileInfo] $file, [Bool] $silently) {
-        
-        if ([String]::IsNullOrEmpty($content.Hash)) {
-            Write-WarnToConsole "Warning: No Hash is availabile for this content, unable to verify."
-            return $true
-        }
-
-        # If we don't have a file object passed in, get one.
-        if ($null -eq $file) { 
-            $file = Get-ChildItem $content.FileName -ErrorAction SilentlyContinue
-        }
-
-        if ($null -eq $file) {
-            if (-not $silently) {
-                Write-WarnToConsole "Warning: File not found, unable to verify."
-                return $true
-            }
-        }
-
-        $currentFilesystemHash = (Get-FileHash $file.FullName -Algorithm MD5).Hash
-        
-        if ($currentFilesystemHash -eq $content.Hash) {
-            return $true
-        }
-        else {
-            return $false
-        }
-    }
-
-    [System.Array] GetFilesForModel () {
-        # read the filesystem
-        if ($this.Config.IncludedExtensions.Count -eq 0) {
-            return Get-ChildItem -File
-        }
-        else {
-            return Get-ChildItem -File | Where-Object {$_.Extension -in $this.Config.IncludedExtensions} 
-        }
     }
 
     [Void] CopyPropertiesHashAndWarnings([Content] $fromContent, [Content] $toContent) {
