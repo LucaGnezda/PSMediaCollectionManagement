@@ -32,5 +32,4 @@ class IModelAnalysisHandler : IsInterface {
     [Void] Static ModelSummary() { }
     [Int[]] AnalysePossibleLabellingIssues ([System.Collections.Generic.List[ContentSubjectBase]] $subjectList, [Bool] $returnSummary) { return $null }
     [Hashtable] SpellcheckContentTitles([System.Collections.Generic.List[Object]] $contentList, [Bool] $returnResults) { return $null }
-    [System.Array] TestFilesystemHashes ([IContentModel] $contentModel, [Bool] $ReturnSummary) { return $null }
 }

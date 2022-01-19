@@ -15,6 +15,7 @@ using module .\..\Types\Types.psm1
 using module .\..\Interfaces\IModelManipulationHandler.Interface.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Interfaces\IContentSubjectBO.Interface.psm1
+using module .\..\Interfaces\IFilesystemProvider.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\Album.Class.psm1
 using module .\..\ObjectModels\Content.Class.psm1
@@ -51,7 +52,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
     
     
     #region Implemented Methods
-    [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) { 
+    [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement) { 
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
         
         if (-not $this.ContentModel.Config.RemodelFilenameFormat($swapElement, $withElement)) {
@@ -62,30 +63,26 @@ class ModelManipulationHandler : IModelManipulationHandler {
             $contentBO.UpdateContentBaseName($content)
         }
 
-        if ($updateCorrespondingFilename) {
-            $this.ApplyAllPendingFilenameChanges() 
-        }
-
         return $true
     }
 
-    [Void] ApplyAllPendingFilenameChanges() {
+    [Void] ApplyAllPendingFilenameChanges([IFilesystemProvider] $filesystemProvider) {
     
         # Get all pending filename Updates
         [System.Collections.Generic.List[Content]] $pendingContent = $this.ContentModel.Content | Where-Object {$_.PendingFilenameUpdate -eq $true}
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
 
         foreach ($item in $pendingContent) {
-            if ($ContentBO.UpdateFileName($item)) {
+            if ($ContentBO.UpdateFileName($item, $filesystemProvider)) {
                 Write-InfoToConsole "Filename updated to" $item.FileName
             }
         }
     }
 
-    [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename) {
+    [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern) {
 
         # Set starting state
-        [Int] $alterations = 0
+        [Bool] $alterations = $false
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
 
         # For each content item
@@ -104,7 +101,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
                 $contentItem.SeasonEpisode = $generatedElement
                 $contentBO.UpdateContentBaseName($contentItem)
-                $alterations++
+                $alterations = $true
 
                 Write-InfoToConsole "               to" $contentItem.BaseName
             }
@@ -112,37 +109,15 @@ class ModelManipulationHandler : IModelManipulationHandler {
                 # Do nothing
             }
 
-            # if the switch is set, also update the filename on the filesystem
-            if ($updateCorrespondingFilename.IsPresent) {
-                if ($contentItem.UpdateFileName()) {
-                    Write-InfoToConsole "Filename updated to" $contentItem.FileName
-                }
-            }
         }
 
-        # Provide tips to console
-        if ($alterations) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has changed BaseName since it was first loaded. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.AlteredBaseName -eq `$true}"
-            Remove-ConsoleIndent
-        }
-        if ($alterations -and -not $updateCorrespondingFilename) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has pending Filename updates. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.PendingFilenameUpdate -eq `$true}"
-            Remove-ConsoleIndent
-        }
-
-        return $true
+        return $alterations
     } 
 
-    [Bool] AlterTrackFormat([Int] $padtrack, [Bool] $updateCorrespondingFilename) { 
+    [Bool] AlterTrackFormat([Int] $padtrack) { 
          
         # Set starting state
-        [Int] $alterations = 0
+        [Bool] $alterations = $false
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
 
         # For each content item
@@ -161,49 +136,26 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
                 $contentItem.TrackLabel = $generatedElement
                 $contentBO.UpdateContentBaseName($contentItem)
-                $alterations++
+                $alterations = $true
 
                 Write-InfoToConsole "               to" $contentItem.BaseName
             }
             else {
                 # Do nothing
             }
-
-            # if the switch is set, also update the filename on the filesystem
-            if ($updateCorrespondingFilename.IsPresent) {
-                if ($contentItem.UpdateFileName()) {
-                    Write-InfoToConsole "Filename updated to" $contentItem.FileName
-                }
-            }
         }
 
-        # Provide tips to console
-        if ($alterations) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has changed BaseName since it was first loaded. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.AlteredBaseName -eq `$true}"
-            Remove-ConsoleIndent
-        }
-        if ($alterations -and -not $updateCorrespondingFilename) {
-            Write-InfoToConsole ""
-            Write-InfoToConsole "Some content has pending Filename updates. To identify this content, try:"
-            Add-ConsoleIndent
-            Write-InfoToConsole "<ContentModelVariable>.Content | Where-Object {`$_.PendingFilenameUpdate -eq `$true}"
-            Remove-ConsoleIndent
-        }
-
-        return $true
+        return $alterations
     }
 
-    [Bool] AlterSubject ([IContentSubjectBO] $contentSubjectBO, [System.Collections.Generic.List[ContentSubjectBase]] $subjectList, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+    [Bool] AlterSubject ([IContentSubjectBO] $contentSubjectBO, [System.Collections.Generic.List[ContentSubjectBase]] $subjectList, [String] $fromName, [String] $toName) {
 
         if (-not $this.IsValidForAlter($contentSubjectBO, $subjectList, $fromName, $toName)) {
             return $false
         }
 
         # Set starting state
-        [Int]    $alterations = 0
+        [Bool] $alterations = $false
         [Object] $fromObject = $subjectList.GetByName($fromName)
         [Object] $toObject = $subjectList.GetByName($toName)
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
@@ -226,19 +178,13 @@ class ModelManipulationHandler : IModelManipulationHandler {
             if ($null -ne $toObject) {
                 $contentSubjectBO.ReplaceSubjectLinkedToContent($fromObjectContentItem, $fromObject, $toObject) 
             }
+            
 
             # Update the basename and filename in the model
             $contentBO.UpdateContentBaseName($fromObjectContentItem)
             Write-InfoToConsole "                 to" $fromObjectContentItem.BaseName
 
-            # if the switch is set, also update the filename on the filesystem
-            if ($updateCorrespondingFilename) {
-                if ($fromObjectContentItem.UpdateFileName()) {
-                    Write-InfoToConsole "Filename updated to" $fromObjectContentItem.FileName
-                }
-            }
-
-            $alterations++
+            $alterations = $true
         }
 
         # if there is a toObject, then we delete the fromObject
@@ -246,10 +192,8 @@ class ModelManipulationHandler : IModelManipulationHandler {
             Write-InfoToConsole "Deleting" $fromObject.Name
             $subjectList.Remove($fromObject)
         }
-
-        $this.IfRequiredProvideConsoleTipsForAlter($alterations, $updateCorrespondingFilename)
         
-        return $true
+        return $alterations
     }
 
     [Content] AddContentToModel([String] $filename, [String] $basename, [String] $extension, [Object] $indexInfoIfAvailable) {
@@ -375,23 +319,17 @@ class ModelManipulationHandler : IModelManipulationHandler {
         return $newContent
     }
 
-    [Void] Build([Bool] $loadProperties, [Bool] $generateHash) {
+    [Void] Build([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
         # Initialise
         $i = 0
-        $disposeWhenDone = $false
         
         # Initialise the ContentModel then the BO
         $this.ContentModel.Init()
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
 
         # read the filesystem
-        [Object[]] $files = $contentBO.GetFilesForModel()
-
-        # Instantiate Shell now so it is retained for the life of the method.
-        if ($loadProperties) {
-            $disposeWhenDone = $contentBO.InstantiatePersistantFilesystemShellIfNotPresent()
-        }
+        [System.IO.FileInfo[]] $files = $filesystemProvider.GetFiles()
 
         # for each file
         foreach ($file in $files) {    
@@ -404,12 +342,12 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
             # If requested, load properties
             if ($loadProperties) {
-                $contentBO.FillPropertiesWhereMissing($content, $file, $true)
+                $contentBO.FillPropertiesWhereMissing($content, $file, $filesystemProvider)
             }
 
             # If requested, generate a hash
             if ($generateHash) {
-                $contentBO.GenerateHashIfMissing($content, $file, $true)
+                $contentBO.GenerateHashIfMissing($content, $file, $filesystemProvider)
             }
 
             # Increment the counter
@@ -418,31 +356,18 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
         Write-Progress -Activity "Generating Model" -Completed
 
-        # Dispose non GC objects
-        if ($disposeWhenDone) {
-            $contentBO.DisposePersistantFilesystemShellIfPresent()
-        }
-
-        $this.IfRequiredProvideConsoleTipsForLoadWarnings()
-
     }
 
-    [Void] Rebuild([Bool] $loadProperties, [Bool] $generateHash) {
+    [Void] Rebuild([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
         # Initialise
         $i = 0
-        $disposeWhenDone = $false
         [System.Collections.Generic.List[Object]] $ToAdd  = [System.Collections.Generic.List[Object]]::new()
         [System.Collections.Generic.List[Object]] $ToRemove  = [System.Collections.Generic.List[Object]]::new()
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
 
         # Get the current list of files
-        [Object[]] $files = $contentBO.GetFilesForModel()
-
-        # Instantiate Shell now so it is retained for the life of the method.
-        if ($loadProperties) {
-            $disposeWhenDone = $contentBO.InstantiatePersistantFilesystemShellIfNotPresent()
-        }
+        [System.IO.FileInfo[]] $files = $filesystemProvider.GetFiles()
 
         # Pre-process
         Write-InfoToConsole "Indexing changes ..."
@@ -483,16 +408,16 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
                 Write-Progress -Activity "Rebuilding model" -Status ("Re-processing Item: " + ($i + 1) + " | " + $content.FileName) -PercentComplete (($i * 100) / $totalProcessingIterationCount)
 
-                $file = $files | Where-Object {$_.Name -eq $content.FileName}
+                $file = $filesystemProvider.GetFileIfExists($content.FileName)
 
                 # If requested, load properties
                 if ($loadProperties) {
-                    $contentBO.FillPropertiesWhereMissing($content, $file, $true)
+                    $contentBO.FillPropertiesWhereMissing($content, $file, $filesystemProvider)
                 }
 
                 # If requested, generate a hash
                 if ($generateHash) {
-                    $contentBO.GenerateHashIfMissing($content, $file, $true)
+                    $contentBO.GenerateHashIfMissing($content, $file, $filesystemProvider)
                 }
 
                 # Increment the counter
@@ -510,12 +435,12 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
             # If requested, load properties
             if ($loadProperties) {
-                $contentBO.FillPropertiesWhereMissing($content, $file, $true)
+                $contentBO.FillPropertiesWhereMissing($content, $file, $filesystemProvider)
             }
 
             # If requested, generate a hash
             if ($generateHash) {
-                $contentBO.GenerateHashIfMissing($content, $file, $true)
+                $contentBO.GenerateHashIfMissing($content, $file, $filesystemProvider)
             }
 
             $i++
@@ -523,35 +448,22 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
         Write-Progress -Activity "Rebuilding model" -Completed
 
-        # Dispose non GC objects
-        if ($disposeWhenDone) {
-            $contentBO.DisposePersistantFilesystemShellIfPresent()
-        }
-
         # Resort the list
         Write-InfoToConsole "Resorting the list"
         $comp = [ContentComparer]::new("FileName")
         $this.ContentModel.Content.Sort($comp)
 
-        $this.IfRequiredProvideConsoleTipsForLoadWarnings()
-
     }
 
-    [Void] Load([System.Array] $infoFromIndexFile, [Bool] $loadProperties, [Bool] $generateHash) {
+    [Void] Load([System.Array] $infoFromIndexFile, [Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
         # Initialise
         $i = 0
-        $disposeWhenDone = $null
         $this.ContentModel.Init()
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
         
         # Get the current list of files
-        [Object[]] $files = $contentBO.GetFilesForModel()
-
-        # Instantiate Shell now so it is retained for the life of the method.
-        if ($loadProperties) {
-            $disposeWhenDone = $contentBO.InstantiatePersistantFilesystemShellIfNotPresent()
-        }
+        [System.IO.FileInfo[]] $files = $filesystemProvider.GetFiles()
 
         # For each json object
         foreach ($indexInfo in $infoFromIndexFile) {     
@@ -562,16 +474,16 @@ class ModelManipulationHandler : IModelManipulationHandler {
             # Load the content 
             [Content] $content = $this.AddContentToModel($indexInfo.Filename, $indexInfo.Basename, $indexInfo.Extension, $indexInfo)
 
-            $file = $files | Where-Object {$_.Name -eq $content.FileName}
+            $file = $filesystemProvider.GetFileIfExists($content.FileName)
 
             # If requested, load properties
             if ($loadProperties) {
-                $contentBO.FillPropertiesWhereMissing($content, $file, $true)
+                $contentBO.FillPropertiesWhereMissing($content, $file, $filesystemProvider)
             }
 
             # If requested, generate a hash
             if ($generateHash) {
-                $contentBO.GenerateHashIfMissing($content, $file, $true)
+                $contentBO.GenerateHashIfMissing($content, $file, $filesystemProvider)
             }
 
             # Increment the counter
@@ -579,24 +491,14 @@ class ModelManipulationHandler : IModelManipulationHandler {
         
         }
 
-        # Dispose non GC objects
-        if ($disposeWhenDone) {
-            $contentBO.DisposePersistantFilesystemShellIfPresent()
-        }
-
         # Remove the progress bar
         Write-Progress -Activity "Importing File Index" -Completed
-
-        # Provide tips to console
-        $this.IfRequiredProvideConsoleTipsForLoadWarnings()
     }
 
-    [Void] FillPropertiesAndHashWhereMissing ([Bool] $loadProperties, [Bool] $generateHash) {
+    [Void] FillPropertiesAndHashWhereMissing ([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
         # Get the current list of files
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
-        [Object[]] $files = $contentBO.GetFilesForModel()
-        [Bool] $disposeWhenDone = $contentBO.InstantiatePersistantFilesystemShellIfNotPresent()
 
          # initialise progress
          Write-InfoToConsole "Collecting Additional information ..."
@@ -606,26 +508,21 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
              Write-Progress -Activity "Collecting addtitional info" -Status ("Re-processing Item: " + ($i + 1) + " | " + $content.FileName) -PercentComplete (($i * 100) / $this.ContentModel.Content.Count)
 
-             $file = $files | Where-Object {$_.Name -eq $content.FileName}
+             $file = $filesystemProvider.GetFileIfExists($content.FileName)
 
              # If requested, load properties
              if ($loadProperties) {
-                 $contentBO.FillPropertiesWhereMissing($content, $file, $true)
+                 $contentBO.FillPropertiesWhereMissing($content, $file, $filesystemProvider)
              }
 
              # If requested, generate a hash
              if ($generateHash) {
-                 $contentBO.GenerateHashIfMissing($content, $file, $true)
+                 $contentBO.GenerateHashIfMissing($content, $file, $filesystemProvider)
              }
 
              # Increment the counter
              $i++
          }
-
-         # Dispose non GC objects
-        if ($disposeWhenDone) {
-            $contentBO.DisposePersistantFilesystemShellIfPresent()
-        }
     }
 
     [Void] RemoveContentFromModel([String] $filename) {
@@ -774,15 +671,6 @@ class ModelManipulationHandler : IModelManipulationHandler {
         }
     }
     
-    [System.Array] GetFilesForModel () {
-        # read the filesystem
-        if ($this.ContentModel.Config.IncludedExtensions.Count -eq 0) {
-            return Get-ChildItem -File
-        }
-        else {
-            return Get-ChildItem -File | Where-Object {$_.Extension -in $this.ContentModel.Config.IncludedExtensions} 
-        }
-    }
     #endregion Internal Methods
 }
 #endregion Class Definition
