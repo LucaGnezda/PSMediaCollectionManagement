@@ -20,6 +20,7 @@ using module .\..\ObjectModels\Content.Class.psm1
 using module .\..\ObjectModels\ContentComparer.Class.psm1
 using module .\..\BusinessObjects\ContentModelConfigBO.Class.psm1
 using module .\..\BusinessObjects\ContentBO.Class.psm1
+using module .\..\Interfaces\IFilesystemProvider.Interface.psm1
 #endregion Using
 
 
@@ -172,7 +173,7 @@ class CommandHandler : ICommandHandler {
         return $merge
     }
 
-    [System.Array] Compare ([Object] $baseline, [Object] $comparison, [Bool] $returnSummary) { 
+    [System.Array] Compare ([Object] $baseline, [Object] $comparison, [IFilesystemProvider] $filesystemProvider, [Bool] $returnSummary) { 
 
         [Int] $match = 0
         [Int] $partialOnFileName = 0
@@ -183,8 +184,8 @@ class CommandHandler : ICommandHandler {
         
         [System.Collections.Generic.List[Object]] $output = [System.Collections.Generic.List[Object]]::new()
 
-        [System.Array] $baselineContentList = $this.ValidateComparisonInputAndRetrieveAsContent($baseline)
-        [System.Array] $comparisonContentList = $this.ValidateComparisonInputAndRetrieveAsContent($comparison)
+        [System.Array] $baselineContentList = $this.ValidateComparisonInputAndRetrieveAsContent($baseline, $filesystemProvider)
+        [System.Array] $comparisonContentList = $this.ValidateComparisonInputAndRetrieveAsContent($comparison, $filesystemProvider)
 
         if (($null -eq $baselineContentList) -or ($null -eq $comparisonContentList)) {
             return $null
@@ -356,10 +357,63 @@ class CommandHandler : ICommandHandler {
             return $null
         }
     }
+
+    [System.Array] TestFilesystemHashes ([IContentModel] $contentModel, [IFilesystemProvider] $filesystemProvider, [Bool] $ReturnSummary) {
+
+        [System.Collections.Generic.List[Object]] $output = [System.Collections.Generic.List[Object]]::new()
+        [Int] $verified = 0
+        [Int] $discrepancy = 0
+        [Int] $i = 0
+
+        # for each file
+        foreach ($item in $contentModel.Content) {    
+            
+            # Show a progress bar
+            Write-Progress -Activity "Verifying Filesystem Hashes" -Status ("Processing Item: " + ($i + 1) + " | " + $item.FileName) -PercentComplete (($i * 100) / $contentModel.Content.count)
+
+            if ($filesystemProvider.CheckFilesystemHash($item.Hash, $item.FileName)) {
+                $outputRow = [PSCustomObject]::new()
+                $outputRow | Add-Member NoteProperty "Content" $item.FileName
+                $outputRow | Add-Member NoteProperty "Verified" "[X]"
+                $outputRow | Add-Member NoteProperty "Color" 92 # Green
+
+                $verified++
+            }
+            else {
+                $outputRow = [PSCustomObject]::new()
+                $outputRow | Add-Member NoteProperty "Content" $item.FileName
+                $outputRow | Add-Member NoteProperty "Verified" "[X]"
+                $outputRow | Add-Member NoteProperty "Color" 95 # Magenta
+
+                $discrepancy++
+            }
+
+            $output.Add($outputRow)
+
+            # Increment the counter
+            $i++
+        
+        }
+
+        # Hide the progress bar
+        Write-Progress -Activity "Verifying Filesystem Hashes" -Completed
+
+        $h = Get-Host
+        $screenWidth = $h.UI.RawUI.WindowSize.Width
+        $filenameWidth = [Int]($screenWidth - 9) - 2
+
+        if ($ReturnSummary) {
+            return @($verified, $discrepancy, $contentModel.Content.Count)
+        }
+        else {
+            Write-FormattedTableToConsole -ColumnHeadings @("Verified", "Content") -ColumnProperties @("Verified", "Content") -ColumnWidths @(9, $filenameWidth) -ColumnColors @(0, 0) -AcceptColumnColorsFromInputIfAvailable @($true, $true) -Object $output
+            return $null
+        }
+    }
     #endregion Implemented Methods
 
     #region Internal Methods
-    [System.Array] ValidateComparisonInputAndRetrieveAsContent ([Object] $inputToCompare) {
+    [System.Array] ValidateComparisonInputAndRetrieveAsContent ([Object] $inputToCompare, [IFilesystemProvider] $filesystemProvider) {
         
         [Bool] $inputIsAPath = $false
         [Bool] $inputIsAFile = $false
@@ -390,7 +444,8 @@ class CommandHandler : ICommandHandler {
         if ($inputIsAPath) {
 
             [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new((New-ContentModel))
-            $handler.Build($false, $true)
+            $filesystemProvider.ChangePath($inputToCompare)
+            $handler.Build($false, $true, $filesystemProvider)
 
             return $handler.ContentModel.Content
         }

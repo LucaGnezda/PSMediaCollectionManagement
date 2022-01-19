@@ -6,6 +6,7 @@ using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Object
 using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\ObjectModels\Studio.Class.psm1
 using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
 using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Providers\FileSystemProvider.Class.psm1    
 
 BeforeAll { 
     Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
@@ -283,6 +284,8 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
         $config.LockFilenameFormat()
         $contentBO = [ContentBO]::new($config)
 
+        [FilesystemProvider] $filesystemProvider = [FilesystemProvider]::new("$PSScriptRoot\TestData\ContentTestD", $config.IncludedExtensions, $false)
+
         $content = $contentBO.CreateContentObject("Foo - Cherry, Apple, Banana, Pear - Delta.mp4", "Foo - Cherry, Apple, Banana, Pear - Delta", ".mp4")
         $content.ProducedBy = [Studio]::new("Ecky")
         $content.Actors.Add([Actor]::new("Cherry"))
@@ -295,7 +298,7 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
         $contentBO.UpdateContentBaseName($content)
         
         # Test
-        $contentBO.UpdateFileName($content) | Should -Be $true
+        $contentBO.UpdateFileName($content, $filesystemProvider) | Should -Be $true
     }
 
     It "Update Content Filename - File Clash" {
@@ -305,6 +308,8 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
         $config.OverrideFilenameFormat(@([FileNameElement]::Studio, [FilenameElement]::Actors, [FilenameElement]::Title))
         $config.LockFilenameFormat()
         $contentBO = [ContentBO]::new($config)
+
+        [FilesystemProvider] $filesystemProvider = [FilesystemProvider]::new("$PSScriptRoot\TestData\ContentTestD", $config.IncludedExtensions, $false)
 
         $content = $contentBO.CreateContentObject("Foo - Cherry, Apple, Banana, Pear - Delta.mp4", "Foo - Cherry, Apple, Banana, Pear - Delta", ".mp4")
         $content.ProducedBy = [Studio]::new("Foo")
@@ -318,7 +323,7 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
         $contentBO.UpdateContentBaseName($content)
         
         # Test
-        $contentBO.UpdateFileName($content) | Should -Be $false
+        $contentBO.UpdateFileName($content, $filesystemProvider) | Should -Be $false
     }
 
     It "Fill Properties" {
@@ -328,13 +333,19 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
 
         $content = $contentBO.CreateContentObject("Foo - Bar.mp4", "Foo - Bar", ".mp4")
         Set-Location $PSScriptRoot\TestData\ContentTestA
-        $contentBO.FillPropertiesWhereMissing($content, $null, $false) 
+
+        [FilesystemProvider] $filesystemProvider = [FilesystemProvider]::new("$PSScriptRoot\TestData\ContentTestA", $config.IncludedExtensions, $false)
+
+        $contentBO.FillPropertiesWhereMissing($content, $null, $filesystemProvider) 
 
         # Test
         $content.FrameWidth | Should -Be 320
         $content.FrameHeight | Should -Be 240
         $content.FrameRate | Should -Be "30.00 frames/second"
         $content.BitRate | Should -Be "375kbps"
+
+        # Do
+        $filesystemProvider.Dispose()
     }
 
     It "Generate Hash" {
@@ -344,10 +355,16 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
 
         $content = $contentBO.CreateContentObject("Foo - Bar.mp4", "Foo - Bar", ".mp4")
         Set-Location $PSScriptRoot\TestData\ContentTestA
-        $contentBO.GenerateHashIfMissing($content, $null, $false) 
+
+        [FilesystemProvider] $filesystemProvider = [FilesystemProvider]::new("$PSScriptRoot\TestData\ContentTestA", $config.IncludedExtensions, $false)
+
+        $contentBO.GenerateHashIfMissing($content, $null, $filesystemProvider) 
 
         # Test
         $content.Hash | Should -Be "88F292963ED23DA5F9C522CBF5075637"
+
+        # Do
+        $filesystemProvider.Dispose()
     }
 
     It "Check Hash" {
@@ -357,16 +374,22 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
 
         $content = $contentBO.CreateContentObject("Foo - Bar.mp4", "Foo - Bar", ".mp4")
         Set-Location $PSScriptRoot\TestData\ContentTestA
+
+        [FilesystemProvider] $filesystemProvider = [FilesystemProvider]::new("$PSScriptRoot\TestData\ContentTestA", $config.IncludedExtensions, $false)
+
         $content.Hash = "88F292963ED23DA5F9C522CBF5075637"
 
         # Test
-        $contentBO.CheckFilesystemHash($content, $null, $false) | Should -Be $true
+        $filesystemProvider.CheckFilesystemHash($content.Hash, $content.FileName) | Should -Be $true
 
         # Do
         $content.Hash = "88F292963ED23DA5F9C522CBF5075630"
 
         # Test
-        $contentBO.CheckFilesystemHash($content, $null, $false) | Should -Be $false
+        $filesystemProvider.CheckFilesystemHash($content.Hash, $content.FileName) | Should -Be $false
+
+        # Do
+        $filesystemProvider.Dispose()
     }
 }
 
