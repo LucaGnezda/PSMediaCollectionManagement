@@ -172,6 +172,14 @@ Describe "Call Function - Compare-Model" -Tag IntegrationTest {
         Compare-ContentModels ".\index.test.inputA.json" ".\index.test.inputA.json" -ReturnSummary | Should -Be @(3, 0, 0, 0, 0, 0, 3)
     }
 
+    It "Compare Content Model - File Directory" {
+        Compare-ContentModels ".\index.test.inputA.json" ".\..\ContentTestB" -ReturnSummary | Should -Be @(3, 0, 0, 0, 0, 0, 3)
+    }
+
+    It "Compare Content Model - Directory File" {
+        Compare-ContentModels ".\..\ContentTestB" ".\index.test.inputA.json" -ReturnSummary | Should -Be @(3, 0, 0, 0, 1, 0, 4)
+    }
+
     It "Compare Content Model - Unmatched Forward" {
         Compare-ContentModels $contentModelC $contentModelD -ReturnSummary | Should -Be @(1, 1, 1, 0, 0, 0, 3)
     }
@@ -222,7 +230,7 @@ Describe "Call Function - Confirm-FilesystemHashes" -Tag IntegrationTest {
     }
 
     It "Validate Hashes" {
-        Confirm-FilesystemHashes $contentModelB -ReturnSummary | Should -Be @(2, 1, 3)
+        Test-FilesystemHashes $contentModelB -ReturnSummary | Should -Be @(2, 1, 3)
     }
 }
 

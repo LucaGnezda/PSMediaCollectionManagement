@@ -64,6 +64,11 @@ class Studio : ContentSubjectBase {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
             } -Force
+
+            Add-Member -InputObject $this.ProducedAlbums -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
+            } -Force
         }
 
         # If required
@@ -81,6 +86,11 @@ class Studio : ContentSubjectBase {
             Add-Member -InputObject $this.ProducedSeries -MemberType ScriptMethod -Name Matching -value {
                 param ([String] $s)
                 return ($this | Where-Object {$_.Name -match $s})
+            } -Force
+
+            Add-Member -InputObject $this.ProducedSeries -MemberType ScriptMethod -Name GetByName -value {
+                param ([String] $s)
+                return ($this | Where-Object {$_.Name -ceq $s})
             } -Force
         }
 

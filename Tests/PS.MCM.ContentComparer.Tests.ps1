@@ -1,4 +1,4 @@
-using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Helpers\ContentComparer.Class.psm1
+using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\ObjectModels\ContentComparer.Class.psm1
 
 BeforeAll { 
 

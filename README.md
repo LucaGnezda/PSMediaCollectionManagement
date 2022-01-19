@@ -1,6 +1,6 @@
 PS.MCM PowerShell Module (PowerShell Media Content Management)
 =============
-This is a filesystem media content management module. Its purpose is to help manage a well defined file naming structure, as well as track file integrity for files under management. It works by capturing information about files from properties, hash and filename, then builds a object graph based on the naming structure. From there the user can identify filename inconsistencies, perform a range of bulk alters and updates, check integrity, compare models, copy and merge models, check spelling (coming soon), etc. The user can also save models to a structured json file, which can then be reloaded at a later time to re-compare against the filesystem or other models.
+This is a filesystem media content management module. Its purpose is to help manage a well defined file naming structure, as well as track file integrity for files under management. It works by capturing information about files from properties, hash and filename, then builds a object graph based on the naming structure. From there the user can identify filename inconsistencies, perform a range of bulk alters and updates, check integrity, compare models, copy and merge models, check spelling, etc. The user can also save models to a structured json file, which can then be reloaded at a later time to re-compare against the filesystem or other models.
 
 # Requirements
 PowerShell 5 or later.
@@ -106,6 +106,7 @@ Doing other things with your models
 # Try things like
 $contentModelCopy = Copy-ContentModel $contentModel
 $mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
+Compare-ContentModel $contentModel1 $contentModel2
 ```
 
 # Roadmap
@@ -114,8 +115,8 @@ Things still to be done, in progress, or recently completed:
 | ---- | ---------------- | ------ |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
-| Feature | Have ContentModels remember the load/build path so they continue to work correctly when you change directories | :heavy_minus_sign: |
-| Feature | Be able to compare a model directly with the filesystem | :heavy_minus_sign: |
+| Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :construction: |
+| Feature | Be able to compare a model directly with the filesystem | :heavy_check_mark: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
 
 | Type | Feature / Improvement | Status |

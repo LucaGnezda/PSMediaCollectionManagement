@@ -1,6 +1,6 @@
 #region Header
 #
-# About: Services Layer Class for PS.MediaCollectionManagement Module 
+# About: Handlers Layer Class for PS.MediaCollectionManagement Module 
 #
 # Author: Luca Gnezda 
 #
@@ -13,15 +13,17 @@
 #------------
 using module .\..\Interfaces\IStringSimilarityProvider.Interface.psm1
 using module .\..\Interfaces\ISpellcheckProvider.Interface.psm1
-using module .\..\Interfaces\IModelAnalysisService.Interface.psm1
+using module .\..\Interfaces\IModelAnalysisHandler.Interface.psm1
+using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\SpellcheckResult.Class.psm1
+using module .\..\BusinessObjects\ContentBO.Class.psm1
 #endregion Using
 
 
 #region Class Definition
 #-----------------------
-class ModelAnalysisService : IModelAnalysisService {
+class ModelAnalysisHandler : IModelAnalysisHandler {
 
     #region Properties
     [IStringSimilarityProvider] $StringSimilarityProvider
@@ -33,17 +35,43 @@ class ModelAnalysisService : IModelAnalysisService {
     #endregion Constructors
     
     
-    #region Methods
-    [void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) {
+    #region Implemented Methods
+    [Void] SetStringSimilarityProvider([IStringSimilarityProvider] $provider) {
         $this.StringSimilarityProvider = $provider
     }
 
-    [void] SetSpellcheckProvider([ISpellcheckProvider] $provider) {
+    [Void] SetSpellcheckProvider([ISpellcheckProvider] $provider) {
         $this.SpellcheckProvider = $provider
     }
 
+    [Void] ModelSummary([IContentModel] $contentModel) {
+        [Timespan]$totalTimeSpan = 0
 
-    [Int[]] AnalysePossibleLabellingIssues ([System.Collections.Generic.List[Object]] $subjectList, [Bool] $returnSummary) {
+        foreach ($content in $contentModel.Content) {
+            $totalTimeSpan += $content.TimeSpan
+        }
+
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Actors.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Artists.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Albums.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Series.Count).PadLeft(13," ") " Content Items"
+        }
+        if ($null -ne $contentModel.Actors) {
+            Write-InfoToConsole ([String]$contentModel.Studios.Count).PadLeft(13," ") " Content Items"
+        }
+        Write-InfoToConsole ([String]$contentModel.Content.Count).PadLeft(13," ") " Content Items"
+        Write-InfoToConsole ([String]([String]$totalTimeSpan.Days + "d " + $totalTimeSpan.ToString("hh\:mm\:ss") )).PadLeft(13," ") " Total Duration" 
+    }
+
+
+    [Int[]] AnalysePossibleLabellingIssues ([System.Collections.Generic.List[ContentSubjectBase]] $subjectList, [Bool] $returnSummary) {
         
         # Initialise
         [Int] $itemCount = $subjectList.Count
@@ -219,7 +247,10 @@ class ModelAnalysisService : IModelAnalysisService {
             return $null
         }
     }
+    
+    #endregion Implemented Methods
 
+    #region Internal Methods
     [Void] Hidden DisplaySpellcheckSuggestions([System.Collections.Hashtable] $spellcheckResults) {
 
         [Int] $maxWordLength = 0
@@ -255,6 +286,7 @@ class ModelAnalysisService : IModelAnalysisService {
             }
         }
     }
-    #endregion Methods
+
+    #endregion Internal Methods
 }
 #endregion Class Definition

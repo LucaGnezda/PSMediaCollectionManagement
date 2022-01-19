@@ -12,13 +12,14 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
+using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
 #endregion Using
 
 
 
 #region Abstract (sortof) Class Definition
 #-----------------------------------------
-class CollectionManagementDefaults {
+class CollectionManagementDefaults : IsAbstract {
     
     #region Static Properties
     #endregion Static Properties
@@ -26,11 +27,7 @@ class CollectionManagementDefaults {
 
     #region Constructors
     CollectionManagementDefaults () {
-
-        # Prevent instantiation of this class
-        if ($this.GetType() -eq [CollectionManagementDefaults]) {
-            throw [System.NotSupportedException] "System.NotSupportedException: Cannot instantiate an abstract class"
-        }
+        $this.AssertAsAbstract([CollectionManagementDefaults])
     } 
     #endregion Constructors
 
@@ -46,6 +43,14 @@ class CollectionManagementDefaults {
 
     [System.Array] static DEFAULT_TAGS() {
         return @("Unknown", "Various")
+    }
+
+    [String] static DEFAULT_TAG_OPEN_DELIMITER() {
+        return "<"
+    }
+
+    [String] static DEFAULT_TAG_CLOSE_DELIMITER() {
+        return ">"
     }
 
     [String] static DEFAULT_FILENAME_SPLITTER() {
@@ -93,11 +98,23 @@ class CollectionManagementDefaults {
     }
 
     [System.Array] static DEFAULT_CONFIG_EXPORT_FORMAT() {
-        return @("_IncludedExtensions","_DecorateAsTags","_FilenameFormat","_FilenameSplitter","_ListSplitter","_ExportFormat")
+        return @("_IncludedExtensions","_DecorateAsTags","_TagOpenDelimiter","_TagCloseDelimiter","_FilenameFormat","_FilenameSplitter","_ListSplitter","_ExportFormat")
     }
 
-    [String] static DEFAULT_MODULE_FILETYPE() {
+    [String] static DEFAULT_FILEINDEX_FILEFORMAT() {
+        return [CollectionManagementDefaults]::V3_FILEINDEX_FILEFORMAT()
+    }
+
+    [String] static LEGACY_FILEINDEX_FILEFORMAT() {
+        return "ContentModel.JsonIndex.V1"
+    }
+    
+    [String] static V2_FILEINDEX_FILEFORMAT() {
         return "ContentModel.JsonIndex.V2"
+    }
+
+    [String] static V3_FILEINDEX_FILEFORMAT() {
+        return "ContentModel.JsonIndex.V3"
     }
 
     #endregion Static Methods
