@@ -115,7 +115,7 @@ Things still to be done, in progress, or recently completed:
 | ---- | ---------------- | ------ |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
-| Feature | Allow content methods to select paths, giving greater control regardless of your current filesystem location. | :construction: |
+| Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :construction: |
 | Feature | Be able to compare a model directly with the filesystem | :heavy_check_mark: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
 
