@@ -51,7 +51,7 @@ $contentModel.Build()
 # or if you want to include file matadata and generate hashes too
 $contentModel.Build($true, $true)
 
-# of with pathing
+# or with pathing
 $contentModel.Build(".\..\MyMediaFolder", $true, $true)
 ```
 
