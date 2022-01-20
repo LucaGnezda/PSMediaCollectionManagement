@@ -365,6 +365,11 @@ class CommandHandler : ICommandHandler {
         [Int] $discrepancy = 0
         [Int] $i = 0
 
+        if (-not $filesystemProvider.HasValidPath) {
+            Write-ErrorToConsole "Error: Invalid path provided. Unable to test, abandoning action."
+            return $null
+        }
+
         # for each file
         foreach ($item in $contentModel.Content) {    
             
@@ -442,6 +447,11 @@ class CommandHandler : ICommandHandler {
 
         # if input is a path then return a minimal build, with hashes but no model subjects or properties
         if ($inputIsAPath) {
+
+            if (-not $filesystemProvider.HasValidPath) {
+                Write-ErrorToConsole "Error: Invalid path provided. Unable to compare, abandoning action."
+                return $null
+            }
 
             [ModelManipulationHandler] $handler = [ModelManipulationHandler]::new((New-ContentModel))
             $filesystemProvider.ChangePath($inputToCompare)
