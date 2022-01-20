@@ -115,7 +115,7 @@ Things still to be done, in progress, or recently completed:
 | ---- | ---------------- | ------ |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
 | Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
-| Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :construction: |
+| Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :heavy_check_mark: |
 | Feature | Be able to compare a model directly with the filesystem | :heavy_check_mark: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
 
@@ -141,11 +141,11 @@ Where:
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
+- Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. The problems are that; 'Add-Type' isn't available at parse time, 'using' requires the end user to know the structure of the module if they need to use the types (which this module does), and 'using' types has known issues all the way to PowerShell v7 (refer to logged issues in the PowerShell repos). To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
 - PowerShell doesn't implement abstract classes or interfaces. To get around this limitation, this module implements pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
 - Interfaces then allow the module to implement dependency injection (DI) with formal contracts.
-- Currently the spellcheck features require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine. However the feature has implemented as a DI provider, that abstracts away implementation specifics. This will more easily allow other implementations to be substituted or added in the future. 
-- I know The code is still pretty messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. Now I can start to refactor with purpose towards 'go well' principles (thanks Bob).  
+- The current implementation of the SpellcheckProvider interface require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine, and to a very high standard. However because providers have been implemented with dependency injection, this will more easily allow alternate implementations to be substituted or added in the future. 
+- I know The code is still a little messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. So I'm progressively refactor the code with purpose towards 'go well' principles (thanks Uncle Bob).  
 
 # Developer tips
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
@@ -159,7 +159,3 @@ Would like to thank/credit a bunch of contributors and the community ...
 - [gravejester](https://github.com/gravejester) for the PowerShell implementation of Levenshtein string similarity functions.
 - Pretty much everyone on [StackOverflow](https://stackoverflow.com/), for pretty much having answers to every questions ever conceived (except PowerShell Interfaces :P).
 - The [Pester community](https://github.com/pester/Pester), for creating an awesome PowerShell testing framework.
-
-
-
- 
