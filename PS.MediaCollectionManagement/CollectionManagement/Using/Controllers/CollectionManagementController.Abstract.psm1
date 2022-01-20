@@ -54,8 +54,9 @@ class CollectionManagementController : IsAbstract {
 
 
     #region Static Methods
-    [Void] Static Build([IContentModel] $contentModel, [Bool] $loadProperties, [Bool] $generateHash) {
-        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+    [Void] Static Build([IContentModel] $contentModel, [String] $contentPath, [Bool] $loadProperties, [Bool] $generateHash) {
+        
+        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
         
         $handler.Build($loadProperties, $generateHash, $filesystemProvider)
@@ -63,8 +64,9 @@ class CollectionManagementController : IsAbstract {
         $filesystemProvider.Dispose()
     }
 
-    [Void] Static Rebuild([IContentModel] $contentModel, [Bool] $loadProperties, [Bool] $generateHash) {
-        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+    [Void] Static Rebuild([IContentModel] $contentModel, [String] $contentPath, [Bool] $loadProperties, [Bool] $generateHash) {
+        
+        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
         
         $handler.Rebuild($loadProperties, $generateHash, $filesystemProvider)
@@ -72,8 +74,9 @@ class CollectionManagementController : IsAbstract {
         $filesystemProvider.Dispose()
     }
 
-    [Void] Static Load([IContentModel] $contentModel, [String] $indexFilePath, [Bool] $loadProperties, [Bool] $generateHash) {
-        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+    [Void] Static Load([IContentModel] $contentModel, [String] $indexFilePath, [Bool] $loadProperties, [Bool] $generateHash, [String] $contentPath) {
+        
+        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
         [IModelPersistenceHandler] $persistenceHandler = [ModelPersistenceHandler]::new()
         [IModelManipulationHandler] $manipulationHandler = [ModelManipulationHandler]::new($contentModel)
         
@@ -83,8 +86,9 @@ class CollectionManagementController : IsAbstract {
         $filesystemProvider.Dispose()
     }
 
-    [Void] Static Save([IContentModel] $contentModel, [String] $indexFilePath, [Bool] $loadProperties, [Bool] $generateHash) {
-        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+    [Void] Static Save([IContentModel] $contentModel, [String] $indexFilePath, [Bool] $loadProperties, [Bool] $generateHash, [String] $contentPath) {
+        
+        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
         [IModelPersistenceHandler] $persistenceHandler = [ModelPersistenceHandler]::new()
         [IModelManipulationHandler] $manipulationHandler = [ModelManipulationHandler]::new($contentModel)
         
@@ -93,113 +97,113 @@ class CollectionManagementController : IsAbstract {
         $filesystemProvider.Dispose()
     }
 
-    [Bool] Static AlterActor ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+    [Bool] Static AlterActor ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [String] $contentPath) {
 
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
         
         [Bool] $alterations = $handler.AlterSubject([ActorBO]::new($contentModel.Config), $contentModel.Actors, $fromName, $toName)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Bool] Static AlterAlbum ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+    [Bool] Static AlterAlbum ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [String] $contentPath) {
 
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         [Bool] $alterations = $handler.AlterSubject([AlbumBO]::new($contentModel.Config), $contentModel.Albums, $fromName, $toName)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Bool] Static AlterArtist ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+    [Bool] Static AlterArtist ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [String] $contentPath) {
 
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         [Bool] $alterations = $handler.AlterSubject([ArtistBO]::new($contentModel.Config), $contentModel.Artists, $fromName, $toName)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Bool] Static AlterSeries ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+    [Bool] Static AlterSeries ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [String] $contentPath) {
 
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         [Bool] $alterations = $handler.AlterSubject([SeriesBO]::new($contentModel.Config), $contentModel.Series, $fromName, $toName)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Bool] Static AlterStudio ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+    [Bool] Static AlterStudio ([IContentModel] $contentModel, [String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename, [String] $contentPath) {
 
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         [Bool] $alterations = $handler.AlterSubject([StudioBO]::new($contentModel.Config), $contentModel.Studios, $fromName, $toName)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Bool] Static RemodelFilenameFormat ([IContentModel] $contentModel, [Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) { 
+    [Bool] Static RemodelFilenameFormat ([IContentModel] $contentModel, [Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename, [String] $contentPath) { 
         
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         [Bool] $alterations = $handler.RemodelFilenameFormat($swapElement, $withElement)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Bool] Static AlterSeasonEpisodeFormat ([IContentModel] $contentModel, [Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename) {
+    [Bool] Static AlterSeasonEpisodeFormat ([IContentModel] $contentModel, [Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename, [String] $contentPath) {
         
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         [Bool] $alterations = $handler.AlterSeasonEpisodeFormat($padSeason, $padEpisode, $pattern)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Bool] Static AlterTrackFormat ([IContentModel] $contentModel, [Int] $padTrack, [Bool] $updateCorrespondingFilename) { 
+    [Bool] Static AlterTrackFormat ([IContentModel] $contentModel, [Int] $padTrack, [Bool] $updateCorrespondingFilename, [String] $contentPath) { 
         
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         [Bool] $alterations = $handler.AlterTrackFormat($padTrack)
         if ($updateCorrespondingFilename) {
-            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+            [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
             $handler.ApplyAllPendingFilenameChanges($filesystemProvider)
         }
         $handler.IfRequiredProvideConsoleTipsForAlter([Bool] $alterations, [Bool] $updateCorrespondingFilename)
         return $alterations
     }
 
-    [Void] ApplyAllPendingFilenameChanges([IContentModel] $contentModel) {
+    [Void] ApplyAllPendingFilenameChanges([IContentModel] $contentModel, [String] $contentPath) {
         
-        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
 
         $handler.ApplyAllPendingFilenameChanges($filesystemProvider)

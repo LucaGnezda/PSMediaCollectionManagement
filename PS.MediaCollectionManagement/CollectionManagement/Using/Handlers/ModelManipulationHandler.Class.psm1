@@ -68,6 +68,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
     [Void] ApplyAllPendingFilenameChanges([IFilesystemProvider] $filesystemProvider) {
     
+        if ($filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to apply changes, abandoning action."
+            return
+        }
+
         # Get all pending filename Updates
         [System.Collections.Generic.List[Content]] $pendingContent = $this.ContentModel.Content | Where-Object {$_.PendingFilenameUpdate -eq $true}
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
@@ -321,6 +326,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
     [Void] Build([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
+        if (-not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to build, abandoning action."
+            return
+        }
+        
         # Initialise
         $i = 0
         
@@ -359,6 +369,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
     }
 
     [Void] Rebuild([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
+
+        if (-not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid Path provided. Unable to rebuild, abandoning action."
+            return
+        }
 
         # Initialise
         $i = 0
@@ -457,6 +472,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
     [Void] Load([System.Array] $infoFromIndexFile, [Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
+        if (($loadProperties -or $generateHash) -and -not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to load, abandoning action."
+            return
+        }
+
         # Initialise
         $i = 0
         $this.ContentModel.Init()
@@ -496,6 +516,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
     }
 
     [Void] FillPropertiesAndHashWhereMissing ([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
+
+        if (($loadProperties -or $generateHash) -and -not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to load, abandoning action."
+            return
+        }
 
         # Get the current list of files
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
