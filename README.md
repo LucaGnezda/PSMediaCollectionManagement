@@ -75,7 +75,7 @@ Compare-ContentModels $contentModelA $contentModelB
 Verify Filesystem
 ```powershell
 # Validate content hashes against a content model
-Confirm-FilesystemHashes $contentModel
+Test-FilesystemHashes $contentModel
 ```
 
 Walking through your model
