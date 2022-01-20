@@ -73,8 +73,8 @@ Comparing models
 Compare-ContentModels $contentModel ".\Index.json"
 Compare-ContentModels ".\IndexA.json" ".\IndexB.json"
 Compare-ContentModels $contentModelA $contentModelB 
-Compare-ContentModel ".\..\MyMediaFolder" ".\Index.json"
-Compare-ContentModel ".\..\MyMediaFolder" $contentModelA
+Compare-ContentModels ".\..\MyMediaFolder" ".\Index.json"
+Compare-ContentModels ".\..\MyMediaFolder" $contentModelA
 ```
 
 Copying models
