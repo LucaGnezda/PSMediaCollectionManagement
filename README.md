@@ -45,11 +45,14 @@ $contentModel.Config.OverrideFilenameSplitter(",")
 
 Building a model from the filesystem content
 ```powershell
-# Create a content model
+# Build a content model
 $contentModel.Build()
 
 # or if you want to include file matadata and generate hashes too
 $contentModel.Build($true, $true)
+
+# of with pathing
+$contentModel.Build(".\..\MyMediaFolder", $true, $true)
 ```
 
 Saving a model
