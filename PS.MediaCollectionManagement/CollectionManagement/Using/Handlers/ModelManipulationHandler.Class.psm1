@@ -481,9 +481,6 @@ class ModelManipulationHandler : IModelManipulationHandler {
         $i = 0
         $this.ContentModel.Init()
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
-        
-        # Get the current list of files
-        [System.IO.FileInfo[]] $files = $filesystemProvider.GetFiles()
 
         # For each json object
         foreach ($indexInfo in $infoFromIndexFile) {     
