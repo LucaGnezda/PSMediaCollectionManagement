@@ -66,10 +66,24 @@ $contentModel.LoadIndex(".\Index.json")
 
 Comparing models
 ```powershell
-# Load a content model
+# Compare a content model
 Compare-ContentModels $contentModel ".\Index.json"
 Compare-ContentModels ".\IndexA.json" ".\IndexB.json"
 Compare-ContentModels $contentModelA $contentModelB 
+Compare-ContentModel ".\..\MyMediaFolder" ".\Index.json"
+Compare-ContentModel ".\..\MyMediaFolder" $contentModelA
+```
+
+Copying models
+```powershell
+# Create a new memory (independent) copy a content model
+$contentModelCopy = Copy-ContentModel $contentModel
+```
+
+Merging models
+```powershell
+# Create a new memory (independent) merged copy a content model
+$mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
 ```
 
 Verify Filesystem
@@ -99,15 +113,6 @@ Altering your model
 # Try things like
 $contentModel.AlterArtist("Foo", "Bar")
 $contentModel.AlterSeasonEpisodeFormat(2, 2, [SeasonEpisodePattern]::Uppercase_S0E0, $false)
-```
-
-Doing other things with your models
-```powershell
-# Try things like
-$contentModelCopy = Copy-ContentModel $contentModel
-$mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
-Compare-ContentModel $contentModel1 $contentModel2
-Compare-ContentModel ".\..\MyMedia" ".\Index.json"
 ```
 
 # Roadmap
