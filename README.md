@@ -107,6 +107,7 @@ Doing other things with your models
 $contentModelCopy = Copy-ContentModel $contentModel
 $mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
 Compare-ContentModel $contentModel1 $contentModel2
+Compare-ContentModel ".\..\MyMedia" ".\Index.json"
 ```
 
 # Roadmap
