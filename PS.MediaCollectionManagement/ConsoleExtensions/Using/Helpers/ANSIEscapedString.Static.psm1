@@ -11,14 +11,14 @@
 
 #region Using
 #------------
-using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
+using module .\..\..\..\Shared\Using\Base\IsStatic.Class.psm1
 #endregion Using
 
 
 
 #region Class Definition
 #-----------------------
-class ANSIEscapedString : IsAbstract {
+class ANSIEscapedString : IsStatic {
     #region Properties
     [String] static hidden $_e = [Char]27
     [String] static hidden $_escapeRegex = "\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])"

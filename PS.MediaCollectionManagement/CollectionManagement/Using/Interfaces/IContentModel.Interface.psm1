@@ -35,28 +35,38 @@ class IContentModel : IsInterface {
     [Void] Rebuild([String] $contentPath) { }
     [Void] Rebuild([String] $contentPath, [Bool] $loadProperties, [Bool] $generateHash) { }
     [Void] LoadIndex () { }
+    [Void] LoadIndex ([Bool] $collectInfoWhereMissing) { }
     [Void] LoadIndex ([String] $indexFilePath) { }
-    [Void] LoadIndex ([String] $contentPath, [Bool] $collectInfoWhereMissing) { }
+    [Void] LoadIndex ([String] $indexFilePath, [Bool] $collectInfoWhereMissing) { }
     [Void] LoadIndex ([String] $indexFilePath, [String] $contentPath, [Bool] $collectInfoWhereMissing) { }
     [Void] SaveIndex () { }
+    [Void] SaveIndex ([Bool] $CollectInfoWhereMissing) { }
     [Void] SaveIndex ([String] $indexFilePath) { }
-    [Void] SaveIndex ([String] $contentPath, [Bool] $CollectInfoWhereMissing) { }
+    [Void] SaveIndex ([String] $indexFilePath, [Bool] $CollectInfoWhereMissing) { }
     [Void] SaveIndex ([String] $indexFilePath, [String] $contentPath, [Bool] $CollectInfoWhereMissing) { }
     [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement) { return $null }
+    [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterActor ([String] $fromName, [String] $toName) { return $null }
+    [Bool] AlterActor ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterActor ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterAlbum ([String] $fromName, [String] $toName) { return $null }
+    [Bool] AlterAlbum ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterAlbum ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterArtist ([String] $fromName, [String] $toName) { return $null }
+    [Bool] AlterArtist ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterArtist ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterSeries ([String] $fromName, [String] $toName) { return $null }
+    [Bool] AlterSeries ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterSeries ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterStudio ([String] $fromName, [String] $toName) { return $null }
+    [Bool] AlterStudio ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterStudio ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern) { return $null }
+    [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterTrackFormat([Int] $padTrack) { return $null }
+    [Bool] AlterTrackFormat([Int] $padTrack, [Bool] $updateCorrespondingFilename) { return $null }
     [Bool] AlterTrackFormat([Int] $padTrack, [String] $contentPath, [Bool] $updateCorrespondingFilename) { return $null }
     [Void] ApplyAllPendingFilenameChanges() { }
     [Void] ApplyAllPendingFilenameChanges([String] $contentPath) { }

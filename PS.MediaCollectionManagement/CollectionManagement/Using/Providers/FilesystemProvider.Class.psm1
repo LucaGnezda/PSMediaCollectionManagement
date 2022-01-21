@@ -39,7 +39,7 @@ class FilesystemProvider : IFilesystemProvider {
         $this._ActSilently = $actSilently
 
         $this | Add-Member -Name "ActingSilently" -MemberType AliasProperty -Value "_ActSilently"
-        $this | Add-Member -Name "HasValidPath" -MemberType Alias -Value "_HasValidPath"
+        $this | Add-Member -Name "HasValidPath" -MemberType AliasProperty -Value "_HasValidPath"
     }
     #endregion Constructors
     

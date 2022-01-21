@@ -12,7 +12,7 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 #endregion Using
 
 

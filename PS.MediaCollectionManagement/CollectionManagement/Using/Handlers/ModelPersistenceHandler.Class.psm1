@@ -13,7 +13,7 @@
 #------------
 using module .\..\Interfaces\IModelPersistenceHandler.Interface.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 #endregion Using
 
 

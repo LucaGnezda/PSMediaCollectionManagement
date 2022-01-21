@@ -11,14 +11,14 @@
 
 #region Using
 #------------
-using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
+using module .\..\..\..\Shared\Using\Base\IsStatic.Class.psm1
 #endregion Using
 
 
 
 #region Abstract (sortof) Class Definition
 #-----------------------------------------
-class FilesystemExtensionsSettings : IsAbstract {
+class FilesystemExtensionsSettings : IsStatic {
     
     #region Static Properties
     #endregion Static Properties
