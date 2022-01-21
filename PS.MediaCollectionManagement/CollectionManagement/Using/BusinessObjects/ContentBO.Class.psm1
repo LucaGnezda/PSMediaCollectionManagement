@@ -15,7 +15,7 @@ using module .\..\Types\Types.psm1
 using module .\..\Interfaces\IFilesystemProvider.Interface.psm1
 using module .\..\ObjectModels\Content.Class.psm1
 using module .\..\ObjectModels\ContentModelConfig.Class.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 #endregion Using
 
 

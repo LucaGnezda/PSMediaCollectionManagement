@@ -1,4 +1,4 @@
-using module .\..\Using\Helpers\ANSIEscapedString.Abstract.psm1
+using module .\..\Using\Helpers\ANSIEscapedString.Static.psm1
 
 
 <#

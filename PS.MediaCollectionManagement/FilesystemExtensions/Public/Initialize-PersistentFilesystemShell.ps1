@@ -1,4 +1,4 @@
-using module .\..\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
+using module .\..\Using\ModuleBehaviour\FilesystemExtensionsState.Singleton.psm1
 
 <#
     .SYNOPSIS

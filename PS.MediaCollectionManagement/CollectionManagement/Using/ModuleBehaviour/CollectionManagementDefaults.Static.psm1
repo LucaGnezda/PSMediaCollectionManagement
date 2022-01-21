@@ -12,14 +12,14 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
-using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
+using module .\..\..\..\Shared\Using\Base\IsStatic.Class.psm1
 #endregion Using
 
 
 
 #region Abstract (sortof) Class Definition
 #-----------------------------------------
-class CollectionManagementDefaults : IsAbstract {
+class CollectionManagementDefaults : IsStatic {
     
     #region Static Properties
     #endregion Static Properties

@@ -13,14 +13,14 @@
 #------------
 using module .\..\Types\Types.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
-using module .\..\Controllers\CollectionManagementController.Abstract.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\Controllers\CollectionManagementController.Static.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 using module .\ContentModelConfig.Class.psm1
 using module .\Content.Class.psm1
 using module .\ContentSubjectBase.Class.psm1
 using module .\ContentComparer.Class.psm1
 using module .\SpellcheckResult.Class.psm1
-using module .\..\..\..\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
+using module .\..\..\..\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Singleton.psm1
 
 #endregion Using
 
@@ -259,12 +259,16 @@ class ContentModel : IContentModel {
         [CollectionManagementController]::Load($this, ".\Index.json", $false, $false, $null)
     }
 
+    [Void] LoadIndex ([Bool] $collectInfoWhereMissing) {
+        [CollectionManagementController]::Load($this, ".\Index.json", $collectInfoWhereMissing, $CollectInfoWhereMissing, $null)
+    }
+
     [Void] LoadIndex ([String] $indexFilePath) {
         [CollectionManagementController]::Load($this, $indexFilePath, $false, $false, $null)
     }
 
-    [Void] LoadIndex ([String] $contentPath, [Bool] $collectInfoWhereMissing) {
-        [CollectionManagementController]::Load($this, ".\Index.json", $collectInfoWhereMissing, $collectInfoWhereMissing, $contentPath)
+    [Void] LoadIndex ([String] $indexFilePath, [Bool] $collectInfoWhereMissing) {
+        [CollectionManagementController]::Load($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing, $null)
     }
 
     [Void] LoadIndex ([String] $indexFilePath, [String] $contentPath, [Bool] $collectInfoWhereMissing) {
@@ -275,12 +279,16 @@ class ContentModel : IContentModel {
         [CollectionManagementController]::Save($this, ".\Index.json", $false, $false, $null)
     }
 
+    [Void] SaveIndex ([Bool] $CollectInfoWhereMissing) {
+        [CollectionManagementController]::Save($this, ".\Index.json", $CollectInfoWhereMissing, $CollectInfoWhereMissing, $null)
+    }
+
     [Void] SaveIndex ([String] $indexFilePath) {
         [CollectionManagementController]::Save($this, $indexFilePath, $false, $false, $null)
     }
 
-    [Void] SaveIndex ([String] $contentPath, [Bool] $CollectInfoWhereMissing) {
-        [CollectionManagementController]::Save($this, ".\Index.json", $collectInfoWhereMissing, $collectInfoWhereMissing, $contentPath)
+    [Void] SaveIndex ([String] $indexFilePath, [Bool] $CollectInfoWhereMissing) {
+        [CollectionManagementController]::Save($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing, $null)
     }
 
     [Void] SaveIndex ([String] $indexFilePath, [String] $contentPath, [Bool] $CollectInfoWhereMissing) {
@@ -291,12 +299,20 @@ class ContentModel : IContentModel {
         return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $false, $null)
     }
 
+    [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $updateCorrespondingFilename, $null)
+    }
+
     [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
         return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $updateCorrespondingFilename, $contentPath)
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName) {
         return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $false, $null)
+    }
+
+    [Bool] AlterActor ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $updateCorrespondingFilename, $null)
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
@@ -306,6 +322,10 @@ class ContentModel : IContentModel {
     [Bool] AlterAlbum ([String] $fromName, [String] $toName) {
         return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $false, $null)
     }
+    
+    [Bool] AlterAlbum ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $updateCorrespondingFilename, $null)
+    }
 
     [Bool] AlterAlbum ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
         return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $updateCorrespondingFilename, $contentPath)
@@ -313,6 +333,10 @@ class ContentModel : IContentModel {
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName) {
         return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $false, $null)
+    }
+
+    [Bool] AlterArtist ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $updateCorrespondingFilename, $null)
     }
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
@@ -327,8 +351,16 @@ class ContentModel : IContentModel {
         return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $updateCorrespondingFilename, $contentPath)
     }
 
+    [Bool] AlterSeries ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $updateCorrespondingFilename, $null)
+    }
+
     [Bool] AlterStudio ([String] $fromName, [String] $toName) {
         return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $false, $null)
+    }
+
+    [Bool] AlterStudio ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $updateCorrespondingFilename, $null)
     }
 
     [Bool] AlterStudio ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
@@ -338,6 +370,10 @@ class ContentModel : IContentModel {
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern) {
         return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $false, $null)
     }
+
+    [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $updateCorrespondingFilename, $null)
+    } 
     
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
         return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $updateCorrespondingFilename, $contentPath)
@@ -345,6 +381,10 @@ class ContentModel : IContentModel {
 
     [Bool] AlterTrackFormat([Int] $padTrack) {
         return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $false, $null)
+    }
+
+    [Bool] AlterTrackFormat([Int] $padTrack, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $updateCorrespondingFilename, $null)
     }
 
     [Bool] AlterTrackFormat([Int] $padTrack, [String] $contentPath, [Bool] $updateCorrespondingFilename) {

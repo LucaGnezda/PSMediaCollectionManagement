@@ -11,8 +11,8 @@
 
 #region Using
 #------------
-using module .\ConsoleExtensionsSettings.Abstract.psm1
-using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
+using module .\ConsoleExtensionsSettings.Static.psm1
+using module .\..\..\..\Shared\Using\Base\IsStatic.Class.psm1
 #endregion Using
 
 
@@ -25,7 +25,7 @@ using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
 
 #region Abstract (sortof) Class Definition
 #-----------------------------------------
-class ConsoleExtensionsState : IsAbstract {
+class ConsoleExtensionsState : IsStatic {
     
     #region Static Properties
     # These are used by the function commands to help manage state when format console output.

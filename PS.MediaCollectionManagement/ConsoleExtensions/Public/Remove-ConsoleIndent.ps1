@@ -1,5 +1,5 @@
-using module .\..\Using\ModuleBehaviour\ConsoleExtensionsSettings.Abstract.psm1
-using module .\..\Using\ModuleBehaviour\ConsoleExtensionsState.Abstract.psm1
+using module .\..\Using\ModuleBehaviour\ConsoleExtensionsSettings.Static.psm1
+using module .\..\Using\ModuleBehaviour\ConsoleExtensionsState.Singleton.psm1
 
 <#
     .SYNOPSIS

@@ -13,7 +13,7 @@
 #------------
 using module .\..\Types\Types.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
-using module .\..\..\..\Shared\Using\Base\IsAbstract.Class.psm1
+using module .\..\..\..\Shared\Using\Base\IsStatic.Class.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
 using module .\..\Interfaces\IModelManipulationHandler.Interface.psm1
 using module .\..\Interfaces\IModelPersistenceHandler.Interface.psm1
@@ -40,7 +40,7 @@ using module .\..\Providers\MSWordCOMSpellcheckProvider.Class.psm1
 
 #region Class Definition
 #-----------------------
-class CollectionManagementController : IsAbstract {
+class CollectionManagementController : IsStatic {
     
     #region Static Properties
     #endregion Static Properties
