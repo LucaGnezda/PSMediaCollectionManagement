@@ -14,6 +14,7 @@
 using module .\..\Types\Types.psm1
 using module .\..\..\..\Shared\Using\Base\IsInterface.Class.psm1
 using module .\IContentSubjectBO.Interface.psm1
+using module .\IContentModel.Interface.psm1
 using module .\IFilesystemProvider.Interface.psm1
 using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 using module .\..\ObjectModels\Content.Class.psm1
@@ -23,6 +24,9 @@ using module .\..\ObjectModels\Content.Class.psm1
 #region Interface Definition
 #-----------------------
 class IModelManipulationHandler : IsInterface {
+    
+    [IContentModel] $ContentModel
+    
     IModelManipulationHandler () {
         $this.AssertAsInterface([IModelManipulationHandler])
     }

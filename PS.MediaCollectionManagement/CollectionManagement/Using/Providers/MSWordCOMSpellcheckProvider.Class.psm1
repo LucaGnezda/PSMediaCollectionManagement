@@ -41,17 +41,7 @@ class MSWordCOMSpellcheckProvider : ISpellcheckProvider {
         }
         catch {
             Write-WarnToConsole "Unable to initialise Word Interop, no spellcheck results will be included in the dictionary."
-            
-            try {
-                Write-InfoToConsole "Disposing COM Word Interop"
-                $this._WordInterop.Quit()
-            }
-            catch {
-                # silently
-            }
-            finally {
-                $this._WordInterop = $null
-            }
+            $this.Dispose()
             return $false
         }
 

@@ -57,6 +57,7 @@ class FilesystemProvider : IFilesystemProvider {
         }
         else {
             $this._HasValidPath = $false
+            $this._fileCache = $null
             throw [System.IO.DirectoryNotFoundException] "System.IO.DirectoryNotFoundException: Unable to resolve path as it does not exist."
         }
         $this._fileCache = $null
@@ -108,7 +109,7 @@ class FilesystemProvider : IFilesystemProvider {
             if (-not $this._ActSilently) {
                 Write-WarnToConsole "Warning: File not found, unable to generate."
             }
-            return -1
+            return ""
         }
 
         return (Get-FileHash $file.FullName -Algorithm MD5).Hash
