@@ -1,1 +1,1 @@
-!(/media.greenbox.png)
+![Green Box](/media.greenbox.png)
