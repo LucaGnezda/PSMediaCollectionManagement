@@ -1,5 +1,7 @@
 Foo.class 100%
+
 ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png)
 
 Bar.class 95%
+
 ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greenbox.png) ![Green Box](/Media/greybox.png) ![Green Box](/Media/greybox.png)
