@@ -47,9 +47,6 @@ class CollectionManagementController : IsStatic {
 
 
     #region Constructors
-    CollectionManagementController () {
-        $this.AssertAsAbstract([CollectionManagementController])
-    } 
     #endregion Constructors
 
 
@@ -267,8 +264,10 @@ class CollectionManagementController : IsStatic {
         [ISpellcheckProvider] $spellcheckProvider = [MSWordCOMSpellcheckProvider]::new()
         $handler.SetSpellcheckProvider($spellcheckProvider)
 
-        return $handler.SpellcheckContentTitles($ContentList, $returnResults)
+        $results = $handler.SpellcheckContentTitles($ContentList, $returnResults)
         $handler.Dispose()
+
+        return $results
     }
 
     #endregion Static Methods
