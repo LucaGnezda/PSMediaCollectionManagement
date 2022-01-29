@@ -46,24 +46,23 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
     [Xml] $codeCoverageData = Get-Content $PSScriptRoot\..\Coverage.xml
 
     if ($UpdateMD.IsPresent) {
-        Clear-Content -Path $FriendlyMarkdownFile
-        Add-Content -Path $FriendlyMarkdownFile -Value "``````Friendly Coverage Report"
-        Add-Content -Path $FriendlyMarkdownFile -Value ("Generated on: " + (Get-Date).ToUniversalTime().ToString("dd MMMM yyyy HH:mm:ss UTC"))
-        Add-Content -Path $FriendlyMarkdownFile -Value ""
+        "``````Friendly Coverage Report" | Out-File -FilePath $FriendlyMarkdownFile -Encoding utf8
+        ("Generated on: " + (Get-Date).ToUniversalTime().ToString("dd MMMM yyyy HH:mm:ss UTC")) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
+        "" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
     }
 
     $output = ("Codebase".PadRight($availableSummaryWidth, " ") + " " + "Coverage".PadRight(22, " ") + " " + " Cov/Tot " + " " + "Exc " + " " + "Cov %  " + " " + "E Cov %")
     Write-InfoToConsole $output
-    if ($UpdateMD.IsPresent) { Add-Content -Path $FriendlyMarkdownFile -Value $output }
+    if ($UpdateMD.IsPresent) { ([ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
 
     $output = ("--------".PadRight($availableSummaryWidth, "-") + " " + "--------".PadRight(22, "-") + " " + "---------" + " " + "----" + " " + "-------" + " " + "-------")
     Write-InfoToConsole $output
-    if ($UpdateMD.IsPresent) { Add-Content -Path $FriendlyMarkdownFile -Value $output }
+    if ($UpdateMD.IsPresent) { ([ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
 
     foreach ($package in $codeCoverageData.report[1].package) {
         $output = ([ANSIEscapedString]::Colourise([ANSIEscapedString]::FixedWidth($package.name, $availablePackageWidth, $true), $grey))
         Write-InfoToConsole $output
-        if ($UpdateMD.IsPresent) { Add-Content -Path $FriendlyMarkdownFile -Value $output }
+        if ($UpdateMD.IsPresent) { ([ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
         Add-ConsoleIndent
 
         foreach ($class in $package.class) {
@@ -115,12 +114,15 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
                 $output += [ANSIEscapedString]::Colourise($exceptionCoveragePercentage.PadLeft(8," "), $exceptionCoverageColour)
 
                 Write-InfoToConsole $output
+                if ($UpdateMD.IsPresent) { ("  " + [ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
 
             }
             else {
 
                 # process as a class with one or more methods
-                Write-InfoToConsole ([ANSIEscapedString]::Colourise([ANSIEscapedString]::FixedWidth($className, $availableClassWidth, $true), $grey))
+                $output = ([ANSIEscapedString]::Colourise([ANSIEscapedString]::FixedWidth($className, $availableClassWidth, $true), $grey))
+                Write-InfoToConsole $output
+                if ($UpdateMD.IsPresent) { ("  " + [ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8}
                 Add-ConsoleIndent
 
                 foreach ($method in $class.method) {
@@ -165,11 +167,13 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
                     $output += [ANSIEscapedString]::Colourise($exceptionCoveragePercentage.PadLeft(8," "), $exceptionCoverageColour)
 
                     Write-InfoToConsole $output
+                    if ($UpdateMD.IsPresent) { ("    " + [ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
 
                 }
 
                 Remove-ConsoleIndent
-                Write-InfoToConsole   
+                Write-InfoToConsole  
+                if ($UpdateMD.IsPresent) { "" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 } 
 
             }
 
@@ -177,6 +181,7 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
 
         Remove-ConsoleIndent
         Write-InfoToConsole
+        if ($UpdateMD.IsPresent) { "" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
     }
 
     $instructionCounter = $codeCoverageData.report[1].counter | Where-Object {$_.type -eq "INSTRUCTION"}
@@ -211,11 +216,17 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
     $output += [ANSIEscapedString]::Colourise($exceptionCoveragePercentage.PadLeft(8," "), $exceptionCoverageColour)
 
     Write-InfoToConsole
+    if ($UpdateMD.IsPresent) { "" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
+
     Write-InfoToConsole $output
-    Write-InfoToConsole "  ($($classCount) files, $($instructionCount) instructions)"
+    if ($UpdateMD.IsPresent) { ([ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
+
+    $output = "  ($($classCount) files, $($instructionCount) instructions)"
+    Write-InfoToConsole $output
+    if ($UpdateMD.IsPresent) { ([ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
 
     if ($UpdateMD.IsPresent) {
-        Add-Content -Path $FriendlyMarkdownFile -Value "``````"
+        "``````" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
     }
 }
 
