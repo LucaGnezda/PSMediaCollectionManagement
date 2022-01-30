@@ -55,7 +55,7 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
     Write-InfoToConsole $output
     if ($UpdateMD.IsPresent) { ([ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
 
-    $output = ("--------".PadRight($availableSummaryWidth, "-") + " " + "--------".PadRight(22, "-") + " " + "---------" + " " + "----" + " " + "-----------" + " " + "-----------")
+    $output = ("--------".PadRight($availableSummaryWidth, "-") + " " + "--------".PadRight(22, "-") + " " + "---------" + " " + "----" + " " + "----------" + " " + "------------")
     Write-InfoToConsole $output
     if ($UpdateMD.IsPresent) { ([ANSIEscapedString]::Strip($output)) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8 }
 
