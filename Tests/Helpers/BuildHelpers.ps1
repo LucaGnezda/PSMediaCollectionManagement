@@ -49,6 +49,11 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
         "``````Friendly Coverage Report" | Out-File -FilePath $FriendlyMarkdownFile -Encoding utf8
         ("Generated on: " + (Get-Date).ToUniversalTime().ToString("dd MMMM yyyy HH:mm:ss UTC")) | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
         "" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
+        "Legend:" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
+        "  $([char]0x25cf) = Coverage" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
+        "  $([char]0x25b2) = Known Exemptions" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
+        "  $([char]0x25cb) = Missed Instructions" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
+        "" | Out-File -FilePath $FriendlyMarkdownFile -Append -Encoding utf8
     }
 
     $output = ("Codebase".PadRight($availableSummaryWidth, " ") + " " + "Coverage".PadRight(22, " ") + " " + " Cov/Tot " + " " + "Exc " + " " + "Coverage %" + " " + "E Coverage %")

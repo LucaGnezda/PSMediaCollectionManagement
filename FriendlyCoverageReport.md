@@ -1,5 +1,10 @@
 ﻿```Friendly Coverage Report
-Generated on: 30 January 2022 07:46:13 UTC
+Generated on: 30 January 2022 07:50:44 UTC
+
+Legend:
+  ● = Coverage
+  ▲ = Known Exemptions
+  ○ = Missed Instructions
 
 Codebase                                              Coverage                Cov/Tot  Exc  Coverage % E Coverage %
 ----------------------------------------------------- ---------------------- --------- ---- ---------- ------------
