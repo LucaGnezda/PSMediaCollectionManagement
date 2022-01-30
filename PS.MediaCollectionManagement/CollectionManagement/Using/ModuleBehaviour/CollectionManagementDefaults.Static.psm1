@@ -78,11 +78,11 @@ class CollectionManagementDefaults : IsStatic {
     }
 
     [System.Array] static DEFAULT_TRACK_FILENAME_FORMAT() {
-        return @([FilenameElement]::Artists, [FilenameElement]::Title)
+        return @([FilenameElement]::Track, [FilenameElement]::Title)
     }
 
     [System.Array] static DEFAULT_ALBUMANDTRACK_FILENAME_FORMAT() {
-        return @([FilenameElement]::Artists, [FilenameElement]::Album, [FilenameElement]::Title)
+        return @([FilenameElement]::Album, [FilenameElement]::Track, [FilenameElement]::Title)
     }
 
     [System.Array] static DEFAULT_AUDIO_EXPORT_FORMAT() {
