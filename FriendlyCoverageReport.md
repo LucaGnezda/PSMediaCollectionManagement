@@ -1,8 +1,8 @@
 ﻿```Friendly Coverage Report
-Generated on: 30 January 2022 07:43:22 UTC
+Generated on: 30 January 2022 07:46:13 UTC
 
 Codebase                                              Coverage                Cov/Tot  Exc  Coverage % E Coverage %
------------------------------------------------------ ---------------------- --------- ---- ----------- -----------
+----------------------------------------------------- ---------------------- --------- ---- ---------- ------------
 PS.MediaCollectionManagement/CollectionManagement/Public                                                         
   Compare-ContentModels                               [●●●●●●●●●●●●●●●●●●●●]    9/9           100.00%     100.00%
   Copy-ContentModel                                   [●●●●●●●●●●●●●●●●●●●●]    1/1           100.00%     100.00%
