@@ -128,15 +128,15 @@ class AlbumBO : IContentSubjectBO {
         $album = $contentToRemove.OnAlbum
 
         # Delete the reference back to the content to be deleted
-        $album.Track.Remove($contentToRemove)
+        $album.Tracks.Remove($contentToRemove)
 
         # If no references remain, delete the album too
-        if ($album.Track.Count -eq 0) {
+        if ($album.Tracks.Count -eq 0) {
             $albumsList.Remove($album)
 
             # And if part of the model, remove the cross reference from the studio
             if ($null -ne $contentToRemove.ProducedBy) {
-                $contentToRemove.ProducedBy.ProducedAlbum.Remove($album)
+                $contentToRemove.ProducedBy.ProducedAlbums.Remove($album)
             }
         }
     }

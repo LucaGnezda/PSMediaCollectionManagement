@@ -1,9 +1,10 @@
+<#
 using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Singleton.psm1
 using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Singleton.psm1
 using module .\..\PS.MediaCollectionManagement\CollectionManagement\Using\Types\Types.psm1
 
 BeforeAll { 
-    Import-Module D:\Scripting\PSMediaCollectionManagement\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psm1 -Force
+    Import-Module .\..\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psd1 -Force
 
     [ConsoleExtensionsState]::RedirectToMockConsole = $true
     [FilesystemExtensionsState]::MockDestructiveActions = $true
@@ -1434,3 +1435,4 @@ AfterAll {
     [ConsoleExtensionsState]::RedirectToMockConsole = $false
     [FilesystemExtensionsState]::MockDestructiveActions = $false
 }
+#>

@@ -23,16 +23,8 @@ class ANSIEscapedString : IsStatic {
     [String] static hidden $_e = [Char]27
     [String] static hidden $_escapeRegex = "\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])"
     [String] static hidden $_escapeSplitRegex = "(\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~]))"
-    [String] static hidden $_colourResetEscape = "$([ANSIEscapedString]::_e)[0m"
+    [String] static hidden $_colourResetEscape = [Char]27 + "[0m"
     #endregion Properties
-
-
-    #region Constructors
-    ANSIEscapedString () {
-        $this.AssertAsAbstract([ANSIEscapedString])
-    } 
-    #endregion Constructors
-
 
     #region Methods
     [Int] static PrintedLength([String] $s) {
@@ -88,10 +80,16 @@ class ANSIEscapedString : IsStatic {
             # If too long
             $splitArray = $s -split [ANSIEscapedString]::_escapeSplitRegex
             [String] $output = ""
+            [String] $lastEscape = ""
 
             foreach ($element in $splitArray) {
                 if ($element -match [ANSIEscapedString]::_escapeRegex) {
-                    $output = $output + $element
+                    if ($remainingStringWidth -gt 0) {
+                        $output = $output + $element
+                    }
+                    else {
+                        $lastEscape = $element
+                    }
                 }
                 elseif ($remainingStringWidth -gt ($element.Length + $dotdotdot.Length)) {
                     $output = $output + $element
@@ -108,6 +106,10 @@ class ANSIEscapedString : IsStatic {
                 else {
                     # Do nothing
                 }
+            }
+            
+            if (($output.Length -gt 0) -and ($lastEscape.Length -gt 0)) {
+                $output = $output + $lastEscape
             }
         }
 

@@ -14,12 +14,24 @@
 using module .\..\Types\Types.psm1
 using module .\..\..\..\Shared\Using\Base\IsInterface.Class.psm1
 using module .\..\ObjectModels\Content.Class.psm1
+using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
+using module .\..\ObjectModels\ContentModelConfig.Class.psm1
 #endregion Using
 
 
 #region Interface Definition
 #-----------------------
 class IContentModel : IsInterface {
+    
+    [System.Collections.Generic.List[ContentSubjectBase]] $Actors
+    [System.Collections.Generic.List[ContentSubjectBase]] $Albums
+    [System.Collections.Generic.List[ContentSubjectBase]] $Artists
+    [System.Collections.Generic.List[ContentSubjectBase]] $Series
+    [System.Collections.Generic.List[ContentSubjectBase]] $Studios
+    [System.Collections.Generic.List[Content]] $Content
+    [String] $BuiltFromAbsolutePath
+    [ContentModelConfig] $Config
+    
     IContentModel () {
         $this.AssertAsInterface([IContentModel])
     }

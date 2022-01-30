@@ -49,7 +49,7 @@ function Write-FormattedTableToConsole (
         ($ColumnHeadings.Count -ne $ColumnWidths.Count) -or
         ($ColumnHeadings.Count -ne $ColumnColors.Count) -or
         ($ColumnHeadings.Count -ne $AcceptColumnColorsFromInputIfAvailable.Count)) {
-            Write-Host "Unable to output table. Formatter arrays do not share a common length."
+            Write-WarnToConsole "Unable to output table. Formatter arrays do not share a common length."
             return
     }
 

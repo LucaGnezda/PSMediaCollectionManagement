@@ -42,7 +42,7 @@ class Studio : ContentSubjectBase {
 
         # Add an accessor (getter)
         $this | Add-Member -Name "ProductionCount" -MemberType ScriptProperty -Value {
-            return $this.Produced.Count
+            return $this.ProducedAlbums.Count + $this.ProducedSeries.Count
         } -Force
 
         # Add content Alias

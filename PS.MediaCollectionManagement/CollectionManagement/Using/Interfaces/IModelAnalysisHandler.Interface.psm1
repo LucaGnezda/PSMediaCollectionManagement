@@ -23,6 +23,10 @@ using module .\..\ObjectModels\ContentSubjectBase.Class.psm1
 #region Interface Definition
 #-----------------------
 class IModelAnalysisHandler : IsInterface {
+    
+    [IStringSimilarityProvider] $StringSimilarityProvider
+    [ISpellcheckProvider] $SpellcheckProvider
+
     IModelAnalysisHandler () {
         $this.AssertAsInterface([IModelAnalysisHandler])
     }

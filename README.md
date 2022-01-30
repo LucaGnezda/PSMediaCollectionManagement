@@ -123,7 +123,7 @@ Things still to be done, in progress, or recently completed:
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
-| Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
+| Feature | Create Test Helpers to better present code coverage results | :heavy_check_mark: |
 | Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :heavy_check_mark: |
 | Feature | Be able to compare a model directly with the filesystem | :heavy_check_mark: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
@@ -132,8 +132,8 @@ Things still to be done, in progress, or recently completed:
 | ---- | ---------------- | ------ |
 | Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
 | Codebase Improvement | Implementation of pseudo abstract and interface classes | :heavy_check_mark: |
-| Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :construction: |
-| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
+| Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :heavy_check_mark: |
+| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration (Pester fixed by v5.3.1) | :heavy_check_mark: |
 | Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
 | Type | Feature / Improvement | Status |
@@ -151,7 +151,7 @@ Where:
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
 - Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. The problems are that; 'Add-Type' isn't available at parse time, 'using' requires the end user to know the structure of the module if they need to use the types (which this module does), and 'using' types has known issues all the way to PowerShell v7 (refer to logged issues in the PowerShell repos). To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
-- PowerShell doesn't implement static classes (but does do properties and methods), abstract classes or interfaces. To get around this limitation, this module implements pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
+- PowerShell doesn't implement static classes (but does do properties and methods), abstract classes or interfaces. To get around this limitation, this module implements pseudo static, pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
 - Interfaces then allow the module to implement dependency injection (DI) with formal contracts.
 - The current implementation of the SpellcheckProvider interface require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine, and to a very high standard. However because providers have been implemented with dependency injection, this will more easily allow alternate implementations to be substituted or added in the future. 
 - I know The code is still a little messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. So I'm progressively refactor the code with purpose towards 'go well' principles (thanks Uncle Bob).  
@@ -160,6 +160,12 @@ Where:
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
 - If you would like to attach a Visual Studio Code debugger it is recommended you configure the debugger to run an interactive PowerShell session.
 - Please note, modules with classes won't re-load correctly after being changed in PowerShell 5. If you change the code, remember to re-start your IDE before restarting your debugger.
+
+# Code coverage
+- This module implements a suite of automated pester tests, which generate JoCoCo code coverage results.
+- Several helper commands have been implemented to assist with test automation and the production of friendly code coverage results. 
+- To generate friendly code coverage results, the JoCoCo results are parsed, merged with a known coverage exceptions list, then converted into a more friendly and discoverable format to console and markdown.
+- The latest friendly [code coverage results](./FriendlyCoverageReport.md) can be found here. 
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...

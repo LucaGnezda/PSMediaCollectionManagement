@@ -105,14 +105,14 @@ class ArtistBO : IContentSubjectBO {
 
     [Void] RemoveArtistRelationshipsWithContentAndCleanup([System.Collections.Generic.List[ContentSubjectBase]] $artistsList, [Content] $contentToRemove) {
 
-        # For each actor linked to the content
-        foreach ($artist in $contentToRemove.Actors) {
+        # For each artist linked to the content
+        foreach ($artist in $contentToRemove.Artists) {
 
             # Delete the reference back to the content to be deleted
-            $artist.PerformedIn.Remove($contentToRemove)
+            $artist.Performed.Remove($contentToRemove)
 
-            # If no references remain, delete the actor too
-            if ($artist.PerformedIn.Count -eq 0) {
+            # If no references remain, delete the artist too
+            if ($artist.Performed.Count -eq 0) {
                 $artistsList.Remove($artist)
             }
         }

@@ -40,11 +40,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
     #endregion Properties
 
 
-    #region Constructors
-    ModelManipulationHandler () {
-        $this.ContentModel = $null
-    }
-    
+    #region Constructors    
     ModelManipulationHandler ([IContentModel] $contentModel) {
         $this.ContentModel = $contentModel
     }
@@ -68,7 +64,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
     [Void] ApplyAllPendingFilenameChanges([IFilesystemProvider] $filesystemProvider) {
     
-        if ($filesystemProvider.HasValidPath) {
+        if (-not $filesystemProvider.HasValidPath) {
             Write-WarnToConsole "Warning: Invalid path provided. Unable to apply changes, abandoning action."
             return
         }
@@ -310,16 +306,16 @@ class ModelManipulationHandler : IModelManipulationHandler {
         if ($null -ne $indexInfoIfAvailable) {
 
             # Load properties, where available
-            $newContent.FrameWidth = $indexInfoIfAvailable.FrameWidth
-            $newContent.FrameHeight = $indexInfoIfAvailable.FrameHeight
-            $newContent.FrameRate = $indexInfoIfAvailable.FrameRate
-            try { $newContent.TimeSpan = [TimeSpan]$indexInfoIfAvailable.Duration } catch { $newContent = $null }
-            $newContent.BitRate = $indexInfoIfAvailable.BitRate
-            $newContent.Hash = $indexInfoIfAvailable.Hash
+            try { $newContent.FrameWidth = $indexInfoIfAvailable.FrameWidth } catch { $newContent.FrameWidth = $null }
+            try { $newContent.FrameHeight = $indexInfoIfAvailable.FrameHeight } catch { $newContent.FrameHeight = $null }
+            try { $newContent.FrameRate = $indexInfoIfAvailable.FrameRate } catch { $newContent.FrameRate = "" }
+            try { $newContent.TimeSpan = [TimeSpan]$indexInfoIfAvailable.Duration } catch { $newContent.TimeSpan = $null }
+            try { $newContent.BitRate = $indexInfoIfAvailable.BitRate } catch { $newContent.BitRate = "" }
+            try { $newContent.Hash = $indexInfoIfAvailable.Hash } catch { $newContent.Hash = "" }
         }
 
         # add the content
-        $contentBO.AddContentToModel($this.ContentModel.Content, $newContent)
+        $contentBO.AddContentToList($this.ContentModel.Content, $newContent)
 
         return $newContent
     }
@@ -594,7 +590,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
         # Delete the content item itself
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
-        $contentBO.RemoveContentFromModel($this.ContentModel.Content, $contentToRemove)
+        $contentBO.RemoveContentFromList($this.ContentModel.Content, $contentToRemove)
     }
     
     #endregion Implemented Methods
