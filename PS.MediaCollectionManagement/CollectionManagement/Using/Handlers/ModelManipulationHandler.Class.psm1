@@ -40,11 +40,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
     #endregion Properties
 
 
-    #region Constructors
-    ModelManipulationHandler () {
-        $this.ContentModel = $null
-    }
-    
+    #region Constructors    
     ModelManipulationHandler ([IContentModel] $contentModel) {
         $this.ContentModel = $contentModel
     }
@@ -68,6 +64,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
     [Void] ApplyAllPendingFilenameChanges([IFilesystemProvider] $filesystemProvider) {
     
+        if (-not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to apply changes, abandoning action."
+            return
+        }
+
         # Get all pending filename Updates
         [System.Collections.Generic.List[Content]] $pendingContent = $this.ContentModel.Content | Where-Object {$_.PendingFilenameUpdate -eq $true}
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
@@ -305,22 +306,27 @@ class ModelManipulationHandler : IModelManipulationHandler {
         if ($null -ne $indexInfoIfAvailable) {
 
             # Load properties, where available
-            $newContent.FrameWidth = $indexInfoIfAvailable.FrameWidth
-            $newContent.FrameHeight = $indexInfoIfAvailable.FrameHeight
-            $newContent.FrameRate = $indexInfoIfAvailable.FrameRate
-            try { $newContent.TimeSpan = [TimeSpan]$indexInfoIfAvailable.Duration } catch { $newContent = $null }
-            $newContent.BitRate = $indexInfoIfAvailable.BitRate
-            $newContent.Hash = $indexInfoIfAvailable.Hash
+            try { $newContent.FrameWidth = $indexInfoIfAvailable.FrameWidth } catch { $newContent.FrameWidth = $null }
+            try { $newContent.FrameHeight = $indexInfoIfAvailable.FrameHeight } catch { $newContent.FrameHeight = $null }
+            try { $newContent.FrameRate = $indexInfoIfAvailable.FrameRate } catch { $newContent.FrameRate = "" }
+            try { $newContent.TimeSpan = [TimeSpan]$indexInfoIfAvailable.Duration } catch { $newContent.TimeSpan = $null }
+            try { $newContent.BitRate = $indexInfoIfAvailable.BitRate } catch { $newContent.BitRate = "" }
+            try { $newContent.Hash = $indexInfoIfAvailable.Hash } catch { $newContent.Hash = "" }
         }
 
         # add the content
-        $contentBO.AddContentToModel($this.ContentModel.Content, $newContent)
+        $contentBO.AddContentToList($this.ContentModel.Content, $newContent)
 
         return $newContent
     }
 
     [Void] Build([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
+        if (-not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to build, abandoning action."
+            return
+        }
+        
         # Initialise
         $i = 0
         
@@ -359,6 +365,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
     }
 
     [Void] Rebuild([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
+
+        if (-not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid Path provided. Unable to rebuild, abandoning action."
+            return
+        }
 
         # Initialise
         $i = 0
@@ -457,13 +468,15 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
     [Void] Load([System.Array] $infoFromIndexFile, [Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
 
+        if (($loadProperties -or $generateHash) -and -not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to load, abandoning action."
+            return
+        }
+
         # Initialise
         $i = 0
         $this.ContentModel.Init()
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
-        
-        # Get the current list of files
-        [System.IO.FileInfo[]] $files = $filesystemProvider.GetFiles()
 
         # For each json object
         foreach ($indexInfo in $infoFromIndexFile) {     
@@ -496,6 +509,11 @@ class ModelManipulationHandler : IModelManipulationHandler {
     }
 
     [Void] FillPropertiesAndHashWhereMissing ([Bool] $loadProperties, [Bool] $generateHash, [IFilesystemProvider] $filesystemProvider) {
+
+        if (($loadProperties -or $generateHash) -and -not $filesystemProvider.HasValidPath) {
+            Write-WarnToConsole "Warning: Invalid path provided. Unable to load, abandoning action."
+            return
+        }
 
         # Get the current list of files
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
@@ -572,7 +590,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
         # Delete the content item itself
         [ContentBO] $contentBO = [ContentBO]::new($this.ContentModel.Config)
-        $contentBO.RemoveContentFromModel($this.ContentModel.Content, $contentToRemove)
+        $contentBO.RemoveContentFromList($this.ContentModel.Content, $contentToRemove)
     }
     
     #endregion Implemented Methods

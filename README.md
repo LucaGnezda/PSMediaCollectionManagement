@@ -1,6 +1,6 @@
-PS.MCM PowerShell Module (PowerShell Media Content Management)
+PS.MCM PowerShell Module (PowerShell Media Collection Management)
 =============
-This is a filesystem media content management module. Its purpose is to help manage a well defined file naming structure, as well as track file integrity for files under management. It works by capturing information about files from properties, hash and filename, then builds a object graph based on the naming structure. From there the user can identify filename inconsistencies, perform a range of bulk alters and updates, check integrity, compare models, copy and merge models, check spelling, etc. The user can also save models to a structured json file, which can then be reloaded at a later time to re-compare against the filesystem or other models.
+This is a filesystem media collection management module. Its purpose is to help manage a well defined file naming structure, as well as track file integrity for files under management. It works by capturing information about files from properties, hash and filename, then builds a object graph based on the naming structure. From there the user can identify filename inconsistencies, perform a range of bulk alters and updates, check integrity, compare models, copy and merge models, check spelling, etc. The user can also save models to a structured json file, which can then be reloaded at a later time to re-compare against the filesystem or other models.
 
 # Requirements
 PowerShell 5 or later.
@@ -45,11 +45,14 @@ $contentModel.Config.OverrideFilenameSplitter(",")
 
 Building a model from the filesystem content
 ```powershell
-# Create a content model
+# Build a content model
 $contentModel.Build()
 
 # or if you want to include file matadata and generate hashes too
 $contentModel.Build($true, $true)
+
+# or with pathing
+$contentModel.Build(".\..\MyMediaFolder", $true, $true)
 ```
 
 Saving a model
@@ -66,16 +69,30 @@ $contentModel.LoadIndex(".\Index.json")
 
 Comparing models
 ```powershell
-# Load a content model
+# Compare a content model
 Compare-ContentModels $contentModel ".\Index.json"
 Compare-ContentModels ".\IndexA.json" ".\IndexB.json"
 Compare-ContentModels $contentModelA $contentModelB 
+Compare-ContentModels ".\..\MyMediaFolder" ".\Index.json"
+Compare-ContentModels ".\..\MyMediaFolder" $contentModelA
+```
+
+Copying models
+```powershell
+# Create a new memory (independent) copy a content model
+$contentModelCopy = Copy-ContentModel $contentModel
+```
+
+Merging models
+```powershell
+# Create a new memory (independent) merged copy a content model
+$mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
 ```
 
 Verify Filesystem
 ```powershell
 # Validate content hashes against a content model
-Confirm-FilesystemHashes $contentModel
+Test-FilesystemHashes $contentModel
 ```
 
 Walking through your model
@@ -101,21 +118,13 @@ $contentModel.AlterArtist("Foo", "Bar")
 $contentModel.AlterSeasonEpisodeFormat(2, 2, [SeasonEpisodePattern]::Uppercase_S0E0, $false)
 ```
 
-Doing other things with your models
-```powershell
-# Try things like
-$contentModelCopy = Copy-ContentModel $contentModel
-$mergedContentModel = Merge-ConentModel $contentModel1 $contentModel2
-Compare-ContentModel $contentModel1 $contentModel2
-```
-
 # Roadmap
 Things still to be done, in progress, or recently completed:
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
-| Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
-| Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :construction: |
+| Feature | Create Test Helpers to better present code coverage results | :heavy_check_mark: |
+| Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :heavy_check_mark: |
 | Feature | Be able to compare a model directly with the filesystem | :heavy_check_mark: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
 
@@ -123,8 +132,8 @@ Things still to be done, in progress, or recently completed:
 | ---- | ---------------- | ------ |
 | Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
 | Codebase Improvement | Implementation of pseudo abstract and interface classes | :heavy_check_mark: |
-| Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :construction: |
-| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
+| Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :heavy_check_mark: |
+| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration (Pester fixed by v5.3.1) | :heavy_check_mark: |
 | Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
 | Type | Feature / Improvement | Status |
@@ -141,16 +150,22 @@ Where:
     - Manage auto output indenting 
     - Implement a mock console whose output can then be tested using Pester
     - Output colourful custom formatted tables
-- Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
-- PowerShell doesn't implement abstract classes or interfaces. To get around this limitation, this module implements pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
+- Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. The problems are that; 'Add-Type' isn't available at parse time, 'using' requires the end user to know the structure of the module if they need to use the types (which this module does), and 'using' types has known issues all the way to PowerShell v7 (refer to logged issues in the PowerShell repos). To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
+- PowerShell doesn't implement static classes (but does do properties and methods), abstract classes or interfaces. To get around this limitation, this module implements pseudo static, pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
 - Interfaces then allow the module to implement dependency injection (DI) with formal contracts.
-- Currently the spellcheck features require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine. However the feature has implemented as a DI provider, that abstracts away implementation specifics. This will more easily allow other implementations to be substituted or added in the future. 
-- I know The code is still pretty messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. Now I can start to refactor with purpose towards 'go well' principles (thanks Bob).  
+- The current implementation of the SpellcheckProvider interface require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine, and to a very high standard. However because providers have been implemented with dependency injection, this will more easily allow alternate implementations to be substituted or added in the future. 
+- I know The code is still a little messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. So I'm progressively refactor the code with purpose towards 'go well' principles (thanks Uncle Bob).  
 
 # Developer tips
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
 - If you would like to attach a Visual Studio Code debugger it is recommended you configure the debugger to run an interactive PowerShell session.
 - Please note, modules with classes won't re-load correctly after being changed in PowerShell 5. If you change the code, remember to re-start your IDE before restarting your debugger.
+
+# Code coverage
+- This module implements a suite of automated pester tests, which generate JoCoCo code coverage results.
+- Several helper commands have been implemented to assist with test automation and the production of friendly code coverage results. 
+- To generate friendly code coverage results, the JoCoCo results are parsed, merged with a known coverage exceptions list, then converted into a more friendly and discoverable format to console and markdown.
+- The latest friendly [code coverage results](./FriendlyCoverageReport.md) can be found here. 
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
@@ -159,7 +174,3 @@ Would like to thank/credit a bunch of contributors and the community ...
 - [gravejester](https://github.com/gravejester) for the PowerShell implementation of Levenshtein string similarity functions.
 - Pretty much everyone on [StackOverflow](https://stackoverflow.com/), for pretty much having answers to every questions ever conceived (except PowerShell Interfaces :P).
 - The [Pester community](https://github.com/pester/Pester), for creating an awesome PowerShell testing framework.
-
-
-
- 

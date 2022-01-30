@@ -13,7 +13,7 @@
 #------------
 using module .\..\Interfaces\IModelPersistenceHandler.Interface.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 #endregion Using
 
 
@@ -83,7 +83,7 @@ class ModelPersistenceHandler : IModelPersistenceHandler {
 
         # if we've got here then we couldn't load the config.
         Write-WarnToConsole "Unknown FileType detected, unable to load config."
-        return $false
+        return $true
 
     }
 

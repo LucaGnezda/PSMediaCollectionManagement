@@ -1,6 +1,6 @@
 ﻿using module .\..\Using\ObjectModels\FileMetadataProperty.Class.psm1
-using module .\..\Using\ModuleBehaviour\FilesystemExtensionsSettings.Abstract.psm1
-using module .\..\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
+using module .\..\Using\ModuleBehaviour\FilesystemExtensionsSettings.Static.psm1
+using module .\..\Using\ModuleBehaviour\FilesystemExtensionsState.Singleton.psm1
 
 <#
     .SYNOPSIS

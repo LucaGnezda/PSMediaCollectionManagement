@@ -1,4 +1,4 @@
-using module .\..\Using\Controllers\CollectionManagementController.Abstract.psm1
+using module .\..\Using\Controllers\CollectionManagementController.Static.psm1
 using module .\..\Using\ObjectModels\ContentModel.Class.psm1
 
 <#

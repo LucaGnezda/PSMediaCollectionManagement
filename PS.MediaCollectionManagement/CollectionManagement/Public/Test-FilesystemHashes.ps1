@@ -1,4 +1,4 @@
-using module .\..\Using\Controllers\CollectionManagementController.Abstract.psm1
+using module .\..\Using\Controllers\CollectionManagementController.Static.psm1
 using module .\..\Using\ObjectModels\ContentModel.Class.psm1
 
 <#
@@ -19,12 +19,17 @@ using module .\..\Using\ObjectModels\ContentModel.Class.psm1
     PS> Test-FilesystemHashes $contentModel $false
 #>
 function Test-FilesystemHashes (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$true, Position=0, ParameterSetName="WithPath")]
+    [String] $FilePath = ".\",
+
+    [Parameter(Mandatory=$true, Position=1, ParameterSetName="WithPath")]
+    [Parameter(Mandatory=$true, Position=0, ParameterSetName="NoPath")]
     [ContentModel] $ContentModel,
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory=$false, ParameterSetName="WithPath")]
+    [Parameter(Mandatory=$false, ParameterSetName="NoPath")]
     [Switch] $ReturnSummary
 ) {
 
-    return [CollectionManagementController]::TestFilesystemHashes($ContentModel, $ReturnSummary.IsPresent)
+    return [CollectionManagementController]::TestFilesystemHashes($FilePath, $ContentModel, $ReturnSummary.IsPresent)
 }

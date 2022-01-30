@@ -13,14 +13,14 @@
 #------------
 using module .\..\Types\Types.psm1
 using module .\..\Interfaces\IContentModel.Interface.psm1
-using module .\..\Controllers\CollectionManagementController.Abstract.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\Controllers\CollectionManagementController.Static.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 using module .\ContentModelConfig.Class.psm1
 using module .\Content.Class.psm1
 using module .\ContentSubjectBase.Class.psm1
 using module .\ContentComparer.Class.psm1
 using module .\SpellcheckResult.Class.psm1
-using module .\..\..\..\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Abstract.psm1
+using module .\..\..\..\FilesystemExtensions\Using\ModuleBehaviour\FilesystemExtensionsState.Singleton.psm1
 
 #endregion Using
 
@@ -224,119 +224,179 @@ class ContentModel : IContentModel {
     }
 
     [Void] Build() {
-        [CollectionManagementController]::Build($this, $false, $false)
+        [CollectionManagementController]::Build($this, $null, $false, $false)
     }
 
     [Void] Build([Bool] $loadProperties, [Bool] $generateHash) {
-        [CollectionManagementController]::Build($this, $loadProperties, $generateHash)
+        [CollectionManagementController]::Build($this, $null, $loadProperties, $generateHash)
+    }
+
+    [Void] Build([String] $contentPath) {
+        [CollectionManagementController]::Build($this, $contentPath, $false, $false)
+    }
+
+    [Void] Build([String] $contentPath, [Bool] $loadProperties, [Bool] $generateHash) {
+        [CollectionManagementController]::Build($this, $contentPath, $loadProperties, $generateHash)
     }
 
     [Void] Rebuild() {
-        [CollectionManagementController]::Rebuild($this, $false, $false)
+        [CollectionManagementController]::Rebuild($this, $null, $false, $false)
     }
 
     [Void] Rebuild([Bool] $loadProperties, [Bool] $generateHash) {
-        [CollectionManagementController]::Rebuild($this, $loadProperties, $generateHash)
+        [CollectionManagementController]::Rebuild($this, $null, $loadProperties, $generateHash)
+    }
+
+    [Void] Rebuild([String] $contentPath) {
+        [CollectionManagementController]::Rebuild($this, $contentPath, $false, $false)
+    }
+
+    [Void] Rebuild([String] $contentPath, [Bool] $loadProperties, [Bool] $generateHash) {
+        [CollectionManagementController]::Rebuild($this, $contentPath, $loadProperties, $generateHash)
     }
 
     [Void] LoadIndex () {
-        [CollectionManagementController]::Load($this, ".\Index.json", $false, $false)
-    }
-
-    [Void] LoadIndex ([String] $indexFilePath) {
-        [CollectionManagementController]::Load($this, $indexFilePath, $false, $false)
+        [CollectionManagementController]::Load($this, ".\Index.json", $false, $false, $null)
     }
 
     [Void] LoadIndex ([Bool] $collectInfoWhereMissing) {
-        [CollectionManagementController]::Load($this, ".\Index.json", $collectInfoWhereMissing, $collectInfoWhereMissing)
+        [CollectionManagementController]::Load($this, ".\Index.json", $collectInfoWhereMissing, $CollectInfoWhereMissing, $null)
+    }
+
+    [Void] LoadIndex ([String] $indexFilePath) {
+        [CollectionManagementController]::Load($this, $indexFilePath, $false, $false, $null)
     }
 
     [Void] LoadIndex ([String] $indexFilePath, [Bool] $collectInfoWhereMissing) {
-        [CollectionManagementController]::Load($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing)
+        [CollectionManagementController]::Load($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing, $null)
+    }
+
+    [Void] LoadIndex ([String] $indexFilePath, [String] $contentPath, [Bool] $collectInfoWhereMissing) {
+        [CollectionManagementController]::Load($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing, $contentPath)
     }
 
     [Void] SaveIndex () {
-        [CollectionManagementController]::Save($this, ".\Index.json", $false, $false)
-    }
-
-    [Void] SaveIndex ([String] $indexFilePath) {
-        [CollectionManagementController]::Save($this, $indexFilePath, $false, $false)
+        [CollectionManagementController]::Save($this, ".\Index.json", $false, $false, $null)
     }
 
     [Void] SaveIndex ([Bool] $CollectInfoWhereMissing) {
-        [CollectionManagementController]::Save($this, ".\Index.json", $collectInfoWhereMissing, $collectInfoWhereMissing)
+        [CollectionManagementController]::Save($this, ".\Index.json", $CollectInfoWhereMissing, $CollectInfoWhereMissing, $null)
+    }
+
+    [Void] SaveIndex ([String] $indexFilePath) {
+        [CollectionManagementController]::Save($this, $indexFilePath, $false, $false, $null)
     }
 
     [Void] SaveIndex ([String] $indexFilePath, [Bool] $CollectInfoWhereMissing) {
-        [CollectionManagementController]::Save($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing)
+        [CollectionManagementController]::Save($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing, $null)
+    }
+
+    [Void] SaveIndex ([String] $indexFilePath, [String] $contentPath, [Bool] $CollectInfoWhereMissing) {
+        [CollectionManagementController]::Save($this, $indexFilePath, $collectInfoWhereMissing, $collectInfoWhereMissing, $contentPath)
     }
 
     [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement) {
-        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $false)
+        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $false, $null)
     }
 
     [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $updateCorrespondingFilename)
+        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $updateCorrespondingFilename, $null)
+    }
+
+    [Bool] RemodelFilenameFormat ([Int] $swapElement, [Int] $withElement, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::RemodelFilenameFormat($this, $swapElement, $withElement, $updateCorrespondingFilename, $contentPath)
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $false)
+        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $false, $null)
     }
 
     [Bool] AlterActor ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $updateCorrespondingFilename)
+        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $updateCorrespondingFilename, $null)
+    }
+
+    [Bool] AlterActor ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterActor($this, $fromName, $toName, $updateCorrespondingFilename, $contentPath)
     }
 
     [Bool] AlterAlbum ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $false)
+        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $false, $null)
+    }
+    
+    [Bool] AlterAlbum ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $updateCorrespondingFilename, $null)
     }
 
-    [Bool] AlterAlbum ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $updateCorrespondingFilename)
+    [Bool] AlterAlbum ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterAlbum($this, $fromName, $toName, $updateCorrespondingFilename, $contentPath)
     }
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $false)
+        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $false, $null)
     }
 
     [Bool] AlterArtist ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $updateCorrespondingFilename)
+        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $updateCorrespondingFilename, $null)
+    }
+
+    [Bool] AlterArtist ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterArtist($this, $fromName, $toName, $updateCorrespondingFilename, $contentPath)
     }
 
     [Bool] AlterSeries ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $false)
+        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $false, $null)
+    }
+
+    [Bool] AlterSeries ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $updateCorrespondingFilename, $contentPath)
     }
 
     [Bool] AlterSeries ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $updateCorrespondingFilename)
+        return [CollectionManagementController]::AlterSeries($this, $fromName, $toName, $updateCorrespondingFilename, $null)
     }
 
     [Bool] AlterStudio ([String] $fromName, [String] $toName) {
-        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $false)
+        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $false, $null)
     }
 
     [Bool] AlterStudio ([String] $fromName, [String] $toName, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $updateCorrespondingFilename)
+        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $updateCorrespondingFilename, $null)
+    }
+
+    [Bool] AlterStudio ([String] $fromName, [String] $toName, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterStudio($this, $fromName, $toName, $updateCorrespondingFilename, $contentPath)
     }
 
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern) {
-        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $false)
+        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $false, $null)
     }
-    
+
     [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $updateCorrespondingFilename)
+        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $updateCorrespondingFilename, $null)
+    } 
+    
+    [Bool] AlterSeasonEpisodeFormat([Int] $padSeason, [Int] $padEpisode, [SeasonEpisodePattern] $pattern, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterSeasonEpisodeFormat($this, $padSeason, $padEpisode, $pattern, $updateCorrespondingFilename, $contentPath)
     } 
 
     [Bool] AlterTrackFormat([Int] $padTrack) {
-        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $false)
+        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $false, $null)
     }
 
     [Bool] AlterTrackFormat([Int] $padTrack, [Bool] $updateCorrespondingFilename) {
-        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $updateCorrespondingFilename)
+        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $updateCorrespondingFilename, $null)
+    }
+
+    [Bool] AlterTrackFormat([Int] $padTrack, [String] $contentPath, [Bool] $updateCorrespondingFilename) {
+        return [CollectionManagementController]::AlterTrackFormat($this, $padTrack, $updateCorrespondingFilename, $contentPath)
     }
 
     [Void] ApplyAllPendingFilenameChanges() {        
-        [CollectionManagementController]::ApplyAllPendingFilenameChanges($this)
+        [CollectionManagementController]::ApplyAllPendingFilenameChanges($this, $null)
+    }
+    
+    [Void] ApplyAllPendingFilenameChanges([String] $contentPath) {        
+        [CollectionManagementController]::ApplyAllPendingFilenameChanges($this, $contentPath)
     }
 
     [Void] Summary() {

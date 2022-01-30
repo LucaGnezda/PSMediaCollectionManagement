@@ -23,6 +23,7 @@ class FilesystemProvider : IFilesystemProvider {
     #region Properties
     [Bool] Hidden $_DisposeShellOnDispose = $false
     [Bool] Hidden $_ActSilently = $false
+    [Bool] Hidden $_HasValidPath = $false
     [String] Hidden $_AbsolutePath
     [String[]] Hidden $_IncludedExtensions
     [System.Array] Hidden $_fileCache
@@ -38,6 +39,7 @@ class FilesystemProvider : IFilesystemProvider {
         $this._ActSilently = $actSilently
 
         $this | Add-Member -Name "ActingSilently" -MemberType AliasProperty -Value "_ActSilently"
+        $this | Add-Member -Name "HasValidPath" -MemberType AliasProperty -Value "_HasValidPath"
     }
     #endregion Constructors
     
@@ -54,9 +56,12 @@ class FilesystemProvider : IFilesystemProvider {
             }
         }
         else {
+            $this._HasValidPath = $false
+            $this._fileCache = $null
             throw [System.IO.DirectoryNotFoundException] "System.IO.DirectoryNotFoundException: Unable to resolve path as it does not exist."
         }
         $this._fileCache = $null
+        $this._HasValidPath = $true
     }
 
     [System.IO.FileInfo[]] GetFiles () {
@@ -104,7 +109,7 @@ class FilesystemProvider : IFilesystemProvider {
             if (-not $this._ActSilently) {
                 Write-WarnToConsole "Warning: File not found, unable to generate."
             }
-            return -1
+            return ""
         }
 
         return (Get-FileHash $file.FullName -Algorithm MD5).Hash

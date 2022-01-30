@@ -15,7 +15,7 @@ using module .\..\Types\Types.psm1
 using module .\..\Interfaces\IFilesystemProvider.Interface.psm1
 using module .\..\ObjectModels\Content.Class.psm1
 using module .\..\ObjectModels\ContentModelConfig.Class.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 #endregion Using
 
 
@@ -217,11 +217,11 @@ class ContentBO
         return ([String]$track).PadLeft($padTrack, "0")
     }
 
-    [Void] AddContentToModel([System.Collections.Generic.List[Content]] $contentList, [Content] $contentToAdd) {
+    [Void] AddContentToList([System.Collections.Generic.List[Content]] $contentList, [Content] $contentToAdd) {
         $contentList.Add($contentToAdd)
     }
 
-    [Void] RemoveContentFromModel([System.Collections.Generic.List[Content]] $contentList, [Content] $contentToRemove) {
+    [Void] RemoveContentFromList([System.Collections.Generic.List[Content]] $contentList, [Content] $contentToRemove) {
         $contentList.Remove($contentToRemove)
     }
 
@@ -328,27 +328,22 @@ class ContentBO
                 {$_ -in [CollectionManagementDefaults]::DEFAULT_VIDEO_EXTENSIONS()} {
 
                     if ($null -eq $content.FrameWidth) {
-                        #$content.FrameWidth = (Get-FileMetadata $file 316).Value
                         $content.FrameWidth = $filesystemProvider.GetFileMetadataProperty($file, 316).Value
                     }
 
                     if ($null -eq $content.FrameHeight) { 
-                        #$content.FrameHeight = (Get-FileMetadata $file 314).Value
                         $content.FrameHeight = $filesystemProvider.GetFileMetadataProperty($file, 314).Value
                     }
 
                     if ([String]::IsNullOrEmpty($content.FrameRate)) {
-                        #$content.FrameRate = (Get-FileMetadata $file 315).Value
                         $content.FrameRate = $filesystemProvider.GetFileMetadataProperty($file, 315).Value
                     }
 
                     if ($null -eq $content.TimeSpan) {
-                        #$content.TimeSpan = [TimeSpan](Get-FileMetadata $file 27).Value
                         $content.TimeSpan = $filesystemProvider.GetFileMetadataProperty($file, 27).Value
                     }
 
                     if ([String]::IsNullOrEmpty($content.BitRate)) {
-                        #$content.BitRate = (Get-FileMetadata $file 320).Value
                         $content.BitRate = $filesystemProvider.GetFileMetadataProperty($file, 320).Value
                     }
 
@@ -370,13 +365,11 @@ class ContentBO
                 {$_ -in [CollectionManagementDefaults]::DEFAULT_AUDIO_EXTENSIONS()} {
                 
                     if ($null -eq $content.TimeSpan) {
-                        #$content.TimeSpan = [TimeSpan](Get-FileMetadata $file 27).Value
                         $content.TimeSpan = $filesystemProvider.GetFileMetadataProperty($file, 27).Value
                     }
 
                     if ([String]::IsNullOrEmpty($content.BitRate)) {
-                        #$content.BitRate = (Get-FileMetadata $file 28).Value
-                        $content.BitRate = $filesystemProvider.GetFileMetadataProperty($file, 3286).Value
+                        $content.BitRate = $filesystemProvider.GetFileMetadataProperty($file, 28).Value
                     }
 
                     if (($null -eq $content.TimeSpan) -or
@@ -432,8 +425,11 @@ class ContentBO
             if ([String]::IsNullOrEmpty($content.Hash)) {
                 $content.Hash = $filesystemProvider.GenerateHash($file)
 
-                if ($null -eq $content.Hash) {
+                if ([String]::IsNullOrEmpty($content.Hash)) {
                     $content.AddWarning([ContentWarning]::HashLoadingError)
+                    if ($null -eq $file) {
+                        $content.AddWarning([ContentWarning]::HashFileNotFound)
+                    }
                 }
                 else {
                     $content.ClearWarning([ContentWarning]::HashLoadingError)

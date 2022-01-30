@@ -12,7 +12,7 @@
 #region Using
 #------------
 using module .\..\Types\Types.psm1
-using module .\..\ModuleBehaviour\CollectionManagementDefaults.Abstract.psm1
+using module .\..\ModuleBehaviour\CollectionManagementDefaults.Static.psm1
 #endregion Using
 
 
@@ -196,7 +196,7 @@ class ContentModelConfig {
         return $true
     }
 
-    [Void] OverrideIncludedExtensions ([System.Array] $includeExtensions) {
+    [Void] OverrideIncludedExtensions ([String[]] $includeExtensions) {
         if ($null -eq $includeExtensions) {
             $this._IncludedExtensions = @()
         }
@@ -205,7 +205,7 @@ class ContentModelConfig {
         }
     }
 
-    [Void] OverrideTagsToDecorate ([System.Array] $decorate) {
+    [Void] OverrideTagsToDecorate ([String[]] $decorate) {
         if ($null -eq $decorate) {
             $this._DecorateAsTags = @()
         }
@@ -266,7 +266,11 @@ class ContentModelConfig {
         }
     }
 
-    [Void] ConfigureForUnstructuredFiles () {        
+    [Void] ConfigureForUnstructuredFiles () {
+        if ($this._FilenameFormatLock) {
+            Write-WarnToConsole "Warning: FilenameFormat cannot be reconfigured once settings have been applied to a ContentModel, abandoning operation."
+            return 
+        }        
         $this._IncludedExtensions = @()
         $this._DecorateAsTags = @()
         $this._TagOpenDelimiter = ""
@@ -274,6 +278,23 @@ class ContentModelConfig {
         $this._FilenameFormat = [CollectionManagementDefaults]::DEFAULT_FILE_FILENAME_FORMAT()
         $this._FilenameSplitter = $null
         $this._ListSplitter = $null
+        $this._ExportFormat = [CollectionManagementDefaults]::DEFAULT_FILES_EXPORT_FORMAT()
+
+        $this.UpdateIndexes()
+    }
+
+    [Void] ConfigureForStructuredFiles ([FilenameElement[]] $filenameFormat) {
+        if ($this._FilenameFormatLock) {
+            Write-WarnToConsole "Warning: FilenameFormat cannot be reconfigured once settings have been applied to a ContentModel, abandoning operation."
+            return 
+        }
+        $this._IncludedExtensions = @()
+        $this._DecorateAsTags = [CollectionManagementDefaults]::DEFAULT_TAGS()
+        $this._TagOpenDelimiter = [CollectionManagementDefaults]::DEFAULT_TAG_OPEN_DELIMITER()
+        $this._TagCloseDelimiter = [CollectionManagementDefaults]::DEFAULT_TAG_CLOSE_DELIMITER()
+        $this._FilenameFormat = $filenameFormat
+        $this._FilenameSplitter = [CollectionManagementDefaults]::DEFAULT_FILENAME_SPLITTER()
+        $this._ListSplitter = [CollectionManagementDefaults]::DEFAULT_LIST_SPLITTER()
         $this._ExportFormat = [CollectionManagementDefaults]::DEFAULT_FILES_EXPORT_FORMAT()
 
         $this.UpdateIndexes()

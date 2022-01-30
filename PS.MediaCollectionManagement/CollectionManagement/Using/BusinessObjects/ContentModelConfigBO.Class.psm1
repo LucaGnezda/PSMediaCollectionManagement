@@ -36,7 +36,9 @@ class ContentModelConfigBO
     #region Methods
     [Bool] IsMatch([ContentModelConfig] $configA, [ContentModelConfig] $configB) {
         
-        if ( @(Compare-Object $configA $configB -SyncWindow 0).Length -eq 0 ) {
+        $comparisonProperties = (Get-Member -InputObject $configA -MemberType Properties).Name
+        
+        if ( @(Compare-Object $configA $configB -SyncWindow 0 -Property $comparisonProperties).Length -eq 0 ) {
             return $true
         }
         return $false
@@ -52,6 +54,8 @@ class ContentModelConfigBO
         $toConfig._ListSplitter = $fromConfig._ListSplitter.Clone()
         $toConfig._ExportFormat = $fromConfig._ExportFormat.Clone()
         $toConfig._FilenameFormatLock = $fromConfig._FilenameFormatLock
+
+        $toConfig.UpdateIndexes()
     }
     #endregion Methods
 
