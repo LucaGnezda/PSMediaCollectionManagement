@@ -275,6 +275,28 @@ Describe "ContentModel.SaveIndex ContentModel.LoadIndex Integration Test" -Tag I
         $contentModel.Content[0].ProducedBy.Name | Should -Be "Foo"
 
     }
+
+    It "Load - Does not exist" {
+        # Do
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestB\doesnotexist.json")
+    }
+
+    It "Load - Unknown format" {
+        # Do
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestB\Index.test.unknownformat.json")
+    }
+
+    It "Load - Bad data" {
+        # Do
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestB\Index.test.baddata.json")
+    }
+
+    It "Save - Bad path" {
+        # Do
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestB\Index.test.baddata.json")
+        $contentModel.Config.LockFilenameFormat()
+        $contentModel.SaveIndex("Z:\TestData\ContentTestB\Index.test.baddata.json")
+    }
 }
 
 AfterAll {

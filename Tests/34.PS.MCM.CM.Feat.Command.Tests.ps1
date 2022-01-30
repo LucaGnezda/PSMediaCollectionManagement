@@ -84,6 +84,24 @@ Describe "Merge-ContentModel Integration Test" -Tag IntegrationTest {
         # Do
         Pop-Location
     }
+
+    It "Merge Model - mismatching config" {
+        # Do
+        Push-Location $PSScriptRoot\TestData\ContentTestC
+        $contentModelC = New-ContentModel
+        $contentModelC.LoadIndex(".\index.test.inputA.json", $true)
+        $contentModelD = New-ContentModel
+        $contentModelD.LoadIndex(".\index.test.inputC.json", $true)
+
+        # Do
+        $merge = Merge-ContentModel $contentModelC $contentModelD
+        
+        # Test
+        $merge | Should -Be $null
+
+        # Do
+        Pop-Location
+    }
 }
 
 Describe "Compare-ContentModel Integration Test" -Tag IntegrationTest {
@@ -144,6 +162,19 @@ Describe "Compare-ContentModel Integration Test" -Tag IntegrationTest {
         Compare-ContentModels $contentModelC $contentModelD -ReturnSummary | Should -Be @(0, 2, 0, 0, 1, 0, 3)
     }
 
+    It "Compare Content Model - Invalid input" {
+        Compare-ContentModels "Doesnotexist" $contentModelC -ReturnSummary | Should -Be $null
+        {Compare-ContentModels $contentModelD.Config $contentModelC -ReturnSummary} | Should -Throw
+    }
+
+    It "Compare Content Model - duplicates in file" {
+        Compare-ContentModels ".\index.test.inputG.json" ".\index.test.inputG.json" -ReturnSummary | Should -Be @(2, 0, 0, 0, 0, 2, 4)
+    }
+
+    It "Compare Content Model - no summary" {
+        Compare-ContentModels ".\index.test.inputG.json" ".\index.test.inputG.json"
+    }
+
     AfterAll {
         Pop-Location
     }
@@ -160,13 +191,40 @@ Describe "Test-FilesystemHashes Integration Test" -Tag IntegrationTest {
         [ConsoleExtensionsState]::ResetMockConsole()
     }
 
-    It "Validate Hashes" {
+    It "Test - Validate Hashes" {
         # Do
         Push-Location $PSScriptRoot\TestData\ContentTestB
         $contentModelB.Build($true, $true)
         $contentModelB.Content[1].Hash = "-"
 
+        # Test
         Test-FilesystemHashes $contentModelB -ReturnSummary | Should -Be @(2, 1, 3)
+
+        # Do
+        Pop-Location
+    }
+
+    It "Test - non existance path" {
+        # Do
+        Push-Location $PSScriptRoot\TestData\ContentTestB
+        $contentModelB.Build($true, $true)
+        $contentModelB.Content[1].Hash = "-"
+
+        # Test
+        {Test-FilesystemHashes "doesnotexist" $contentModelB -ReturnSummary} | Should -Throw
+
+        # Do
+        Pop-Location
+    }
+
+    It "Test - no summary" {
+        # Do
+        Push-Location $PSScriptRoot\TestData\ContentTestB
+        $contentModelB.Build($true, $true)
+        $contentModelB.Content[1].Hash = "-"
+
+        # Test
+        Test-FilesystemHashes $contentModelB
 
         # Do
         Pop-Location

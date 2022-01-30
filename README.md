@@ -123,7 +123,7 @@ Things still to be done, in progress, or recently completed:
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
 | Feature | Title analysis, generating word dictionaries and spellchecking | :heavy_check_mark: |
-| Feature | Create Test Helpers to better present code coverage results | :heavy_minus_sign: |
+| Feature | Create Test Helpers to better present code coverage results | :heavy_check_mark: |
 | Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :heavy_check_mark: |
 | Feature | Be able to compare a model directly with the filesystem | :heavy_check_mark: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
@@ -132,8 +132,8 @@ Things still to be done, in progress, or recently completed:
 | ---- | ---------------- | ------ |
 | Codebase Improvement | Improve usability of enums for internal and console use | :heavy_check_mark: |
 | Codebase Improvement | Implementation of pseudo abstract and interface classes | :heavy_check_mark: |
-| Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :construction: |
-| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration | :heavy_minus_sign: |
+| Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :heavy_check_mark: |
+| Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration (Pester fixed by v5.3.1) | :heavy_check_mark: |
 | Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
 
 | Type | Feature / Improvement | Status |
@@ -160,6 +160,12 @@ Where:
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
 - If you would like to attach a Visual Studio Code debugger it is recommended you configure the debugger to run an interactive PowerShell session.
 - Please note, modules with classes won't re-load correctly after being changed in PowerShell 5. If you change the code, remember to re-start your IDE before restarting your debugger.
+
+# Code coverage
+- This module implements a suite of automated pester tests, which generate JoCoCo code coverage results.
+- Several helper commands have been implemented to assist with test automation and the production of friendly code coverage results. 
+- To generate friendly code coverage results, the JoCoCo results are parsed, merged with a known coverage exceptions list, then converted into a more friendly and discoverable format to console and markdown.
+- The latest friendly [code coverage results](./FriendlyCoverageReport.md) can be found here. 
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...

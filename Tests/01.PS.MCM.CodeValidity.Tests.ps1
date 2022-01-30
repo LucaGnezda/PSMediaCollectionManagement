@@ -31,6 +31,11 @@ using module .\..\PS.MediaCollectionManagement\FilesystemExtensions\Using\Module
 using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsSettings.Static.psm1
 using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\ModuleBehaviour\ConsoleExtensionsState.Singleton.psm1
 
+using module .\..\PS.MediaCollectionManagement\Shared\Using\Base\IsAbstract.Class.psm1
+using module .\..\PS.MediaCollectionManagement\Shared\Using\Base\IsInterface.Class.psm1
+using module .\..\PS.MediaCollectionManagement\Shared\Using\Base\IsStatic.Class.psm1
+
+
 BeforeAll { 
     Import-Module $PSScriptRoot\..\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psd1 -Force
 
@@ -80,6 +85,13 @@ Describe "Code Validity Unit Test" -Tag UnitTest {
         # Test
         {[FilesystemExtensionsSettings] $settings = [FilesystemExtensionsSettings]::new(); $settings } | Should -Throw
         {[FilesystemExtensionsState] $state = [FilesystemExtensionsState]::new(); $state } | Should -Throw 
+    }
+
+    It "Semantic Checks - Base Implementations" {
+        # Test
+        {[IsAbstract] $base = [IsAbstract]::new(); $base } | Should -Throw
+        {[Isinterface] $base = [Isinterface]::new(); $base } | Should -Throw
+        {[IsStatic] $base = [IsStatic]::new(); $base } | Should -Throw
     }
     
 }

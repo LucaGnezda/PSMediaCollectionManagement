@@ -40,11 +40,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
     #endregion Properties
 
 
-    #region Constructors
-    ModelManipulationHandler () {
-        $this.ContentModel = $null
-    }
-    
+    #region Constructors    
     ModelManipulationHandler ([IContentModel] $contentModel) {
         $this.ContentModel = $contentModel
     }
@@ -68,7 +64,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
     [Void] ApplyAllPendingFilenameChanges([IFilesystemProvider] $filesystemProvider) {
     
-        if ($filesystemProvider.HasValidPath) {
+        if (-not $filesystemProvider.HasValidPath) {
             Write-WarnToConsole "Warning: Invalid path provided. Unable to apply changes, abandoning action."
             return
         }

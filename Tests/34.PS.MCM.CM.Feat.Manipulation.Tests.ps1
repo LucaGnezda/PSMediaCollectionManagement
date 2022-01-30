@@ -11,7 +11,7 @@ BeforeAll {
 }
 
 Describe "ContentModel.RemodelFilenameFormat Integration Test" -Tag IntegrationTest {
-    BeforeAll {
+    BeforeEach {
         $contentModel = New-ContentModel
         $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputA.json", $true)
     }
@@ -24,8 +24,26 @@ Describe "ContentModel.RemodelFilenameFormat Integration Test" -Tag IntegrationT
         $contentModel.RemodelFilenameFormat(1,-1) | Should -Be $false 
         $contentModel.RemodelFilenameFormat(1,4) | Should -Be $false 
 
-        # Do
+        # Test
         $contentModel.RemodelFilenameFormat(1,2) | Should -Be $true
+
+        # Test
+        $contentModel.Content[0].Basename | Should -Be "Foo - Delta - Cherry, Apple, Banana, Pear"
+
+    }
+
+    It "Remodel with update" {
+        # Test
+        $contentModel.RemodelFilenameFormat(1,2, $true) | Should -Be $true
+
+        # Test
+        $contentModel.Content[0].Basename | Should -Be "Foo - Delta - Cherry, Apple, Banana, Pear"
+
+    }
+
+    It "Remodel with update and path" {
+        # Test
+        $contentModel.RemodelFilenameFormat(1,2, ".\", $true) | Should -Be $true
 
         # Test
         $contentModel.Content[0].Basename | Should -Be "Foo - Delta - Cherry, Apple, Banana, Pear"
@@ -70,6 +88,34 @@ Describe "ContentModel.AlterActor Integration Test" -Tag IntegrationTest {
         $contentModel.Actors.Matching("Missing") | Should -Be $null
     }
 
+    It "Alter Actor with update" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputA.json", $true)
+
+        # Test 
+        $contentModel.Actors | Should -Be @("Cherry", "Apple", "Banana", "Pear", "Ecky", "Ni")
+        
+        # Test
+        $contentModel.AlterActor("Apple", "Alice", $true) | Should -Be $true
+        $contentModel.Actors | Should -Be @("Cherry", "Alice", "Banana", "Pear", "Ecky", "Ni")
+        $contentModel.Actors.Matching("Alice").PerformedIn.Count | Should -Be 2
+    }
+
+    It "Alter Actor with update and path" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputA.json", $true)
+
+        # Test 
+        $contentModel.Actors | Should -Be @("Cherry", "Apple", "Banana", "Pear", "Ecky", "Ni")
+        
+        # Test
+        $contentModel.AlterActor("Apple", "Alice", ".\", $true) | Should -Be $true
+        $contentModel.Actors | Should -Be @("Cherry", "Alice", "Banana", "Pear", "Ecky", "Ni")
+        $contentModel.Actors.Matching("Alice").PerformedIn.Count | Should -Be 2
+    }
+
     It "Alter Actor - Colision" {
         # Do
         $contentModel = New-ContentModel
@@ -103,6 +149,34 @@ Describe "ContentModel.AlterAlbum Integration Test" -Tag IntegrationTest {
         $contentModel.AlterAlbum("Missing", "Studio B") | Should -Be $false
         $contentModel.Albums | Should -Be @("Studio A", "Zim")
         $contentModel.Albums.Matching("Studio B") | Should -Be $null
+    }
+
+    It "Alter Album with update" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputE.json", $true)
+
+        # Test 
+        $contentModel.Albums | Should -Be @("Foo", "Zim")
+        
+        # Test
+        $contentModel.AlterAlbum("Foo", "Studio A", $true) | Should -Be $true
+        $contentModel.Albums | Should -Be @("Studio A", "Zim")
+        $contentModel.Albums.Matching("Studio A").Tracks.Count | Should -Be 2
+    }
+
+    It "Alter Album with update and path" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputE.json", $true)
+
+        # Test 
+        $contentModel.Albums | Should -Be @("Foo", "Zim")
+        
+        # Test
+        $contentModel.AlterAlbum("Foo", "Studio A", ".\", $true) | Should -Be $true
+        $contentModel.Albums | Should -Be @("Studio A", "Zim")
+        $contentModel.Albums.Matching("Studio A").Tracks.Count | Should -Be 2
     }
 
     It "Alter Album - Colision" {
@@ -173,6 +247,34 @@ Describe "ContentModel.AlterArtist Integration Test" -Tag IntegrationTest {
         $contentModel.Artists.Matching("Missing") | Should -Be $null
     }
 
+    It "Alter Artist with update" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputE.json", $true)
+
+        # Test 
+        $contentModel.Artists | Should -Be @("Cherry", "Apple", "Banana", "Pear", "Ecky", "Ni")
+        
+        # Test
+        $contentModel.AlterArtist("Apple", "Alice", $true) | Should -Be $true
+        $contentModel.Artists | Should -Be @("Cherry", "Alice", "Banana", "Pear", "Ecky", "Ni")
+        $contentModel.Artists.Matching("Alice").Performed.Count | Should -Be 2
+    }
+
+    It "Alter Artist with update and path" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputE.json", $true)
+
+        # Test 
+        $contentModel.Artists | Should -Be @("Cherry", "Apple", "Banana", "Pear", "Ecky", "Ni")
+        
+        # Test
+        $contentModel.AlterArtist("Apple", "Alice", ".\", $true) | Should -Be $true
+        $contentModel.Artists | Should -Be @("Cherry", "Alice", "Banana", "Pear", "Ecky", "Ni")
+        $contentModel.Artists.Matching("Alice").Performed.Count | Should -Be 2
+    }
+
     It "Alter Artist - Colision" {
         # Do
         $contentModel = New-ContentModel
@@ -206,6 +308,34 @@ Describe "ContentModel.AlterSeries Integration Test" -Tag IntegrationTest {
         $contentModel.AlterSeries("Missing", "Series B") | Should -Be $false
         $contentModel.Series | Should -Be @("Series A", "Zim")
         $contentModel.Series.Matching("Series B") | Should -Be $null
+    }
+
+    It "Alter Series with update" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputC.json", $true)
+
+        # Test 
+        $contentModel.Series | Should -Be @("Foo", "Zim")
+        
+        # Test
+        $contentModel.AlterSeries("Foo", "Series A", $true) | Should -Be $true
+        $contentModel.Series | Should -Be @("Series A", "Zim")
+        $contentModel.Series.Matching("Series A").Episodes.Count | Should -Be 2
+    }
+
+    It "Alter Series with update and path" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputC.json", $true)
+
+        # Test 
+        $contentModel.Series | Should -Be @("Foo", "Zim")
+        
+        # Test
+        $contentModel.AlterSeries("Foo", "Series A", ".\", $true) | Should -Be $true
+        $contentModel.Series | Should -Be @("Series A", "Zim")
+        $contentModel.Series.Matching("Series A").Episodes.Count | Should -Be 2
     }
 
     It "Alter Series - Colision" {
@@ -260,6 +390,34 @@ Describe "ContentModel.AlterStudio Integration Test" -Tag IntegrationTest {
         $contentModel.Studios.Matching("Studio B") | Should -Be $null
     }
 
+    It "Alter Studio with update" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputA.json", $true)
+
+        # Test 
+        $contentModel.Studios | Should -Be @("Foo", "Zim")
+        
+        # Test
+        $contentModel.AlterStudio("Foo", "Studio A", $true) | Should -Be $true
+        $contentModel.Studios | Should -Be @("Studio A", "Zim")
+        $contentModel.Studios.Matching("Studio A").Produced.Count | Should -Be 2
+    }
+
+    It "Alter Studio with update and path" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputA.json", $true)
+
+        # Test 
+        $contentModel.Studios | Should -Be @("Foo", "Zim")
+        
+        # Test
+        $contentModel.AlterStudio("Foo", "Studio A", ".\", $true) | Should -Be $true
+        $contentModel.Studios | Should -Be @("Studio A", "Zim")
+        $contentModel.Studios.Matching("Studio A").Produced.Count | Should -Be 2
+    }
+
     It "Alter Studio - Colision" {
         # Do
         $contentModel = New-ContentModel
@@ -306,6 +464,32 @@ Describe "ContentModel.AlterStudio Integration Test" -Tag IntegrationTest {
         $contentModel.Series[1].ProducedBy[0] | Should -Be "StuA"
         $contentModel.Series[2].ProducedBy[0] | Should -Be "StuC"
     }
+
+    It "Alter - No change" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestF\index.test.inputF.json", $true)
+
+        # Test
+        $contentModel.AlterStudio("StuB", "StuB") | Should -Be $false
+    }
+
+    It "Alter - Does not exist" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestF\index.test.inputF.json", $true)
+
+        # Test
+        $contentModel.AlterStudio("Doesnotexist", "StuB") | Should -Be $false
+    }
+
+    It "Alter - not initialised" {
+        # Do
+        $contentModel = New-ContentModel
+
+        # Test
+        { $contentModel.AlterStudio("Doesnotexist", "StuB") } | Should -Throw
+    }
 }
 
 Describe "ContentModel.AlterSeasonEpisodeFormat Integration Test" -Tag IntegrationTest {
@@ -350,7 +534,7 @@ Describe "ContentModel.AlterSeasonEpisodeFormat Integration Test" -Tag Integrati
 
     It "Alter SeasonEpisode - Alter to S0E0 no padding" {
         # Test
-        $contentModel.AlterSeasonEpisodeFormat(0, 0, [SeasonEpisodePattern]::Uppercase_S0E0, $false) | Should -Be $true
+        $contentModel.AlterSeasonEpisodeFormat(0, 0, [SeasonEpisodePattern]::Uppercase_S0E0) | Should -Be $true
         $contentModel.Content[0].Season | Should -Be 1
         $contentModel.Content[0].Episode | Should -Be 5
         $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - S1E5"
@@ -365,7 +549,7 @@ Describe "ContentModel.AlterSeasonEpisodeFormat Integration Test" -Tag Integrati
 
     It "Alter SeasonEpisode - Alter to s0s0 padding s2" {
         # Test
-        $contentModel.AlterSeasonEpisodeFormat(2, 0, [SeasonEpisodePattern]::Lowercase_S0E0, $false) | Should -Be $true
+        $contentModel.AlterSeasonEpisodeFormat(2, 0, [SeasonEpisodePattern]::Lowercase_S0E0) | Should -Be $true
         $contentModel.Content[0].Season | Should -Be 1
         $contentModel.Content[0].Episode | Should -Be 5
         $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - s01e5"
@@ -380,7 +564,7 @@ Describe "ContentModel.AlterSeasonEpisodeFormat Integration Test" -Tag Integrati
 
     It "Alter SeasonEpisode - Alter to 0X0 padding e2" {
         # Test
-        $contentModel.AlterSeasonEpisodeFormat(0, 2, [SeasonEpisodePattern]::Uppercase_0X0, $false) | Should -Be $true
+        $contentModel.AlterSeasonEpisodeFormat(0, 2, [SeasonEpisodePattern]::Uppercase_0X0) | Should -Be $true
         $contentModel.Content[0].Season | Should -Be 1
         $contentModel.Content[0].Episode | Should -Be 5
         $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 1X05"
@@ -395,7 +579,37 @@ Describe "ContentModel.AlterSeasonEpisodeFormat Integration Test" -Tag Integrati
 
     It "Alter SeasonEpisode - Alter to 0x0 padding s3 e2" {
         # Test
-        $contentModel.AlterSeasonEpisodeFormat(3, 2, [SeasonEpisodePattern]::Lowercase_0X0, $false) | Should -Be $true
+        $contentModel.AlterSeasonEpisodeFormat(3, 2, [SeasonEpisodePattern]::Lowercase_0X0) | Should -Be $true
+        $contentModel.Content[0].Season | Should -Be 1
+        $contentModel.Content[0].Episode | Should -Be 5
+        $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 001x05"
+        $contentModel.Content[0].AlteredBaseName | Should -Be $true
+        $contentModel.Content[0].PendingFilenameUpdate | Should -Be $true
+        $contentModel.Content[0].SeasonEpisode | Should -BeExactly "001x05"
+        $contentModel.Content[1].SeasonEpisode | Should -BeExactly "002x06"
+        $contentModel.Content[2].SeasonEpisode | Should -BeExactly "003x07"
+        $contentModel.Content[3].SeasonEpisode | Should -BeExactly "004x08"
+        $contentModel.Content[4].SeasonEpisode | Should -BeExactly ""
+    }
+
+    It "Alter SeasonEpisode - with update" {
+        # Test
+        $contentModel.AlterSeasonEpisodeFormat(3, 2, [SeasonEpisodePattern]::Lowercase_0X0, $true) | Should -Be $true
+        $contentModel.Content[0].Season | Should -Be 1
+        $contentModel.Content[0].Episode | Should -Be 5
+        $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 001x05"
+        $contentModel.Content[0].AlteredBaseName | Should -Be $true
+        $contentModel.Content[0].PendingFilenameUpdate | Should -Be $true
+        $contentModel.Content[0].SeasonEpisode | Should -BeExactly "001x05"
+        $contentModel.Content[1].SeasonEpisode | Should -BeExactly "002x06"
+        $contentModel.Content[2].SeasonEpisode | Should -BeExactly "003x07"
+        $contentModel.Content[3].SeasonEpisode | Should -BeExactly "004x08"
+        $contentModel.Content[4].SeasonEpisode | Should -BeExactly ""
+    }
+
+    It "Alter SeasonEpisode - with update and path" {
+        # Test
+        $contentModel.AlterSeasonEpisodeFormat(3, 2, [SeasonEpisodePattern]::Lowercase_0X0, ".\", $true) | Should -Be $true
         $contentModel.Content[0].Season | Should -Be 1
         $contentModel.Content[0].Episode | Should -Be 5
         $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 001x05"
@@ -446,7 +660,7 @@ Describe "ContentModel.AlterTrackFormat Integration Test" -Tag IntegrationTest {
 
     It "Alter Track - Alter to no padding" {
         # Test
-        $contentModel.AlterTrackFormat(0, $false) | Should -Be $true
+        $contentModel.AlterTrackFormat(0) | Should -Be $true
         $contentModel.Content[0].Track | Should -Be 1
         $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 1"
         $contentModel.Content[0].AlteredBaseName | Should -Be $true
@@ -460,7 +674,7 @@ Describe "ContentModel.AlterTrackFormat Integration Test" -Tag IntegrationTest {
 
     It "Alter Track - Alter to padding 2" {
         # Test
-        $contentModel.AlterTrackFormat(3, $false) | Should -Be $true
+        $contentModel.AlterTrackFormat(3) | Should -Be $true
         $contentModel.Content[0].Track | Should -Be 1
         $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 001"
         $contentModel.Content[0].AlteredBaseName | Should -Be $true
@@ -470,6 +684,53 @@ Describe "ContentModel.AlterTrackFormat Integration Test" -Tag IntegrationTest {
         $contentModel.Content[2].TrackLabel | Should -BeExactly "003"
         $contentModel.Content[3].TrackLabel | Should -BeExactly "004"
         $contentModel.Content[4].TrackLabel | Should -BeExactly ""
+    }
+
+    It "Alter Track - Alter to padding with update" {
+        # Test
+        $contentModel.AlterTrackFormat(3, $true) | Should -Be $true
+        $contentModel.Content[0].Track | Should -Be 1
+        $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 001"
+        $contentModel.Content[0].AlteredBaseName | Should -Be $true
+        $contentModel.Content[0].PendingFilenameUpdate | Should -Be $true
+        $contentModel.Content[0].TrackLabel | Should -BeExactly "001"
+        $contentModel.Content[1].TrackLabel | Should -BeExactly "002"
+        $contentModel.Content[2].TrackLabel | Should -BeExactly "003"
+        $contentModel.Content[3].TrackLabel | Should -BeExactly "004"
+        $contentModel.Content[4].TrackLabel | Should -BeExactly ""
+    }
+
+    It "Alter Track - Alter to padding with update and path" {
+        # Test
+        $contentModel.AlterTrackFormat(3, ".\", $true) | Should -Be $true
+        $contentModel.Content[0].Track | Should -Be 1
+        $contentModel.Content[0].Basename | Should -BeExactly "Foo - Apple - 001"
+        $contentModel.Content[0].AlteredBaseName | Should -Be $true
+        $contentModel.Content[0].PendingFilenameUpdate | Should -Be $true
+        $contentModel.Content[0].TrackLabel | Should -BeExactly "001"
+        $contentModel.Content[1].TrackLabel | Should -BeExactly "002"
+        $contentModel.Content[2].TrackLabel | Should -BeExactly "003"
+        $contentModel.Content[3].TrackLabel | Should -BeExactly "004"
+        $contentModel.Content[4].TrackLabel | Should -BeExactly ""
+    }
+}
+
+Describe "ContentModel.ApplyAllPendingFilenameChanges Integration Test" -Tag IntegrationTest {
+    BeforeEach {
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestF\index.test.inputD.json", $true)
+    }
+
+    It "ApplyAllPendingFilenameChanges" {
+        # Test
+        $contentModel.AlterTrackFormat(3) | Should -Be $true
+        $contentModel.ApplyAllPendingFilenameChanges()
+    }
+
+    It "ApplyAllPendingFilenameChanges with path" {
+        # Test
+        $contentModel.AlterTrackFormat(3) | Should -Be $true
+        $contentModel.ApplyAllPendingFilenameChanges(".\")
     }
 }
 

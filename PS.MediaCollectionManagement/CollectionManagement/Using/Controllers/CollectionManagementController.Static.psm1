@@ -77,7 +77,7 @@ class CollectionManagementController : IsStatic {
         [IModelPersistenceHandler] $persistenceHandler = [ModelPersistenceHandler]::new()
         [IModelManipulationHandler] $manipulationHandler = [ModelManipulationHandler]::new($contentModel)
         
-        $persistenceHandler.LoadConfigFromIndexFile($indexFilePath, $contentModel)
+        if (-not $persistenceHandler.LoadConfigFromIndexFile($indexFilePath, $contentModel)) { return }
         $manipulationHandler.Load($persistenceHandler.RetrieveDataFromIndexFile($indexFilePath), $loadProperties, $generateHash, $filesystemProvider)
         $manipulationHandler.IfRequiredProvideConsoleTipsForLoadWarnings()
         $filesystemProvider.Dispose()
@@ -198,7 +198,7 @@ class CollectionManagementController : IsStatic {
         return $alterations
     }
 
-    [Void] ApplyAllPendingFilenameChanges([IContentModel] $contentModel, [String] $contentPath) {
+    [Void] Static ApplyAllPendingFilenameChanges([IContentModel] $contentModel, [String] $contentPath) {
         
         [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($contentPath, $contentModel.Config.IncludedExtensions, $true)
         [IModelManipulationHandler] $handler = [ModelManipulationHandler]::new($contentModel)
@@ -232,9 +232,9 @@ class CollectionManagementController : IsStatic {
         return $handler.Compare($baseline, $comparison, $filesystemProvider, $returnSummary)
     }
 
-    [System.Array] Static TestFilesystemHashes ([IContentModel] $contentModel, [Bool] $returnSummary) {
+    [System.Array] Static TestFilesystemHashes ([String] $filePath, [IContentModel] $contentModel, [Bool] $returnSummary) {
         
-        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($null, $contentModel.Config.IncludedExtensions, $true)
+        [IFilesystemProvider] $filesystemProvider = [FilesystemProvider]::new($filePath, $contentModel.Config.IncludedExtensions, $true)
         [ICommandHandler] $handler = [CommandHandler]::new()
         
         [System.Array] $summary = $handler.TestFilesystemHashes($contentModel, $filesystemProvider, $returnSummary)
@@ -265,7 +265,7 @@ class CollectionManagementController : IsStatic {
         $handler.SetSpellcheckProvider($spellcheckProvider)
 
         $results = $handler.SpellcheckContentTitles($ContentList, $returnResults)
-        $handler.Dispose()
+        $spellcheckProvider.Dispose()
 
         return $results
     }

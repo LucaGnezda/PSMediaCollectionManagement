@@ -24,6 +24,16 @@ Describe "Get-AvailableFileMetadataKeys" -Tag IntegrationTest {
         # Test
         $metadata.Count | Should -Be 309
     }
+
+    It "Get All Keys - Remote" {
+        # Do
+        Push-Location \\$env:COMPUTERNAME\d
+        $metadata = Get-AvailableFileMetadataKeys
+        Pop-Location
+        
+        # Test
+        $metadata.Count | Should -Be 309
+    }
 }
 
 Describe "Get-FileMetadata" -Tag IntegrationTest {

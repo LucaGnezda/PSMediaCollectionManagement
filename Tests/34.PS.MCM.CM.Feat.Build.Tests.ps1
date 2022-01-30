@@ -340,6 +340,36 @@ Describe "ContentModel.Build Integration Test (Studio, Album, Title)" -Tag Integ
     }
 }
 
+Describe "ContentModel.Build Integration Test (Minimal params)" -Tag IntegrationTest {
+    BeforeAll {
+        $contentModel = New-ContentModel
+        $contentModel.Config.ConfigureForStructuredFiles(@([FileNameElement]::Studio, [FilenameElement]::Album, [FilenameElement]::Title))
+        $contentModel.Config.OverrideIncludedExtensions(@(".mp4", ".wmv", ".mkv"))
+    }
+
+    It "Build no params" {
+        # Do
+        Push-Location "$PSScriptRoot\TestData\ContentTestH"
+        $contentModel.Build()
+        Pop-Location
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 3
+        $contentModel.Studios.Count | Should -Be 2
+        $contentModel.Albums.Count | Should -Be 2
+    }
+
+    It "Build path only" {
+        # Do
+        $contentModel.Build("$PSScriptRoot\TestData\ContentTestH")
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 3
+        $contentModel.Studios.Count | Should -Be 2
+        $contentModel.Albums.Count | Should -Be 2
+    }
+}
+
 Describe "ContentModel.Rebuild Integration Test (Studio, Actors, Title)" -Tag IntegrationTest {
     BeforeAll {
         $contentModel = New-ContentModel
@@ -506,11 +536,92 @@ Describe "ContentModel.Rebuild Integration Test (Studio, Actors, Title) with cha
     }
 }
 
+Describe "ContentModel.Build Integration Test (Minimal params)" -Tag IntegrationTest {
+    BeforeAll {
+        $contentModel = New-ContentModel
+        $contentModel.Config.ConfigureForStructuredFiles(@([FileNameElement]::Studio, [FilenameElement]::Album, [FilenameElement]::Title))
+        $contentModel.Config.OverrideIncludedExtensions(@(".mp4", ".wmv", ".mkv"))
+    }
+
+    It "Rebuild no params" {
+        # Do
+        Push-Location "$PSScriptRoot\TestData\ContentTestH"
+        $contentModel.Build()
+        $contentModel.Rebuild()
+        Pop-Location
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 3
+        $contentModel.Studios.Count | Should -Be 2
+        $contentModel.Albums.Count | Should -Be 2
+    }
+
+    It "Rebuild bolleans only" {
+        # Do
+        Push-Location "$PSScriptRoot\TestData\ContentTestH"
+        $contentModel.Build()
+        $contentModel.Rebuild($false, $false)
+        Pop-Location
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 3
+        $contentModel.Studios.Count | Should -Be 2
+        $contentModel.Albums.Count | Should -Be 2
+    }
+
+    It "Rebuild path only" {
+        # Do
+        $contentModel.Build("$PSScriptRoot\TestData\ContentTestH")
+        $contentModel.Rebuild("$PSScriptRoot\TestData\ContentTestH")
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 3
+        $contentModel.Studios.Count | Should -Be 2
+        $contentModel.Albums.Count | Should -Be 2
+    }
+}
+
 Describe "ContentModel.RemoveContentFromModel Integration Test" -Tag IntegrationTest {    
-    It "Remove Content" {
+    It "Remove Content - Actor, Studio, Does not exist" {
         # Do
         $contentModel = New-ContentModel
         $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputA.json", $true)
+
+        # Test
+        $contentModel.Content.Count | Should -Be 3
+
+        # Do 
+        $contentModel.RemoveContentFromModel("Foo - Cherry, Apple, Banana, Pear - Delta.mp4")
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 2
+
+        # Do 
+        $contentModel.RemoveContentFromModel("Doesnotexist.mp4")
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 2
+    }
+
+    It "Remove Content - Actor, Series" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputC.json", $true)
+
+        # Test
+        $contentModel.Content.Count | Should -Be 3
+
+        # Do 
+        $contentModel.RemoveContentFromModel("Foo - Cherry, Apple, Banana, Pear - Delta.mp4")
+        
+        # Test
+        $contentModel.Content.Count | Should -Be 2
+    }
+
+    It "Remove Content - Artist, Album" {
+        # Do
+        $contentModel = New-ContentModel
+        $contentModel.LoadIndex("$PSScriptRoot\TestData\ContentTestC\index.test.inputE.json", $true)
 
         # Test
         $contentModel.Content.Count | Should -Be 3
