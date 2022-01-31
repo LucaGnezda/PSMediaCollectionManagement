@@ -169,7 +169,7 @@ Where:
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
-- [unclebob](https://github.com/unclebob) and his amazing conference talks, for the inspiration I needed to start cleaning up the code and to work out how to implement pseudo interfaces. Now I can start implementing inversion of control, DI and modularisation. 
+- [unclebob](https://github.com/unclebob) and his amazing conference talks, for the inspiration I needed to start cleaning up the code and to work out how to implement pseudo interfaces. It then allowed me to implement inversion of control, DI and improved modularisation. 
 - [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for inspiration on structuring modules
 - [gravejester](https://github.com/gravejester) for the PowerShell implementation of Levenshtein string similarity functions.
 - Pretty much everyone on [StackOverflow](https://stackoverflow.com/), for pretty much having answers to every questions ever conceived (except PowerShell Interfaces :P).
