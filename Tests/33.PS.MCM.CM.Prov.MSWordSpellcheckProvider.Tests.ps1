@@ -29,7 +29,7 @@ Describe "Spellcheck Unit Test" -Tag UnitTest {
         $spellcheckProvider._WordInterop | Should -Be $null
     }
 
-    It "Spellcheck - Active" -Tag "MSWordPresent" {        
+    It "Spellcheck - Active" -Tag MSWordPresent {        
         # Test
         $spellcheckProvider._WordInterop | Should -Be $null
 
