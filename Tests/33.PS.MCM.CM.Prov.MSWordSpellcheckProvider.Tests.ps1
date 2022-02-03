@@ -9,7 +9,7 @@ BeforeAll {
 
 Describe "Spellcheck Unit Test" -Tag UnitTest {
 
-    It "Spellcheck" {
+    It "Spellcheck" -Tag "AppveyorIgnore" {
         $spellcheckProvider = [MSWordCOMSpellcheckProvider]::New()
 
         $spellcheckProvider.CheckSpelling("Apple") | Should -Be $null
