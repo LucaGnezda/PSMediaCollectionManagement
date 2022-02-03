@@ -90,7 +90,7 @@ Describe "ContentModel.SpellcheckContentTitles Integration Test" -Tag Integratio
         $contentModel2.Content.Add($content)
     }
 
-    It "Spellcheck" {
+    It "Spellcheck" -Tag "AppveyorIgnore" {
         $results = $contentModel1.SpellcheckContentTitles($true)
         $results.Count | Should -Be 9
         $results.Contains("cat") | Should -Be $true
