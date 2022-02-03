@@ -1,4 +1,4 @@
-https://img.shields.io/badge/PowerShell-5%2B-5391FE.svg?logo=powershell
+![Language](https://img.shields.io/badge/PowerShell-5%2B-5391FE.svg?logo=powershell)
 PowerShell Media Collection Management (Module)
 =============
 This is a filesystem media collection management module for PowerShell. Its purpose is to help manage a well defined file naming structure, as well as track file integrity for files under management. It works by capturing information about files from properties, hash and filename, then builds a object graph based on the naming structure. From there the user can identify filename inconsistencies, perform a range of bulk alters and updates, check integrity, compare models, copy and merge models, check spelling, etc. The user can also save models to a structured json file, which can then be reloaded at a later time to re-compare against the filesystem or other models.
