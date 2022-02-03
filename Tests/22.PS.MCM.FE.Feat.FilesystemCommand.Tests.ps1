@@ -25,7 +25,7 @@ Describe "Get-AvailableFileMetadataKeys" -Tag IntegrationTest {
         $metadata.Count | Should -Be 309
     }
 
-    It "Get All Keys - Remote" {
+    It "Get All Keys - Remote" -Tag "AppveyorIgnore" {
         # Do
         Push-Location \\$env:COMPUTERNAME\d
         $metadata = Get-AvailableFileMetadataKeys
