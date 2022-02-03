@@ -1,23 +1,22 @@
 using module .\..\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\Helpers\ANSIEscapedString.Static.psm1
 
-function Invoke-PesterCoverageTest ([Switch] $Automated) {
+function Invoke-PesterCoverageTest ([Switch] $IgnoreRemoteFilesystem, [Switch] $MSWordNotAvailable) {
 
     Import-Module Pester -MinimumVersion 5.0.0
-    
-    if ($Automated.IsPresent) {
-        Invoke-Pester $PSScriptRoot\..\*.Tests.ps1 `
-                      -CodeCoverage $PSScriptRoot\..\..\PS.MediaCollectionManagement\* `
-                      -CodeCoverageOutputFile $PSScriptRoot\..\coverage.xml `
-                      -CodeCoverageOutputFileFormat JaCoCo `
-                      -ExcludeTagFilter "AppveyorIgnore"
-    }
-    else {
 
-        Invoke-Pester $PSScriptRoot\..\*.Tests.ps1 `
-                      -CodeCoverage $PSScriptRoot\..\..\PS.MediaCollectionManagement\* `
-                      -CodeCoverageOutputFile $PSScriptRoot\..\coverage.xml `
-                      -CodeCoverageOutputFileFormat JaCoCo
+    [System.Collections.Generic.List[String]] $exclusions = [System.Collections.Generic.List[String]]::new()
+    if ($IgnoreRemoteFilesystem.IsPresent) {
+        $exclusions.Add("IgnoreRemoteFilesystem")
     }
+    if ($MSWordNotAvailable.IsPresent) {
+        $exclusions.Add("MSWordPresent")
+    }
+
+    Invoke-Pester $PSScriptRoot\..\*.Tests.ps1 `
+                  -CodeCoverage $PSScriptRoot\..\..\PS.MediaCollectionManagement\* `
+                  -CodeCoverageOutputFile $PSScriptRoot\..\coverage.xml `
+                  -CodeCoverageOutputFileFormat JaCoCo `
+                  -ExcludeTagFilter $exclusions
 }
 
 function Invoke-DetailedPesterTest () {

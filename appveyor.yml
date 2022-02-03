@@ -7,4 +7,4 @@ build_script:
 
     . .\Tests\Helpers\BuildHelpers.ps1
 
-    Invoke-PesterCoverageTest -Automated
+    Invoke-PesterCoverageTest -IgnoreRemoteFilesystem -MSWordNotAvailable
