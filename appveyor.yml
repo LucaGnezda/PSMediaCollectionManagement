@@ -13,7 +13,7 @@ build_script:
 
     #$result = Invoke-Pester -Configuration $config
 
-    write-Host "Build Number $($Env:APPVEYOR_BUILD_VERSION)"
+    write-Host "Build Number $($Env:APPVEYOR_BUILD_VERSION) $($Env:BUILD)"
 
 test_script:
 - ps: >-
