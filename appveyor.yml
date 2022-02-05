@@ -10,10 +10,10 @@ build_script:
     . .\Tests\Helpers\BuildHelpers.ps1
 
     #$config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
-    
+
     #$result = Invoke-Pester -Configuration $config
 
-    write-Host "Build Number {build}"
+    write-Host "Build Number $(APPVEYOR_BUILD_VERSION)"
 
 test_script:
 - ps: >-
