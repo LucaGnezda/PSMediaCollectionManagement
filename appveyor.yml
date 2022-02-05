@@ -6,10 +6,6 @@ version: 0.9.10.{build}
 build_script:
 - ps: >-
     $PSVersionTable
-    
-    Install-Module -Name Pester -Force
-
-    Import-Module Pester -MinimumVersion 5.0.0
 
     . .\Tests\Helpers\BuildHelpers.ps1
 
@@ -17,11 +13,7 @@ build_script:
 
     $agent.UpdateBuildNumber()
 
-    #$config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
-
-    #$result = Invoke-Pester -Configuration $config
-
-    #write-Host "Manifest version updated to: " $agent.GetManifestVersion()
+    write-Host "Manifest version updated to: " $agent.GetManifestVersion()
 
 - git config --global credential.helper store
 - ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
@@ -34,3 +26,13 @@ build_script:
 
 test_script:
 - ps: >-
+    $PSVersionTable
+
+    Install-Module -Name Pester -Force
+
+    Import-Module Pester -MinimumVersion 5.0.0
+
+    $config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
+
+    $result = Invoke-Pester -Configuration $config
+

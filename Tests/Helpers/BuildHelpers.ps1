@@ -3,9 +3,6 @@ using module .\BuildAgent.psm1
 
 
 function New-BuildAgent() {
-    
-    Import-Module Pester -MinimumVersion 5.0.0
-    
     return [BuildAgent]::new()
 }
 

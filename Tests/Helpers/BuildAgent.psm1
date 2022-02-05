@@ -106,10 +106,6 @@ class BuildAgent {
     [String] VersionToString () {
         return $this.VersionToString($this.GetManifestVersion())
     }
-
-    [Object] PesterCoverageConfiguration () {
-        return $this._PesterConfig
-    }
     #endregion Public Methods
 
     #region Hidden Methods
