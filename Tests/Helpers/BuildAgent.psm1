@@ -116,7 +116,7 @@ class BuildAgent {
         $manifestVersionLine = ($manifestContents -match $this._VersionManifestLineRegex)[0]
         $manifestVersionLine -match $this._VersionManifestRegex
 
-        if ([String]::IsNullOrEmpty($this._InitialVersionLineFromManifest) -and -not [String]::IsNullOrEmpty($manifestVersionLine) {
+        if ([String]::IsNullOrEmpty($this._InitialVersionLineFromManifest) -and -not [String]::IsNullOrEmpty($manifestVersionLine)) {
             $this._InitialVersionLineFromManifest = $manifestVersionLine
         }
 
