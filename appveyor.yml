@@ -4,11 +4,13 @@ build_script:
     $PSVersionTable
     
     Install-Module -Name Pester -Force
+
     Import-Module Pester -MinimumVersion 5.0.0
 
     . .\Tests\Helpers\BuildHelpers.ps1
 
     #$config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
+    
     #$result = Invoke-Pester -Configuration $config
 
     write-Host "Build Number {build}"
