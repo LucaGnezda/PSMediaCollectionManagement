@@ -1,4 +1,4 @@
-version: 0.9.9.{build}
+﻿version: 0.9.10.{build}
 build_script:
 - ps: >-
     $PSVersionTable

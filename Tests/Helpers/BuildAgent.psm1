@@ -24,8 +24,11 @@ class BuildAgent {
     [String] Hidden $_AppveyorYAMLPipelinePath
     [String] Hidden $_ManifestVersionLineRegex
     [String] Hidden $_ManifestVersionRegex
+    [String] Hidden $_ManifestVersionElementsRegex
+    [String] Hidden $_ManifestVersionLineFormatter
+    [String] Hidden $_AppveyorVersionLineRegex
+    [String] Hidden $_AppveyorVersionLineFormatter
     [String] Hidden $_InitialVersionLineFromManifest
-    [String] Hidden $_VersionLineFormatter
     [Int]    Hidden $_DotsInVersion
     #endregion Properties
 
@@ -36,19 +39,19 @@ class BuildAgent {
         $this._ManifestPath =                   "$PSScriptRoot\..\..\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psd1"
         $this._AppveyorYAMLPipelinePath =       "$PSScriptRoot\..\..\appveyor.yml"
         $this._ManifestVersionLineRegex =       "ModuleVersion.+"
-        $this._ManifestVersionRegex =           "(?<=ModuleVersion( )?=( )['""])(?<Build>[0-9]+)?(?=['""])"
+        $this._ManifestVersionRegex =           "(?<=ModuleVersion( )?=( )['""])(?<Version>.+)?(?=['""])"
         $this._ManifestVersionLineFormatter =   "ModuleVersion = '{0}'"
-        $this._AppveyorVersionLineRegex =       "ModuleVersion.+"
-        $this._AppveyorVersionLineFormatter =   "version:.+"
+        $this._AppveyorVersionLineRegex =       "version:.+"
+        $this._AppveyorVersionLineFormatter =   "version: {0}"
         $this._InitialVersionLineFromManifest = ""
         $this._DotsInVersion =                  $this.GetManifestDotsInVersion()
 
         # Derive regex for the Manifest version 
-        $this._VersionManifestRegex =    "(?<=ModuleVersion( )?=( )?['""])"
-        if ($this._DotsInVersion -ge 1)  { $this._VersionManifestRegex += "(?<Major>[0-9]+)(.)?" }
-        if ($this._DotsInVersion -ge 2)  { $this._VersionManifestRegex += "(?<Major>[0-9]+)(.)?" }
-        if ($this._DotsInVersion -ge 3)  { $this._VersionManifestRegex += "(?<Major>[0-9]+)(.)?" }
-        $this._VersionManifestRegex +=   "(?<Build>[0-9]+)?(?=['""])"        
+        $this._ManifestVersionElementsRegex =    "(?<=ModuleVersion( )?=( )?['""])"
+        if ($this._DotsInVersion -ge 1)  { $this._ManifestVersionElementsRegex += "(?<Major>[0-9]+)(.)?" }
+        if ($this._DotsInVersion -ge 2)  { $this._ManifestVersionElementsRegex += "(?<Minor>[0-9]+)(.)?" }
+        if ($this._DotsInVersion -ge 3)  { $this._ManifestVersionElementsRegex += "(?<Fix>[0-9]+)(.)?" }
+        $this._ManifestVersionElementsRegex +=   "(?<Build>[0-9]+)?(?=['""])"        
     }
     #endregion Constructors
 
@@ -59,8 +62,8 @@ class BuildAgent {
             $version.Major += 1
             if ($this._DotsInVersion -ge 2) { $version.Minor = 0 }
             if ($this._DotsInVersion -ge 3) { $version.Fix = 0 }
-            SetManifestVersion ($version)
-            SetBuildPipelineVersion ($version)
+            $this.SetManifestVersion($version)
+            $this.SetBuildPipelineVersion($version)
         }
         else {
             throw "Manifest version does not support major version numbers"
@@ -72,8 +75,8 @@ class BuildAgent {
             $version = $this.GetManifestVersion()
             $version.Minor += 1
             if ($this._DotsInVersion -ge 3) { $version.Fix = 0 }
-            SetManifestVersion ($version)
-            SetBuildPipelineVersion ($version)
+            $this.SetManifestVersion($version)
+            $this.SetBuildPipelineVersion($version)
         }
         else {
             throw "Manifest version does not support minor version numbers"
@@ -84,8 +87,8 @@ class BuildAgent {
         if ($this._DotsInVersion -ge 3) {
             $version = $this.GetManifestVersion()
             $version.Fix += 1
-            SetManifestVersion ($version)
-            SetBuildPipelineVersion ($version)
+            $this.SetManifestVersion($version)
+            $this.SetBuildPipelineVersion($version)
         }
         else {
             throw "Manifest version does not support fix version numbers"
@@ -93,9 +96,11 @@ class BuildAgent {
     }
 
     [Void] UpdateBuildNumber () {
-        $version = $this.GetManifestVersion()
-        $version.Build = $Env:APPVEYOR_BUILD_NUMBER
-        SetManifestVersion ($version)
+        if ($null -ne $Env:APPVEYOR_BUILD_NUMBER) {
+            $version = $this.GetManifestVersion()
+            $version.Build = $Env:APPVEYOR_BUILD_NUMBER
+            $this.SetManifestVersion($version)
+        }
     }
 
     [String] VersionToString () {
@@ -120,8 +125,8 @@ class BuildAgent {
     [Hashtable] Hidden GetManifestVersion () {
         $manifestContents = Get-Content $this._ManifestPath
 
-        $manifestVersionLine = ($manifestContents -match $this._VersionManifestLineRegex)[0]
-        $manifestVersionLine -match $this._VersionManifestRegex
+        $manifestVersionLine = ($manifestContents -match $this._ManifestVersionLineRegex)[0]
+        $manifestVersionLine -match $this._ManifestVersionElementsRegex
 
         if ([String]::IsNullOrEmpty($this._InitialVersionLineFromManifest) -and -not [String]::IsNullOrEmpty($manifestVersionLine)) {
             $this._InitialVersionLineFromManifest = $manifestVersionLine
@@ -130,8 +135,8 @@ class BuildAgent {
         $version = @{}
 
         if ($this._DotsInVersion -ge 1)  { $version.Add("Major", [Int]$Matches.Major) }
-        if ($this._DotsInVersion -ge 2)  { $version.Add("Major", [Int]$Matches.Minor) }
-        if ($this._DotsInVersion -ge 3)  { $version.Add("Major", [Int]$Matches.Fix) }
+        if ($this._DotsInVersion -ge 2)  { $version.Add("Minor", [Int]$Matches.Minor) }
+        if ($this._DotsInVersion -ge 3)  { $version.Add("Fix", [Int]$Matches.Fix) }
         $version.Add("Build", [Int]$Matches.Build)
 
         return $version 
@@ -163,14 +168,14 @@ class BuildAgent {
 
         $manifestContents = Get-Content $this._ManifestPath
         $manifestContents = $manifestContents -replace $this._ManifestVersionLineRegex, [String]::Format($this._ManifestVersionLineFormatter, $this.VersionToString($version))
-        $manifestContents | Set-Content -Path $this._ManifestPath
+        $manifestContents | Set-Content -Path $this._ManifestPath -Encoding UTF8
     }
 
     [Void] Hidden SetBuildPipelineVersion ([Hashtable] $version) {
 
-        $manifestContents = Get-Content $this._ManifestPath
+        $manifestContents = Get-Content $this._AppveyorYAMLPipelinePath
         $manifestContents = $manifestContents -replace $this._AppveyorVersionLineRegex, [String]::Format($this._AppveyorVersionLineFormatter, $this.VersionToPipelineString($version))
-        $manifestContents | Set-Content -Path $this._ManifestPath
+        $manifestContents | Set-Content -Path $this._AppveyorYAMLPipelinePath -Encoding UTF8
     }
     #endRegion Hidden Methods
 
