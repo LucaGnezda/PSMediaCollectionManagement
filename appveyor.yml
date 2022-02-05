@@ -25,7 +25,7 @@ build_script:
 - git checkout %APPVEYOR_REPO_BRANCH%
 - git add *.psd1
 - git commit -m "[skip ci] AppVeyor Build %APPVEYOR_BUILD_VERSION%"
-- git push
+- git push --set-upstream origin %APPVEYOR_REPO_BRANCH%
 
 test_script:
 - ps: >-
