@@ -11,7 +11,6 @@
 
 #region Using
 #------------
-using module .\..\..\..\Shared\Using\Base\IsStatic.Class.psm1
 #endregion Using
 
 
