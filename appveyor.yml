@@ -9,11 +9,23 @@ build_script:
 
     . .\Tests\Helpers\BuildHelpers.ps1
 
+    $agent = New-BuildAgent
+
+    $agent.UpdateBuildNumber()
+
     #$config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
 
     #$result = Invoke-Pester -Configuration $config
 
-    write-Host "Build Number $($Env:APPVEYOR_BUILD_VERSION) $($Env:APPVEYOR_BUILD_NUMBER)"
+    #write-Host "Manifest version updated to: " $agent.GetManifestVersion()
+
+- git config --global credential.helper store
+- git config --global user.email "build@appveyor.com"
+- git config --global user.name "Appveyor"
+- git checkout %APPVEYOR_REPO_BRANCH%
+- git add *.psd1
+- git commit -m "[skip ci] AppVeyor Build %APPVEYOR_BUILD_VERSION%"
+- git push
 
 test_script:
 - ps: >-

@@ -37,8 +37,10 @@ class BuildAgent {
         $this._AppveyorYAMLPipelinePath =       "$PSScriptRoot\..\..\appveyor.yml"
         $this._ManifestVersionLineRegex =       "ModuleVersion.+"
         $this._ManifestVersionRegex =           "(?<=ModuleVersion( )?=( )['""])(?<Build>[0-9]+)?(?=['""])"
+        $this._ManifestVersionLineFormatter =   "ModuleVersion = '{0}'"
+        $this._AppveyorVersionLineRegex =       "ModuleVersion.+"
+        $this._AppveyorVersionLineFormatter =   "version:.+"
         $this._InitialVersionLineFromManifest = ""
-        $this._VersionLineFormatter =           "ModuleVersion = '{0}'"
         $this._DotsInVersion =                  $this.GetManifestDotsInVersion()
 
         # Derive regex for the Manifest version 
@@ -88,6 +90,12 @@ class BuildAgent {
         else {
             throw "Manifest version does not support fix version numbers"
         }
+    }
+
+    [Void] UpdateBuildNumber () {
+        $version = $this.GetManifestVersion()
+        $version.Build = $Env:APPVEYOR_BUILD_NUMBER
+        SetManifestVersion ($version)
     }
 
     [String] VersionToString () {
@@ -154,14 +162,14 @@ class BuildAgent {
     [Void] Hidden SetManifestVersion ([Hashtable] $version) {
 
         $manifestContents = Get-Content $this._ManifestPath
-        $manifestContents = $manifestContents -replace $this._VersionLineRegex, [String]::Format($this._VersionLineFormatter, $this.VersionToString($version))
+        $manifestContents = $manifestContents -replace $this._ManifestVersionLineRegex, [String]::Format($this._ManifestVersionLineFormatter, $this.VersionToString($version))
         $manifestContents | Set-Content -Path $this._ManifestPath
     }
 
     [Void] Hidden SetBuildPipelineVersion ([Hashtable] $version) {
 
         $manifestContents = Get-Content $this._ManifestPath
-        $manifestContents = $manifestContents -replace $this._VersionLineRegex, [String]::Format($this._VersionLineFormatter, $this.VersionToPipelineString($version))
+        $manifestContents = $manifestContents -replace $this._AppveyorVersionLineRegex, [String]::Format($this._AppveyorVersionLineFormatter, $this.VersionToPipelineString($version))
         $manifestContents | Set-Content -Path $this._ManifestPath
     }
     #endRegion Hidden Methods
