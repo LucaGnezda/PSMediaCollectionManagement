@@ -49,7 +49,8 @@ function New-PesterDetailedTestConfiguration ([Switch] $IgnoreRemoteFilesystem, 
 
     $config = New-PesterConfiguration
     $config.Run.PassThru = $true
-    $config.Run.Path = "$PSScriptRoot\..\TESTS\*.Tests.ps1"
+    #$config.Run.Path = "$PSScriptRoot\..\Tests\*.Tests.ps1"
+    $config.Run.Path = "$PSScriptRoot\..\Tests\31.PS.MCM.CM.ON.Actor.Tests.ps1"
     $config.Filter.ExcludeTag = $exclusions.ToArray()
     $config.Should.ErrorAction = "Continue"
     $config.Output.Verbosity = "Detailed"

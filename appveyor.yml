@@ -34,7 +34,11 @@ test_script:
 
     Import-Module Pester -MinimumVersion 5.0.0
 
-    $config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
+    # $config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
+
+    $config = New-PesterDetailedTestConfiguration
+
+    $con
 
     $result = Invoke-Pester -Configuration $config
 
