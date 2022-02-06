@@ -174,7 +174,7 @@ Describe "ContentModel Unit Test" -Tag UnitTest {
 
     It "Sorting Content" {
         # Test        
-        $contentModel.Content.SortedBy("Name")[0].BaseName | Should -Be "ContentA"
+        $contentModel.Content.SortedBy("Title")[0].BaseName | Should -Be "ContentA"
     }
 
     It "FindByFileName Content" {

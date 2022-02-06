@@ -47,7 +47,7 @@ Describe "Artist Unit Test" -Tag UnitTest {
 
     It "Sorting Performed" {
         # Test        
-        $validArtist.Performed.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
+        $validArtist.Performed.SortedBy("Title")[0].Filename | Should -Be "Bar.test"
     }
 
     It "FindByFileName Performed" {

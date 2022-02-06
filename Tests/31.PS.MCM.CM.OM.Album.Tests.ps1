@@ -60,7 +60,7 @@ Describe "Album Unit Test" -Tag UnitTest {
 
     It "Sorting Tracks" {  
         # Test      
-        $validAlbum.Tracks.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
+        $validAlbum.Tracks.SortedBy("Title")[0].Filename | Should -Be "Bar.test"
     }
 
     It "FindByFileName Tracks" {

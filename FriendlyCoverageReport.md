@@ -1,5 +1,5 @@
 ﻿```Friendly Coverage Report
-Generated on: 30 January 2022 07:50:44 UTC
+Generated on: 06 February 2022 13:54:24 UTC
 
 Legend:
   ● = Coverage
@@ -372,7 +372,7 @@ PS.MediaCollectionManagement/CollectionManagement/Using/Providers
   MSWordCOMSpellcheckProvider.Class                                                                              
     Initialise                                        [●●●●●●●●●●●▲▲▲▲▲▲▲▲▲]    4/7    +3      57.14%     100.00%
     CheckSpelling                                     [●●●●●●●●●●●●●●●●●●●●]    3/3           100.00%     100.00%
-    GetSuggestions                                    [●●●●●●●●●●●●●●●●●●●●]    5/5           100.00%     100.00%
+    GetSuggestions                                    [●●●●●●●●●●●●●●●●●●●●]    7/7           100.00%     100.00%
     Dispose                                           [●●●●●●●●●●●●●●●●●●●●]    4/4           100.00%     100.00%
 
 
@@ -456,6 +456,6 @@ PS.MediaCollectionManagement
 
 
 
-Overall coverage:                                     [●●●●●●●●●●●●●●●●●●▲▲] 2515/2657 +142    94.66%     100.00%
-  (69 files, 2515 instructions)
+Overall coverage:                                     [●●●●●●●●●●●●●●●●●●▲▲] 2517/2659 +142    94.66%     100.00%
+  (69 files, 2517 instructions)
 ```

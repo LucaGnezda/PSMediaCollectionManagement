@@ -5,17 +5,34 @@ BeforeAll {
     Import-Module $PSScriptRoot\..\PS.MediaCollectionManagement\PS.MediaCollectionManagement.psd1 -Force
     
     [ConsoleExtensionsState]::RedirectToMockConsole = $true
+
+    $spellcheckProvider = [MSWordCOMSpellcheckProvider]::New()
+    $spellcheckProvider
 }
 
 Describe "Spellcheck Unit Test" -Tag UnitTest {
 
-    It "Spellcheck" {
-        $spellcheckProvider = [MSWordCOMSpellcheckProvider]::New()
+    It "Spellcheck - Minimial Functionality" {
 
+        # Test
         $spellcheckProvider.CheckSpelling("Apple") | Should -Be $null
-        
+        $spellcheckProvider.GetSuggestions("Apple") | Should -Be $null
+
         # Test
         $spellcheckProvider._WordInterop | Should -Be $null
+
+        # Do
+        $spellcheckProvider.Initialise()
+        $spellcheckProvider.Dispose()
+
+        # Test
+        $spellcheckProvider._WordInterop | Should -Be $null
+    }
+
+    It "Spellcheck - Active" -Tag MSWordPresent {        
+        # Test
+        $spellcheckProvider._WordInterop | Should -Be $null
+
         # Do
         $spellcheckProvider.Initialise()
 
@@ -34,5 +51,6 @@ Describe "Spellcheck Unit Test" -Tag UnitTest {
 }
 
 AfterAll {
+    $spellcheckProvider.Dispose()
     [ConsoleExtensionsState]::RedirectToMockConsole = $false
 }

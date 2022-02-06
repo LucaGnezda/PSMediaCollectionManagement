@@ -61,16 +61,21 @@ class MSWordCOMSpellcheckProvider : ISpellcheckProvider {
     [System.Collections.Generic.List[String]] GetSuggestions ([String] $word) {
 
         # Get the spellcheck suggestions
-        $wordSuggestions = $this._WordInterop.GetSpellingSuggestions($word)
-        
-        # load it into a list
-        $suggestionsList = [System.Collections.Generic.List[String]]::new()
-        
-        foreach ($item in $wordSuggestions){
-            $suggestionsList.Add($item.Name)
-        }
+        if ($null -ne $this._WordInterop) {
+            $wordSuggestions = $this._WordInterop.GetSpellingSuggestions($word)
+            
+            # load it into a list
+            $suggestionsList = [System.Collections.Generic.List[String]]::new()
+            
+            foreach ($item in $wordSuggestions){
+                $suggestionsList.Add($item.Name)
+            }
 
-        return $suggestionsList
+            return $suggestionsList
+        }
+        else {
+            return $null
+        }
 
     }
 

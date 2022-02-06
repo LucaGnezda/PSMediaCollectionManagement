@@ -25,7 +25,7 @@ Describe "Get-AvailableFileMetadataKeys" -Tag IntegrationTest {
         $metadata.Count | Should -Be 309
     }
 
-    It "Get All Keys - Remote" {
+    It "Get All Keys - Remote" -Tag RemoteFilesystem {
         # Do
         Push-Location \\$env:COMPUTERNAME\d
         $metadata = Get-AvailableFileMetadataKeys
@@ -56,10 +56,12 @@ Describe "Get-FileMetadata" -Tag IntegrationTest {
         $metadata = (Get-FileMetadata $file) 
         
         # Test
+        #Write-Host Write-Host ($metadata | Format-Table | Out-String)
+
         $metadata.Count | Should -Be 37
         $metadata[0].Index | Should -Be 0
         $metadata[0].Property | Should -Be "Name"
-        $metadata[0].Value | Should -Be "Foo - Bar.mp4"
+        $metadata[0].Value | Should -BeIn @("Foo - Bar.mp4", "Foo - Bar") # Handle case where Shell is configured to hide extensions. 
     }
 
     It "Get Specific Key Value Pair" {

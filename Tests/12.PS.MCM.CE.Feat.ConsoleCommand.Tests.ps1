@@ -196,6 +196,16 @@ Describe "ToConsole - Colour tests" -Tag IntegrationTest {
         Write-FormattedTableToConsole -ColumnHeadings @("Mode", "Name") -ColumnProperties @("Mode", "Name") -ColumnWidths @(10, 40, 60) -ColumnColors @(92, 93) -AcceptColumnColorsFromInputIfAvailable @($false, $true) -Object $out # Inconsistent formatter array lengths
         [ConsoleExtensionsState]::RedirectToMockConsole = $false
     }
+
+    It "Simulate change in Command History" {
+        [ConsoleExtensionsState]::RedirectToMockConsole = $true
+        Write-ToConsole "Generic"
+        Add-ConsoleIndent
+        Write-ToConsole "Generic"
+        Get-History -Id 5 -Count 5 | Add-History
+        Write-ToConsole "Generic"
+        [ConsoleExtensionsState]::RedirectToMockConsole = $false
+    }
 }
 
 
