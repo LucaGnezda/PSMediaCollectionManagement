@@ -7,11 +7,11 @@ build_script:
 - ps: >-
     $PSVersionTable
 
-    . .\Tests\Helpers\BuildHelpers.ps1
+    . .\CICD\BuildHelpers.ps1
 
     $agent = New-BuildAgent
 
-    $agent.UpdateBuildNumber()
+    $agent.SetBuildNumber()
 
     write-Host "Manifest version updated to: " $agent.GetManifestVersion()
 
@@ -28,6 +28,8 @@ test_script:
 - ps: >-
     $PSVersionTable
 
+    . .\CICD\BuildHelpers.ps1
+
     Install-Module -Name Pester -Force
 
     Import-Module Pester -MinimumVersion 5.0.0
@@ -35,4 +37,17 @@ test_script:
     $config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
 
     $result = Invoke-Pester -Configuration $config
+
+    $agent = New-BuildAgent
+
+    $agent.SetAutomationCoverage($result)
+
+- git config --global credential.helper store
+- ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
+- git config --global user.email "build@appveyor.com"
+- git config --global user.name "Appveyor"
+- git checkout %APPVEYOR_REPO_BRANCH%
+- git add README.md
+- git commit -m "[skip ci] AppVeyor Testing %APPVEYOR_BUILD_VERSION%"
+- git push --set-upstream origin %APPVEYOR_REPO_BRANCH%
 

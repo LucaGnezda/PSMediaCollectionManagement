@@ -30,7 +30,7 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
         $invalidConfig.ConfigureForStructuredFiles(@([FilenameElement]::Actors))
 
         # Test
-        {$contentBO = [ContentBO]::new($config); $contentBO} | Should -Throw
+        {$contentBO = [ContentBO]::new($invalidConfig); $contentBO} | Should -Throw
     }
     
     It "Constructing non compliant content - Incorrect number of elements" {
@@ -163,6 +163,7 @@ Describe "ContentBO Unit Test" -Tag UnitTest {
         [ContentBO] $contentBO = [ContentBO]::new($config)
         
         # Test
+        $contentBO._validSeasonEpisodeRegexPatterns | Should -Be @("^S[\d]+E[\d]+$", "^s[\d]+e[\d]+$", "^[\d]+X[\d]+$", "^[\d]+x[\d]+$")
         $contentBO.IsValidSeasonEpisode($s) | Should -Be $expected
     }
 
