@@ -57,6 +57,9 @@ Describe "Actor Unit Test" -Tag UnitTest {
         Write-Host ($validActor._Content | Sort-Object "Name")[0]
         Write-Host ($validActor._Content | Sort-Object "Name")[1]
         Write-Host ($validActor._Content | Sort-Object "Name")[2]
+        Write-Host ($validActor._Content[0].Name
+        Write-Host ($validActor._Content[1].Name
+        Write-Host ($validActor._Content[2].Name
         
     }
 
