@@ -167,10 +167,41 @@ Where:
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
 - If you would like to attach a Visual Studio Code debugger it is recommended you configure the debugger to run an interactive PowerShell session.
 - Please note, modules with classes won't re-load correctly after being changed in PowerShell 5. If you change the code, remember to re-start your IDE before restarting your debugger.
+- Several helper commands have been implemented to assist with test automation and the production of friendly code coverage results. Do the following while you're developing a feature branch:
+
+```powershell
+# Load the CICD Helpers
+. .\CICD\BuildHelpers.ps1
+$agent = New-BuildAgent
+
+# Use during test driven development
+$config = New-PesterCIConfiguration -IncludeDetail
+$result = Invoke-Pester -Configuration $config
+
+# examples of combining options
+$config = New-PesterCIConfiguration -IncludeCoverage -IncludeDetail -MSWordNotAvailable -IgnoreRemoteFilesystem
+$result = Invoke-Pester -Configuration $config
+
+# Use for updating coverage, before finalising a feature branch
+$config = New-PesterCIConfiguration -IncludeCoverage  
+$result = Invoke-Pester -Configuration $config
+Build-FriendlyCodeCoverageReport -UpdateMD    
+
+# To update the raw and effective badges
+$agent.SetRawAndEffectiveCoverageBadges($result, (Get-KnownExceptions))  
+
+# And to update the version number (automatically applied to the manifest and Appveyor files)
+$agent.StepMajorVersion() # Increments Major, zeros Minor and Fix.
+$agent.StepMinorVersion() # Increments Minor, zeros Fix.
+$agent.StepFix()          # Increments Fix.
+
+# Note build is always set by the CICD Pipeline
+```
+
 
 # Code coverage
 - This module implements a suite of automated pester tests, which generate JoCoCo code coverage results.
-- Several helper commands have been implemented to assist with test automation and the production of friendly code coverage results. 
+
 - To generate friendly code coverage results, the JoCoCo results are parsed, merged with a known coverage exceptions list, then converted into a more friendly and discoverable format to console and markdown.
 - The latest friendly [code coverage results](./FriendlyCoverageReport.md) can be found here. 
 - Raw coverage relates to total coverage across all implemented tests.
@@ -183,6 +214,6 @@ Would like to thank/credit a bunch of contributors and the community ...
 - [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for inspiration on structuring modules, and how to wire up pipelines.
 - [gravejester](https://github.com/gravejester) for the PowerShell implementation of Levenshtein string similarity functions.
 - [markwragg](https://github.com/markwragg) for inspiration on how to use pipelines to implement shields.io badges. 
-- Pretty much everyone on [StackOverflow](https://stackoverflow.com/), for pretty much having answers to every questions ever conceived (except PowerShell Interfaces :P).
+- Pretty much everyone on [StackOverflow](https://stackoverflow.com), for pretty much having answers to every questions ever conceived (except PowerShell Interfaces :P).
 - The [Pester community](https://github.com/pester/Pester), for creating an awesome PowerShell testing framework.
-- The [Appveyor](https://www.appveyor.com/docs/build-configuration/) team and the [Shields.io](https://shields.io/) team, for creating an awesome CICD ecosystem which empowers the open source community.
+- The [Appveyor](https://www.appveyor.com/docs/build-configuration) team and the [Shields.io](https://shields.io) team, for creating an awesome CICD ecosystem which empowers the open source community.
