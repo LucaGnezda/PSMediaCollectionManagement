@@ -56,7 +56,7 @@ Describe "Get-FileMetadata" -Tag IntegrationTest {
         $metadata = (Get-FileMetadata $file) 
         
         # Test
-        $metadata
+        Write-Host $metadata
 
         $metadata.Count | Should -Be 37
         $metadata[0].Index | Should -Be 0
