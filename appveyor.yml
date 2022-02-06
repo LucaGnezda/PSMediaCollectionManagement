@@ -4,15 +4,16 @@
 
 version: 0.9.10.{build}
 build_script:
-- ps: >-
+- ps: |
+    # Check Version of PowerShell
     $PSVersionTable
 
+    # Initialise
     . .\CICD\BuildHelpers.ps1
-
     $agent = New-BuildAgent
 
+    # Build Actions
     $agent.SetBuildNumber()
-
     write-Host "Manifest version updated to: " ($agent.GetManifestVersion()[0])
 
 - git config --global credential.helper store
@@ -25,23 +26,25 @@ build_script:
 - git push --set-upstream origin %APPVEYOR_REPO_BRANCH%
 
 test_script:
-- ps: >-
+- ps: |
+    # Check Version of PowerShell
     $PSVersionTable
 
+    # Initialise
     . .\CICD\BuildHelpers.ps1
-
     Install-Module -Name Pester -Force
-
     Import-Module Pester -MinimumVersion 5.0.0
-
+    
+    # Testing Actions
     $config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
-
     $result = Invoke-Pester -Configuration $config
+    $agent = New-BuildAgent
+    $agent.SetAutomationCoverageBadge($result)
+    (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path $config.TestResult.OutputPath.Value))
 
-    #$agent = New-BuildAgent
-
-    #$agent.SetAutomationCoverage($result)
-
+    # Status
+    $env:TEST_FAIL_COUNT=$result.FailedCount
+    
 - git config --global credential.helper store
 - ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
 - git config --global user.email "build@appveyor.com"
@@ -51,17 +54,8 @@ test_script:
 - git commit -m "[skip ci] AppVeyor Testing %APPVEYOR_BUILD_VERSION%"
 - git push --set-upstream origin %APPVEYOR_REPO_BRANCH%
 
-- ps: >-
-    . .\CICD\BuildHelpers.ps1
-
-    $config = New-PesterAppveyorReportConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
-
-    $result = Invoke-Pester -Configuration $config
-    
-    (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path $config.TestResult.OutputPath.Value))
-    
-    if ($result.FailedCount -gt 0) {
-
-        throw "$($result.FailedCount) tests failed."
-    
+after_test:
+- ps: |
+    if ( $env:TEST_FAIL_COUNT -gt 0) {
+        throw "$($env:TEST_FAIL_COUNT) Tests Failed."
     }

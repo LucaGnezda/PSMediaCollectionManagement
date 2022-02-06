@@ -127,7 +127,7 @@ class BuildAgent {
         }
     }
 
-    [Void] SetRawAndEffectiveCoverage ([Object] $results, [Hashtable] $exceptions) {
+    [Void] SetRawAndEffectiveCoverageBadges ([Object] $results, [Hashtable] $exceptions) {
 
         $rawCoverage = [Math]::Floor((100 * $results.CodeCoverage.CommandsExecutedCount) / $results.CodeCoverage.CommandsAnalyzedCount)
         $exceptionCount = 0
@@ -146,7 +146,7 @@ class BuildAgent {
         $markdownContents | Set-Content -Path $this._ReadmeMarkdownPath -Encoding UTF8
     }
 
-    [Void] SetAutomationCoverage ([Object] $results) {
+    [Void] SetAutomationCoverageBadge ([Object] $results) {
 
         $automationCoverage = [Math]::Floor((100 * $results.CodeCoverage.CommandsExecutedCount) / $results.CodeCoverage.CommandsAnalyzedCount)
 

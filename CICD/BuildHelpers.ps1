@@ -6,34 +6,7 @@ function New-BuildAgent() {
     return [BuildAgent]::new()
 }
 
-function New-PesterCoverageConfiguration ([Switch] $IgnoreRemoteFilesystem, [Switch] $MSWordNotAvailable) {
-    
-    Import-Module Pester -MinimumVersion 5.0.0
-
-    [System.Collections.Generic.List[String]] $exclusions = [System.Collections.Generic.List[String]]::new()
-    
-    if ($IgnoreRemoteFilesystem.IsPresent) {
-        $exclusions.Add("RemoteFilesystem")
-    }
-
-    if ($MSWordNotAvailable.IsPresent) {
-        $exclusions.Add("MSWordPresent")
-    }
-
-    $config = New-PesterConfiguration
-    $config.Run.PassThru = $true
-    $config.Run.Path = "$PSScriptRoot\..\Tests\*.Tests.ps1"
-    $config.CodeCoverage.Enabled = $true
-    $config.CodeCoverage.Path = "$PSScriptRoot\..\PS.MediaCollectionManagement\*"
-    $config.CodeCoverage.OutputPath = "$PSScriptRoot\..\coverage.xml"
-    $config.CodeCoverage.OutputFormat = "JaCoCo"
-    $config.Filter.ExcludeTag = $exclusions.ToArray()
-    $config.Should.ErrorAction = "Continue"
-    
-    return $config
-}
-
-function New-PesterDetailedTestConfiguration ([Switch] $IgnoreRemoteFilesystem, [Switch] $MSWordNotAvailable) {
+function New-PesterCIConfiguration ([Switch] $IgnoreRemoteFilesystem, [Switch] $MSWordNotAvailable, [Switch] $IncludeCoverage, [Switch] $IncludeResults, [Switch] $IncludeDetail) {
     
     Import-Module Pester -MinimumVersion 5.0.0
 
@@ -52,33 +25,24 @@ function New-PesterDetailedTestConfiguration ([Switch] $IgnoreRemoteFilesystem, 
     $config.Run.Path = "$PSScriptRoot\..\Tests\*.Tests.ps1"
     $config.Filter.ExcludeTag = $exclusions.ToArray()
     $config.Should.ErrorAction = "Continue"
-    $config.Output.Verbosity = "Detailed"
-    
-    return $config
-}
 
-function New-PesterAppveyorReportConfiguration ([Switch] $IgnoreRemoteFilesystem, [Switch] $MSWordNotAvailable) {
-    
-    Import-Module Pester -MinimumVersion 5.0.0
-
-    [System.Collections.Generic.List[String]] $exclusions = [System.Collections.Generic.List[String]]::new()
-    
-    if ($IgnoreRemoteFilesystem.IsPresent) {
-        $exclusions.Add("RemoteFilesystem")
+    if ($IncludeCoverage.IsPresent) {
+        $config.CodeCoverage.Enabled = $true
+        $config.CodeCoverage.Path = "$PSScriptRoot\..\PS.MediaCollectionManagement\*"
+        $config.CodeCoverage.OutputPath = "$PSScriptRoot\..\coverage.xml"
+        $config.CodeCoverage.OutputFormat = "JaCoCo"
     }
 
-    if ($MSWordNotAvailable.IsPresent) {
-        $exclusions.Add("MSWordPresent")
+    if ($IncludeDetail.IsPresent) {
+        $config.Output.Verbosity = "Detailed"
     }
 
-    $config = New-PesterConfiguration
-    $config.Run.PassThru = $true
-    $config.Run.Path = "$PSScriptRoot\..\Tests\*.Tests.ps1"
-    $config.Filter.ExcludeTag = $exclusions.ToArray()
-    $config.Should.ErrorAction = "Continue"
-    $config.TestResult.Enabled = $true
-    $config.TestResult.OutputFormat = "NUnitXml"
-    
+    if ($IncludeResults.IsPresent) {
+        $config.TestResult.Enabled = $true
+        $config.TestResult.OutputPath = "$PSScriptRoot\..\testresults.xml"
+        $config.TestResult.OutputFormat = "NUnitXml"
+    }
+
     return $config
 }
 
