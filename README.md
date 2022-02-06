@@ -131,6 +131,8 @@ Things still to be done, in progress, or recently completed:
 | Feature | Allow content model methods to select paths, giving greater control regardless of your current filesystem location. | :heavy_check_mark: |
 | Feature | Be able to compare a model directly with the filesystem | :heavy_check_mark: |
 | Feature | Custom dictionaries | :heavy_minus_sign: |
+| Feature | Complex similarity scanning | :heavy_minus_sign: |
+| Feature | Load config from file | :heavy_minus_sign: |
 
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
@@ -138,7 +140,8 @@ Things still to be done, in progress, or recently completed:
 | Codebase Improvement | Implementation of pseudo abstract and interface classes | :heavy_check_mark: |
 | Codebase Improvement | Refactoring over several iterations towards 'go well' principles | :heavy_check_mark: |
 | Codebase Improvement | Figure out why Pester errors on Code Coverage when using the new v5 Syntax and Configuration (Pester fixed by v5.3.1) | :heavy_check_mark: |
-| Codebase Improvement | Appveyor badge support | :heavy_minus_sign: | 
+| Codebase Improvement | Appveyor based CICD | :heavy_check_mark: | 
+| Codebase Improvement | Appveyor badge support | :heavy_check_mark: | 
 
 | Type | Feature / Improvement | Status |
 | ---- | ---------------- | ------ |
@@ -170,11 +173,16 @@ Where:
 - Several helper commands have been implemented to assist with test automation and the production of friendly code coverage results. 
 - To generate friendly code coverage results, the JoCoCo results are parsed, merged with a known coverage exceptions list, then converted into a more friendly and discoverable format to console and markdown.
 - The latest friendly [code coverage results](./FriendlyCoverageReport.md) can be found here. 
+- Raw coverage relates to total coverage across all implemented tests.
+- Effective coverage is the coverage once lines that cannot be tested have been excluded (eg: unreachable code, exceptions and error handling caused by errors external to this module, false positive instructions such as variables initialised as arrays, etc.).
+- Automation coverage relates to the subset of tests that can be run on an Appveyor build host.
 
 # Credits
 Would like to thank/credit a bunch of contributors and the community ...
 - [unclebob](https://github.com/unclebob) and his amazing conference talks, for the inspiration I needed to start cleaning up the code and to work out how to implement pseudo interfaces. It then allowed me to implement inversion of control, DI and improved modularisation. 
-- [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for inspiration on structuring modules
+- [RamblingCookieMonster](https://github.com/RamblingCookieMonster) for inspiration on structuring modules, and how to wire up pipelines.
 - [gravejester](https://github.com/gravejester) for the PowerShell implementation of Levenshtein string similarity functions.
+- [markwragg](https://github.com/markwragg) for inspiration on how to use pipelines to implement shields.io badges. 
 - Pretty much everyone on [StackOverflow](https://stackoverflow.com/), for pretty much having answers to every questions ever conceived (except PowerShell Interfaces :P).
 - The [Pester community](https://github.com/pester/Pester), for creating an awesome PowerShell testing framework.
+- The [Appveyor](https://www.appveyor.com/docs/build-configuration/) team and the [Shields.io](https://shields.io/) team, for creating an awesome CICD ecosystem which empowers the open source community.
