@@ -15,15 +15,6 @@ build_script:
 
     write-Host "Manifest version updated to: " $agent.GetManifestVersion()
 
-- git config --global credential.helper store
-- ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
-- git config --global user.email "build@appveyor.com"
-- git config --global user.name "Appveyor"
-- git checkout %APPVEYOR_REPO_BRANCH%
-- git add *.psd1
-- git commit -m "[skip ci] AppVeyor Build %APPVEYOR_BUILD_VERSION%"
-- git push --set-upstream origin %APPVEYOR_REPO_BRANCH%
-
 test_script:
 - ps: >-
     $PSVersionTable
@@ -44,12 +35,5 @@ test_script:
 
     #$agent.SetAutomationCoverage($result)
 
-- git config --global credential.helper store
-- ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
-- git config --global user.email "build@appveyor.com"
-- git config --global user.name "Appveyor"
-- git checkout %APPVEYOR_REPO_BRANCH%
-- git add README.md
-- git commit -m "[skip ci] AppVeyor Testing %APPVEYOR_BUILD_VERSION%"
-- git push --set-upstream origin %APPVEYOR_REPO_BRANCH%
+
 
