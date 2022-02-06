@@ -27,7 +27,7 @@ test_script:
 
     # $config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
 
-    $config = New-PesterDetailedTestConfiguration
+    $config = New-PesterDetailedTestConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
 
     $result = Invoke-Pester -Configuration $config
 

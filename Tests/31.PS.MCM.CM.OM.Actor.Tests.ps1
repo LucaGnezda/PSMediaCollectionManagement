@@ -47,20 +47,7 @@ Describe "Actor Unit Test" -Tag UnitTest {
 
     It "Sorting PerformedIn" {
         # Test        
-        # $validActor.PerformedIn.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
-
-        Write-Host $validActor.PerformedIn
-        Write-Host $validActor.PerformedIn.SortedBy("Title")
-        Write-Host $validActor._Content
-        Write-Host $validActor._Content.SortedBy("Name")
-        Write-Host ($validActor._Content | Sort-Object "Name")
-        Write-Host ($validActor._Content | Sort-Object "Name")[0]
-        Write-Host ($validActor._Content | Sort-Object "Name")[1]
-        Write-Host ($validActor._Content | Sort-Object "Name")[2]
-        Write-Host ($validActor._Content[0].Name)
-        Write-Host ($validActor._Content[1].Name)
-        Write-Host ($validActor._Content[2].Name)
-        
+        $validActor.PerformedIn.SortedBy("Title")[0].Filename | Should -Be "Bar.test"        
     }
 
     It "FindByFileName PerformedIn" {
