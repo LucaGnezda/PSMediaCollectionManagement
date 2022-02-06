@@ -12,7 +12,7 @@
     RootModule = 'PS.MediaCollectionManagement.psm1'
     
     # Version number of this module (Major.Minor.Fix.Build).
-    ModuleVersion = '0.9.10.61'
+    ModuleVersion = '0.9.10.62'
     
     # ID used to uniquely identify this module
     GUID = 'a66d5170-23f2-40f4-8b8b-75f20dc4d471'
