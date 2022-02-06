@@ -38,13 +38,11 @@ test_script:
 
     $config = New-PesterDetailedTestConfiguration
 
-    $con
-
     $result = Invoke-Pester -Configuration $config
 
-    $agent = New-BuildAgent
+    #$agent = New-BuildAgent
 
-    $agent.SetAutomationCoverage($result)
+    #$agent.SetAutomationCoverage($result)
 
 - git config --global credential.helper store
 - ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
