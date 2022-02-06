@@ -1,24 +1,50 @@
-using module .\..\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\Helpers\ANSIEscapedString.Static.psm1
+using module .\..\PS.MediaCollectionManagement\ConsoleExtensions\Using\Helpers\ANSIEscapedString.Static.psm1
+using module .\BuildAgent.psm1
 
-function Invoke-PesterTestAndGenerateCoverageReport () {
 
-    Import-Module Pester -MinimumVersion 5.0.0
-        
-    Invoke-Pester $PSScriptRoot\..\*.Tests.ps1 `
-                  -CodeCoverage $PSScriptRoot\..\..\PS.MediaCollectionManagement\* `
-                  -CodeCoverageOutputFile $PSScriptRoot\..\coverage.xml `
-                  -CodeCoverageOutputFileFormat JaCoCo
-
+function New-BuildAgent() {
+    return [BuildAgent]::new()
 }
 
-function Invoke-DetailedPesterTest () {
-
+function New-PesterCIConfiguration ([Switch] $IgnoreRemoteFilesystem, [Switch] $MSWordNotAvailable, [Switch] $IncludeCoverage, [Switch] $IncludeResults, [Switch] $IncludeDetail) {
+    
     Import-Module Pester -MinimumVersion 5.0.0
-        
-    Invoke-Pester -Output Detailed $PSScriptRoot\..\*.Tests.ps1
 
+    [System.Collections.Generic.List[String]] $exclusions = [System.Collections.Generic.List[String]]::new()
+    
+    if ($IgnoreRemoteFilesystem.IsPresent) {
+        $exclusions.Add("RemoteFilesystem")
+    }
+
+    if ($MSWordNotAvailable.IsPresent) {
+        $exclusions.Add("MSWordPresent")
+    }
+
+    $config = New-PesterConfiguration
+    $config.Run.PassThru = $true
+    $config.Run.Path = "$PSScriptRoot\..\Tests\*.Tests.ps1"
+    $config.Filter.ExcludeTag = $exclusions.ToArray()
+    $config.Should.ErrorAction = "Continue"
+
+    if ($IncludeCoverage.IsPresent) {
+        $config.CodeCoverage.Enabled = $true
+        $config.CodeCoverage.Path = "$PSScriptRoot\..\PS.MediaCollectionManagement\*"
+        $config.CodeCoverage.OutputPath = "$PSScriptRoot\..\coverage.xml"
+        $config.CodeCoverage.OutputFormat = "JaCoCo"
+    }
+
+    if ($IncludeDetail.IsPresent) {
+        $config.Output.Verbosity = "Detailed"
+    }
+
+    if ($IncludeResults.IsPresent) {
+        $config.TestResult.Enabled = $true
+        $config.TestResult.OutputPath = "$PSScriptRoot\..\testresults.xml"
+        $config.TestResult.OutputFormat = "NUnitXml"
+    }
+
+    return $config
 }
-
 
 function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
 
@@ -28,7 +54,7 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
     $green = 32
     $yellow = 33
     $red = 31
-    $FriendlyMarkdownFile = "$PSScriptRoot\..\..\FriendlyCoverageReport.md"
+    $FriendlyMarkdownFile = "$PSScriptRoot\..\FriendlyCoverageReport.md"
 
     $h = Get-Host
     $screenWidth = [Math]::Min($h.UI.RawUI.WindowSize.Width, $maxDisplayWidth)
@@ -43,7 +69,7 @@ function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
 
     $knownExceptions = Get-KnownExceptions
 
-    [Xml] $codeCoverageData = Get-Content $PSScriptRoot\..\Coverage.xml
+    [Xml] $codeCoverageData = Get-Content "$PSScriptRoot\..\Coverage.xml"
 
     if ($UpdateMD.IsPresent) {
         "``````Friendly Coverage Report" | Out-File -FilePath $FriendlyMarkdownFile -Encoding utf8
@@ -348,6 +374,9 @@ function Get-KnownExceptions () {
     # Unable to mock MS Word COM Interop to test exception block
     $exceptionsList.Add("PS.MediaCollectionManagement/CollectionManagement/Using/Providers|MSWordCOMSpellcheckProvider.Class|Initialise", 3)
 
+    # Untestable with test automation
+    #$exceptionsList.Add("PS.MediaCollectionManagement/ConsoleExtensions/Private|Set-ConsoleState", 3)
+    
     # Unreachable code
     $exceptionsList.Add("PS.MediaCollectionManagement/ConsoleExtensions/Using/ModuleBehaviour|ConsoleExtensionsState.Singleton|MockConsoleReceiver", 1)
 
