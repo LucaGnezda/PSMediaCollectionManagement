@@ -36,7 +36,7 @@ test_script:
     Import-Module Pester -MinimumVersion 5.0.0
     
     # Testing Actions
-    $config = New-PesterCoverageConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable
+    $config = New-PesterCIConfiguration -IgnoreRemoteFilesystem -MSWordNotAvailable -IncludeCoverage -IncludeResults -IncludeDetail 
     $result = Invoke-Pester -Configuration $config
     $agent = New-BuildAgent
     $agent.SetAutomationCoverageBadge($result)
@@ -44,7 +44,7 @@ test_script:
 
     # Status
     $env:TEST_FAIL_COUNT=$result.FailedCount
-    
+
 - git config --global credential.helper store
 - ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
 - git config --global user.email "build@appveyor.com"
