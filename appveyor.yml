@@ -48,6 +48,4 @@ test_script:
 
 after_test:
 - ps: |
-    if ( $env:TEST_FAIL_COUNT -gt 0) {
-        throw "$($env:TEST_FAIL_COUNT) Tests Failed."
-    }
+    if ( $env:TEST_FAIL_COUNT -gt 0) { throw "$($env:TEST_FAIL_COUNT) tests failed." } else { Write-Host "All tests passed." }
