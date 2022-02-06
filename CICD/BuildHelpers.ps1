@@ -57,6 +57,31 @@ function New-PesterDetailedTestConfiguration ([Switch] $IgnoreRemoteFilesystem, 
     return $config
 }
 
+function New-PesterAppveyorReportConfiguration ([Switch] $IgnoreRemoteFilesystem, [Switch] $MSWordNotAvailable) {
+    
+    Import-Module Pester -MinimumVersion 5.0.0
+
+    [System.Collections.Generic.List[String]] $exclusions = [System.Collections.Generic.List[String]]::new()
+    
+    if ($IgnoreRemoteFilesystem.IsPresent) {
+        $exclusions.Add("RemoteFilesystem")
+    }
+
+    if ($MSWordNotAvailable.IsPresent) {
+        $exclusions.Add("MSWordPresent")
+    }
+
+    $config = New-PesterConfiguration
+    $config.Run.PassThru = $true
+    $config.Run.Path = "$PSScriptRoot\..\Tests\*.Tests.ps1"
+    $config.Filter.ExcludeTag = $exclusions.ToArray()
+    $config.Should.ErrorAction = "Continue"
+    $config.TestResult.Enabled = $true
+    $config.TestResult.OutputFormat = "NUnitXml"
+    
+    return $config
+}
+
 function Build-FriendlyCodeCoverageReport ([Switch] $UpdateMD ) {
 
     $maxCoverageUnits = 20
