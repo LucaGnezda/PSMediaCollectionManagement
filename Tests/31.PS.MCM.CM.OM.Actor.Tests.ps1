@@ -50,6 +50,7 @@ Describe "Actor Unit Test" -Tag UnitTest {
         # $validActor.PerformedIn.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
 
         Write-Host $validActor.PerformedIn
+        Write-Host $validActor._Content
         Write-Host $validActor.PerformedIn.SortedBy("Name")
     }
 
