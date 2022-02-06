@@ -58,7 +58,7 @@ class BuildAgent {
         $this._ReadmeMarkdownEffectiveCoverageRegex =      "!\[Effective Coverage\].+?\)"
         $this._ReadmeMarkdownEffectiveCoverageFormatter =  "![Effective Coverage](https://img.shields.io/badge/effective%20coverage-{0}%25-{1}.svg)"
         $this._ReadmeMarkdownAutomationCoverageRegex =     "!\[Automation Coverage\].+?\)"
-        $this._ReadmeMarkdownAutomationCoverageFormatter = "![Automation Coverage](https://img.shields.io/badge/automation%20coverage-{0}%25-{1}.svg)"
+        $this._ReadmeMarkdownAutomationCoverageFormatter = "![Automation Coverage](https://img.shields.io/badge/automation%20coverage-{0}%25-{1}.svg?logo=appveyor)"
         $this._InitialStateManifest =                      @()
         $this._InitialStateYAMLPipeline =                  @()
         $this._InitialStateReadme =                        @()
