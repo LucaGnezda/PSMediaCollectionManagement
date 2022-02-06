@@ -51,6 +51,7 @@ Describe "Actor Unit Test" -Tag UnitTest {
 
         Write-Host $validActor.PerformedIn
         Write-Host $validActor._Content
+        Write-Host $validActor._Content.SortedBy("Name")
         Write-Host $validActor.PerformedIn.SortedBy("Name")
     }
 
