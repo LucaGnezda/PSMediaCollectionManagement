@@ -60,7 +60,7 @@ Describe "Series Unit Test" -Tag UnitTest {
 
     It "Sorting Episodes" {  
         # Test      
-        $validSeries.Episodes.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
+        $validSeries.Episodes.SortedBy("Title")[0].Filename | Should -Be "Bar.test"
     }
 
     It "FindByFileName Episodes" {

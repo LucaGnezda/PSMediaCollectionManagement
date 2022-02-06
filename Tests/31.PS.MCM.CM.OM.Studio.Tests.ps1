@@ -64,7 +64,7 @@ Describe "Studio Unit Test" -Tag UnitTest {
     }
 
     It "Sorting Produced" {        
-        $validStudio.Produced.SortedBy("Name")[0].Filename | Should -Be "Bar.test"
+        $validStudio.Produced.SortedBy("Title")[0].Filename | Should -Be "Bar.test"
     }
 
     It "FindByName Produced" {
