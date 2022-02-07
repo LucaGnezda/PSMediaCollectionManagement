@@ -2,7 +2,7 @@
   GitHubAccessToken:
     secure: vpFm+bVGaeyr4e2n5Tr2Dbozp8/v/mgBplu1j7b1WIC5LhznyN81RycRe9qXMQ0Z
 
-version: 1.0.1.{build}
+version: 1.0.2.{build}
 build_script:
 - ps: |
     # Check Version of PowerShell
