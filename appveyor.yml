@@ -43,9 +43,7 @@ after_test:
 on_finish:
 - ps: |
     if ( $env:APPVEYOR_REPO_BRANCH -in @("develop", "release")) {
-        Write-Host "Committing build number and automation coverage to branch" 
-    } else { 
-        Write-Host "Bypassing commit for feature and fix branches"
+        Write-Host "Committing build number and automation coverage to branch"
 
         git config --global credential.helper store
         Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
@@ -55,6 +53,10 @@ on_finish:
         git add *.psd1
         git add *.md
         git commit -m "[skip ci] AppVeyor CI $($env:APPVEYOR_BUILD_VERSION)"
-        git push --set-upstream origin $env:APPVEYOR_REPO_BRANCH
+        git push --set-upstream origin $env:APPVEYOR_REPO_BRANCH 
+
+    } 
+    else { 
+        Write-Host "Bypassing commit for feature and fix branches"
     } 
 
