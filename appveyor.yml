@@ -2,7 +2,7 @@
   GitHubAccessToken:
     secure: vpFm+bVGaeyr4e2n5Tr2Dbozp8/v/mgBplu1j7b1WIC5LhznyN81RycRe9qXMQ0Z
 
-version: 1.0.1.{build}
+version: 1.0.2.{build}
 build_script:
 - ps: |
     # Check Version of PowerShell
@@ -14,7 +14,7 @@ build_script:
 
     # Build Actions
     $agent.SetBuildNumber()
-    write-Host "Manifest version updated to: " ($agent.GetManifestVersion()[0])
+    Write-Host "`r`nManifest version updated to: " $agent.VersionToString()
 
 test_script:
 - ps: |
@@ -36,16 +36,27 @@ test_script:
     # Status
     $env:TEST_FAIL_COUNT=$result.FailedCount
 
-- git config --global credential.helper store
-- ps: Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
-- git config --global user.email "build@appveyor.com"
-- git config --global user.name "Appveyor"
-- git checkout %APPVEYOR_REPO_BRANCH%
-- git add *.psd1
-- git add *.md
-- git commit -m "[skip ci] AppVeyor CI %APPVEYOR_BUILD_VERSION%"
-- git push --set-upstream origin %APPVEYOR_REPO_BRANCH%
-
 after_test:
 - ps: |
-    if ( $env:TEST_FAIL_COUNT -gt 0) { throw "$($env:TEST_FAIL_COUNT) tests failed." } else { Write-Host "All tests passed." }
+    if ( $env:TEST_FAIL_COUNT -gt 0) { throw "$($env:TEST_FAIL_COUNT) tests failed, failing build." } else { Write-Host "All tests passed." }
+
+on_finish:
+- ps: |
+    if ( $env:APPVEYOR_REPO_BRANCH -in @("develop", "release")) {
+        Write-Host "Committing build number and automation coverage to branch"
+
+        git config --global credential.helper store
+        Add-Content "$HOME\.git-credentials" "https://$($env:GitHubAccessToken):x-oauth-basic@github.com`n"
+        git config --global user.email "build@appveyor.com"
+        git config --global user.name "Appveyor"
+        git checkout $env:APPVEYOR_REPO_BRANCH
+        git add *.psd1
+        git add *.md
+        git commit -m "[skip ci] AppVeyor CI $($env:APPVEYOR_BUILD_VERSION)"
+        git push --set-upstream origin $env:APPVEYOR_REPO_BRANCH 
+
+    } 
+    else { 
+        Write-Host "Bypassing commit for feature and fix branches"
+    } 
+
