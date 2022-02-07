@@ -5,6 +5,7 @@
 version: 1.0.2.{build}
 before_build:
 - ps: |
+    
     # Starting
     #----------
     
@@ -14,6 +15,7 @@ before_build:
 
 build_script:
 - ps: |
+    
     # Build Stage
     #-------------
 
@@ -27,6 +29,7 @@ build_script:
 
 test_script:
 - ps: |
+    
     # Test Stage
     #------------
 
@@ -47,6 +50,7 @@ test_script:
 
 after_test:
 - ps: |
+    
     # Post Test Stage
     #-----------------
 
@@ -54,6 +58,10 @@ after_test:
 
 on_finish:
 - ps: |
+    
+    # Finalising
+    #------------
+    
     if ( $env:APPVEYOR_REPO_BRANCH -in @("develop", "release")) {
         Write-Host "Committing build number and automation coverage to branch"
 
