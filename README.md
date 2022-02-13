@@ -1,6 +1,6 @@
 ﻿![Language](https://img.shields.io/badge/PowerShell-5%2B-5391FE.svg?logo=powershell) ![Code Size](https://shields.io/github/languages/code-size/LucaGnezda/PSMediaCollectionManagement)
 
-![Raw Coverage](https://img.shields.io/badge/raw%20coverage-97%25-green.svg) ![Effective Coverage](https://img.shields.io/badge/effective%20coverage-100%25-brightgreen.svg) ![Build](https://img.shields.io/appveyor/build/LucaGnezda/PSMediaCollectionManagement?logo=appveyor) ![Tests](https://img.shields.io/appveyor/tests/LucaGnezda/PSMediaCollectionManagement?compact_message&logo=appveyor) ![Automation Coverage](https://img.shields.io/badge/automation%20coverage-93%25-green.svg?logo=appveyor)
+![Raw Coverage](https://img.shields.io/badge/raw%20coverage-97%25-green.svg) ![Effective Coverage](https://img.shields.io/badge/effective%20coverage-100%25-brightgreen.svg) ![Build](https://img.shields.io/appveyor/build/LucaGnezda/PSMediaCollectionManagement?logo=appveyor) ![Tests](https://img.shields.io/appveyor/tests/LucaGnezda/PSMediaCollectionManagement?compact_message&logo=appveyor) ![Automation Coverage](https://img.shields.io/badge/automation%20coverage-96%25-green.svg?logo=appveyor)
 
 PowerShell Media Collection Management (Module)
 =============
