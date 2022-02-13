@@ -377,7 +377,7 @@ class CoverageAgent {
     }
 
     [Void] OutputPageFooter () {
-        $this.Output("``````Friendly Coverage Report", $false, $true)
+        $this.Output("``````", $false, $true)
     }
 
     [Void] GenerateTableBody ([Hashtable] $dimensions) {

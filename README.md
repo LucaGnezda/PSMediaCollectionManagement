@@ -160,8 +160,8 @@ Where:
 - Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. The problems are that; 'Add-Type' isn't available at parse time, 'using' requires the end user to know the structure of the module if they need to use the types (which this module does), and 'using' types has known issues all the way to PowerShell v7 (refer to logged issues in the PowerShell repos). To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
 - PowerShell doesn't implement static classes (but does do properties and methods), abstract classes or interfaces. To get around this limitation, this module implements pseudo static, pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
 - Interfaces then allow the module to implement dependency injection (DI) with formal contracts.
-- The current implementation of the SpellcheckProvider interface require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine, and to a very high standard. However because providers have been implemented with dependency injection, this will more easily allow alternate implementations to be substituted or added in the future. 
-- I know The code is still a little messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. So I'm progressively refactor the code with purpose towards 'go well' principles (thanks Uncle Bob).  
+- The current implementation of the SpellcheckProvider interface require a local install of Microsoft Word. This was done so effective spellchecking could run exclusively from the local machine. However, because providers have been implemented with a clean contract and dependency injection, it would be easy to create alternate implementations using cloud providers (any preferences?). 
+- The code is getting cleaner and more organised as I go. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. So I'm progressively refactoring the code with purpose towards 'go well' principles (thanks Uncle Bob).  
 
 # Developer tips
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
@@ -173,7 +173,7 @@ Where:
 # Load the CICD Helpers
 . .\CICD\BuildHelpers.ps1
 $buildAgent = New-BuildAgent
-$coverageAgent = New-BuildAgent
+$coverageAgent = New-CoverageAgent
 
 # Testing during test driven development
 $config = New-PesterCIConfiguration -IncludeDetail
@@ -194,9 +194,13 @@ $buildAgent.StepMajorVersion() # Increments Major, zeros Minor and Fix.
 $buildAgent.StepMinorVersion() # Increments Minor, zeros Fix.
 $buildAgent.StepFix()          # Increments Fix.
 
-# Note build is always set by the CICD Pipeline
 ```
-
+- Regarding the automated build pipeline approach. This project uses Appveyor. The developer is responsible for local testing (raw and effective coverage metrics), and for producing the friendly coverage report. In part this is because automated tests can't test everything (eg: Word COM, or UNC paths). The automated builds are responsible for rebuilding feature branches to confirm what can be tested passes, as well as building any PR merges to Develop and Release. The pipeline has been configured to not re-commit re-builds of feature branches, only develop and release.  
+- For this project, versioning departs from Microsoft's approach to versions, and uses a more community aligned approach. Versions are defined as follows:
+    - Major.Minor.Fix.Build
+    - Major and minor versions a developer controlled, and are relatively obvious.
+    - Fix versions are also developer controlled. They are intended for bug fixes, documentation & clean-up refactors. That is, things that do not change the functional behaviour or scope of the codebase.
+    - Build version are pipeline controlled. These come exclusively from Appveyor, and auto-increment on each trigger of a build pipeline, without resetting.
 
 # Code coverage
 - This module implements a suite of automated pester tests, which generate JoCoCo code coverage results.

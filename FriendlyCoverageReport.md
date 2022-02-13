@@ -1,5 +1,5 @@
 ﻿```Friendly Coverage Report
-Generated on: 13 February 2022 01:40:06 UTC
+Generated on: 13 February 2022 04:24:08 UTC
 
 
 Statistics:
@@ -467,4 +467,4 @@ Codebase                                                Coverage                
 ------------------------------------------------------- ---------------------- --------- --- ---------- ----------- 
 Overall coverage                                        [●●●●●●●●●●●●●●●●●●●▲] 2585/2659 +74     97.22%     100.00%
 
-```Friendly Coverage Report
+```
