@@ -1,6 +1,6 @@
 ﻿![Language](https://img.shields.io/badge/PowerShell-5%2B-5391FE.svg?logo=powershell) ![Code Size](https://shields.io/github/languages/code-size/LucaGnezda/PSMediaCollectionManagement)
 
-![Raw Coverage](https://img.shields.io/badge/raw%20coverage-94%25-green.svg) ![Effective Coverage](https://img.shields.io/badge/effective%20coverage-100%25-brightgreen.svg) ![Build](https://img.shields.io/appveyor/build/LucaGnezda/PSMediaCollectionManagement?logo=appveyor) ![Tests](https://img.shields.io/appveyor/tests/LucaGnezda/PSMediaCollectionManagement?compact_message&logo=appveyor) ![Automation Coverage](https://img.shields.io/badge/automation%20coverage-93%25-green.svg?logo=appveyor)
+![Raw Coverage](https://img.shields.io/badge/raw%20coverage-97%25-green.svg) ![Effective Coverage](https://img.shields.io/badge/effective%20coverage-100%25-brightgreen.svg) ![Build](https://img.shields.io/appveyor/build/LucaGnezda/PSMediaCollectionManagement?logo=appveyor) ![Tests](https://img.shields.io/appveyor/tests/LucaGnezda/PSMediaCollectionManagement?compact_message&logo=appveyor) ![Automation Coverage](https://img.shields.io/badge/automation%20coverage-93%25-green.svg?logo=appveyor)
 
 PowerShell Media Collection Management (Module)
 =============
@@ -167,14 +167,15 @@ Where:
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
 - If you would like to attach a Visual Studio Code debugger it is recommended you configure the debugger to run an interactive PowerShell session.
 - Please note, modules with classes won't re-load correctly after being changed in PowerShell 5. If you change the code, remember to re-start your IDE before restarting your debugger.
-- Several helper commands have been implemented to assist with test automation and the production of friendly code coverage results. Do the following while you're developing a feature branch:
+- Several helper agents and commands have been implemented to assist with test automation and the production of friendly code coverage results. Do the following while you're developing a feature branch:
 
 ```powershell
 # Load the CICD Helpers
 . .\CICD\BuildHelpers.ps1
-$agent = New-BuildAgent
+$buildAgent = New-BuildAgent
+$coverageAgent = New-BuildAgent
 
-# Use during test driven development
+# Testing during test driven development
 $config = New-PesterCIConfiguration -IncludeDetail
 $result = Invoke-Pester -Configuration $config
 
@@ -182,18 +183,16 @@ $result = Invoke-Pester -Configuration $config
 $config = New-PesterCIConfiguration -IncludeCoverage -IncludeDetail -MSWordNotAvailable -IgnoreRemoteFilesystem
 $result = Invoke-Pester -Configuration $config
 
-# Use for updating coverage, before finalising a feature branch
+# Use when updating coverage friendly report and badges, before finalising a feature branch
 $config = New-PesterCIConfiguration -IncludeCoverage  
 $result = Invoke-Pester -Configuration $config
-Build-FriendlyCodeCoverageReport -UpdateMD    
-
-# To update the raw and effective badges
-$agent.SetRawAndEffectiveCoverageBadges($result, (Get-KnownExceptions))  
+$coverageAgent.GenerateFriendlyReport()   
+$buildAgent.SetRawAndEffectiveCoverageBadges($result, (Get-KnownExceptions))  
 
 # And to update the version number (automatically applied to the manifest and Appveyor files)
-$agent.StepMajorVersion() # Increments Major, zeros Minor and Fix.
-$agent.StepMinorVersion() # Increments Minor, zeros Fix.
-$agent.StepFix()          # Increments Fix.
+$buildAgent.StepMajorVersion() # Increments Major, zeros Minor and Fix.
+$buildAgent.StepMinorVersion() # Increments Minor, zeros Fix.
+$buildAgent.StepFix()          # Increments Fix.
 
 # Note build is always set by the CICD Pipeline
 ```
