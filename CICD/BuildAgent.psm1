@@ -1,6 +1,6 @@
 #region Header
 #
-# About: Helper class for working with ANSI escaped strings 
+# About: Agent for interacting with the project's files
 #
 # Author: Luca Gnezda 
 #
