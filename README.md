@@ -195,7 +195,7 @@ $buildAgent.StepMinorVersion() # Increments Minor, zeros Fix.
 $buildAgent.StepFix()          # Increments Fix.
 
 ```
-- Regarding the automated build pipeline approach. This project uses Appveyor. The developer is responsible for local testing (raw and effective coverage metrics), and for producing the friendly coverage report. In part this is because automated tests can't test everything (eg: Word COM, or UNC paths). The automated builds are responsible for rebuilding feature branches to confirm what can be tested passes, as well as building any PR merges to Develop and Release. The pipeline has been configured to not re-commit re-builds of feature branches, only develop and release.  
+- Regarding the automated build pipeline approach. This project uses Appveyor. The developer is responsible for local testing (raw and effective coverage metrics), and the production of the friendly coverage report. In part this is because automated tests can't test everything (eg: Word COM and UNC paths). The automated builds are responsible for re-building feature branches to confirm that whatever can be tested, passes. Automated builds are also responsible for confirming PR merges into Develop and Release. The pipeline has been configured to not re-commit re-builds of feature or bugfix branches, only develop and release. When committing to Develop or Release, the Pipeline updates the automated coverage badges and the specific build version.  
 - For this project, versioning departs from Microsoft's approach to versions, and uses a more community aligned approach. Versions are defined as follows:
     - Major.Minor.Fix.Build
     - Major and minor versions a developer controlled, and are relatively obvious.
