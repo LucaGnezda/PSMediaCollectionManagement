@@ -1,6 +1,10 @@
 ﻿![Language](https://img.shields.io/badge/PowerShell-5%2B-5391FE.svg?logo=powershell) ![Code Size](https://shields.io/github/languages/code-size/LucaGnezda/PSMediaCollectionManagement)
 
+<<<<<<< HEAD
+![Raw Coverage](https://img.shields.io/badge/raw%20coverage-97%25-green.svg?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InBlcnNvbkljb25UaXRsZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIgY29sb3I9IiMwMDAwMDAiIHN0eWxlPSIiPjxyZWN0IGlkPSJiYWNrZ3JvdW5kcmVjdCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgeD0iMCIgeT0iMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJub25lIi8+IDx0aXRsZSBpZD0icGVyc29uSWNvblRpdGxlIj5QZXJzb248L3RpdGxlPiAgPGcgY2xhc3M9ImN1cnJlbnRMYXllciIgc3R5bGU9IiI+PHRpdGxlPkxheWVyIDE8L3RpdGxlPjxwYXRoIGQ9Ik00LDIwIEM0LDE3IDgsMTcgMTAsMTUgQzExLDE0IDgsMTQgOCw5IEM4LDUuNjY3IDkuMzMzLDQgMTIsNCBDMTQuNjY3LDQgMTYsNS42NjcgMTYsOSBDMTYsMTQgMTMsMTQgMTQsMTUgQzE2LDE3IDIwLDE3IDIwLDIwIiBpZD0ic3ZnXzEiIGNsYXNzPSJzZWxlY3RlZCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utb3BhY2l0eT0iMSIvPjwvZz48L3N2Zz4=) ![Effective Coverage](https://img.shields.io/badge/effective%20coverage-100%25-brightgreen.svg?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InBlcnNvbkljb25UaXRsZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIgY29sb3I9IiMwMDAwMDAiIHN0eWxlPSIiPjxyZWN0IGlkPSJiYWNrZ3JvdW5kcmVjdCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgeD0iMCIgeT0iMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJub25lIi8+IDx0aXRsZSBpZD0icGVyc29uSWNvblRpdGxlIj5QZXJzb248L3RpdGxlPiAgPGcgY2xhc3M9ImN1cnJlbnRMYXllciIgc3R5bGU9IiI+PHRpdGxlPkxheWVyIDE8L3RpdGxlPjxwYXRoIGQ9Ik00LDIwIEM0LDE3IDgsMTcgMTAsMTUgQzExLDE0IDgsMTQgOCw5IEM4LDUuNjY3IDkuMzMzLDQgMTIsNCBDMTQuNjY3LDQgMTYsNS42NjcgMTYsOSBDMTYsMTQgMTMsMTQgMTQsMTUgQzE2LDE3IDIwLDE3IDIwLDIwIiBpZD0ic3ZnXzEiIGNsYXNzPSJzZWxlY3RlZCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utb3BhY2l0eT0iMSIvPjwvZz48L3N2Zz4=) ![Build](https://img.shields.io/appveyor/build/LucaGnezda/PSMediaCollectionManagement?logo=appveyor) ![Tests](https://img.shields.io/appveyor/tests/LucaGnezda/PSMediaCollectionManagement?compact_message&logo=appveyor) ![Automation Coverage](https://img.shields.io/badge/automation%20coverage-93%25-green.svg?logo=appveyor)
+=======
 ![Raw Coverage](https://img.shields.io/badge/raw%20coverage-97%25-green.svg) ![Effective Coverage](https://img.shields.io/badge/effective%20coverage-100%25-brightgreen.svg) ![Build](https://img.shields.io/appveyor/build/LucaGnezda/PSMediaCollectionManagement?logo=appveyor) ![Tests](https://img.shields.io/appveyor/tests/LucaGnezda/PSMediaCollectionManagement?compact_message&logo=appveyor) ![Automation Coverage](https://img.shields.io/badge/automation%20coverage-96%25-green.svg?logo=appveyor)
+>>>>>>> develop
 
 PowerShell Media Collection Management (Module)
 =============
@@ -160,8 +164,8 @@ Where:
 - Implementing classes that use console enums as parameters in their public methods is problematic in PowerShell. In part this is because PowerShell is really a language of two halves, an OO and a procedural implementation. If we want to export an enum from a Module in PowerShell we have two options, each with their limitations. We either define them as .net enums (Add-Type), or we need to 'using' a module that contains the PowerShell enums. The problems are that; 'Add-Type' isn't available at parse time, 'using' requires the end user to know the structure of the module if they need to use the types (which this module does), and 'using' types has known issues all the way to PowerShell v7 (refer to logged issues in the PowerShell repos). To avoid these limitations, this module implements enums twice, one for class definitions and the parser, and one for console users. For a full explanation, please refer to the comment block where these types are defined.
 - PowerShell doesn't implement static classes (but does do properties and methods), abstract classes or interfaces. To get around this limitation, this module implements pseudo static, pseudo abstract and pseudo interfaces with ordinary classes and a little bit of reflection.
 - Interfaces then allow the module to implement dependency injection (DI) with formal contracts.
-- The current implementation of the SpellcheckProvider interface require a local install of Microsoft Word. This was done so spellchecking could run exclusively from the local machine, and to a very high standard. However because providers have been implemented with dependency injection, this will more easily allow alternate implementations to be substituted or added in the future. 
-- I know The code is still a little messy. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. So I'm progressively refactor the code with purpose towards 'go well' principles (thanks Uncle Bob).  
+- The current implementation of the SpellcheckProvider interface require a local install of Microsoft Word. This was done so effective spellchecking could run exclusively from the local machine. However, because providers have been implemented with a clean contract and dependency injection, it would be easy to create alternate implementations using cloud providers (any preferences?). 
+- The code is getting cleaner and more organised as I go. Like most coded messes it started out as a 'I wonder if I could' thought experiment. I wasn't sure exactly how I wanted the code to work, what I was building, or even if it was worth maintaining once I had something. But now that I'm actively using it on my various multimedia archives, and I'm happy with the core functionality, I have a sense of the architecture I want. So I'm progressively refactoring the code with purpose towards 'go well' principles (thanks Uncle Bob).  
 
 # Developer tips
 - This module has been implemented using Visual Studio Code, and is known to work well with this IDE.
@@ -173,7 +177,7 @@ Where:
 # Load the CICD Helpers
 . .\CICD\BuildHelpers.ps1
 $buildAgent = New-BuildAgent
-$coverageAgent = New-BuildAgent
+$coverageAgent = New-CoverageAgent
 
 # Testing during test driven development
 $config = New-PesterCIConfiguration -IncludeDetail
@@ -194,9 +198,13 @@ $buildAgent.StepMajorVersion() # Increments Major, zeros Minor and Fix.
 $buildAgent.StepMinorVersion() # Increments Minor, zeros Fix.
 $buildAgent.StepFix()          # Increments Fix.
 
-# Note build is always set by the CICD Pipeline
 ```
-
+- Regarding the automated build pipeline approach. This project uses Appveyor. The developer is responsible for local testing (raw and effective coverage metrics), and the production of the friendly coverage report. In part this is because automated tests can't test everything (eg: Word COM and UNC paths). The automated builds are responsible for re-building feature branches to confirm tests pass for whatever the pipeline can test. Automated builds are also responsible for confirming PR merges into Develop and Release. The pipeline has been configured to not re-commit re-builds of feature or bugfix branches, only develop and release branches. When committing to Develop or Release, the pipeline updates automated test coverage badges and the specific build version number.  
+- For this project, versioning departs from Microsoft's approach to versioning, instead using a more community aligned approach. Versions are defined as follows:
+    - \<Major>.\<Minor>.\<Fix>.\<Build>
+    - Major and minor versions are developer controlled, and hopefully their meaning is relatively obvious.
+    - Fix versions are also developer controlled. They are intended to be used for bug fixes, documentation & clean-up refactors. That is, things that improve the codebase, while not changing its functional behaviour or scope.
+    - Build version are pipeline controlled. These come exclusively from Appveyor, and auto-increment on each trigger of a build pipeline, without resetting.
 
 # Code coverage
 - This module implements a suite of automated pester tests, which generate JoCoCo code coverage results.

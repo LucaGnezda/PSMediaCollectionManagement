@@ -20,25 +20,26 @@
 class BuildAgent {
 
     #region Properties
-    [String] Hidden $_ManifestPath
-    [String] Hidden $_AppveyorYAMLPipelinePath
-    [String] Hidden $_ReadmeMarkdownPath
-    [String] Hidden $_ManifestVersionLineRegex
-    [String] Hidden $_ManifestVersionLineFormatter
-    [String] Hidden $_ManifestVersionRegex
-    [String] Hidden $_ManifestVersionElementsRegex
-    [String] Hidden $_AppveyorVersionLineRegex
-    [String] Hidden $_AppveyorVersionLineFormatter
-    [String] Hidden $_ReadmeMarkdownRawCoverageRegex
-    [String] Hidden $_ReadmeMarkdownRawCoverageFormatter
-    [String] Hidden $_ReadmeMarkdownEffectiveCoverageRegex
-    [String] Hidden $_ReadmeMarkdownEffectiveCoverageFormatter
-    [String] Hidden $_ReadmeMarkdownAutomationCoverageRegex
-    [String] Hidden $_ReadmeMarkdownAutomationCoverageFormatter
+    [String]   Hidden $_ManifestPath
+    [String]   Hidden $_AppveyorYAMLPipelinePath
+    [String]   Hidden $_ReadmeMarkdownPath
+    [String]   Hidden $_ManifestVersionLineRegex
+    [String]   Hidden $_ManifestVersionLineFormatter
+    [String]   Hidden $_ManifestVersionRegex
+    [String]   Hidden $_ManifestVersionElementsRegex
+    [String]   Hidden $_AppveyorVersionLineRegex
+    [String]   Hidden $_AppveyorVersionLineFormatter
+    [String]   Hidden $_ReadmeMarkdownRawCoverageRegex
+    [String]   Hidden $_ReadmeMarkdownRawCoverageFormatter
+    [String]   Hidden $_ReadmeMarkdownEffectiveCoverageRegex
+    [String]   Hidden $_ReadmeMarkdownEffectiveCoverageFormatter
+    [String]   Hidden $_ReadmeMarkdownAutomationCoverageRegex
+    [String]   Hidden $_ReadmeMarkdownAutomationCoverageFormatter
     [String[]] Hidden $_InitialStateManifest
     [String[]] Hidden $_InitialStateYAMLPipeline
     [String[]] Hidden $_InitialStateReadme
-    [Int]    Hidden $_DotsInVersion
+    [Int]      Hidden $_DotsInVersion
+    [String]   Hidden $_ShieldsIOPersonIconBase64
     #endregion Properties
 
     #region Constructors
@@ -54,15 +55,16 @@ class BuildAgent {
         $this._AppveyorVersionLineRegex =                  "version:.+"
         $this._AppveyorVersionLineFormatter =              "version: {0}"
         $this._ReadmeMarkdownRawCoverageRegex =            "!\[Raw Coverage\].+?\)"
-        $this._ReadmeMarkdownRawCoverageFormatter =        "![Raw Coverage](https://img.shields.io/badge/raw%20coverage-{0}%25-{1}.svg)"
+        $this._ReadmeMarkdownRawCoverageFormatter =        "![Raw Coverage](https://img.shields.io/badge/raw%20coverage-{0}%25-{1}.svg{2})"
         $this._ReadmeMarkdownEffectiveCoverageRegex =      "!\[Effective Coverage\].+?\)"
-        $this._ReadmeMarkdownEffectiveCoverageFormatter =  "![Effective Coverage](https://img.shields.io/badge/effective%20coverage-{0}%25-{1}.svg)"
+        $this._ReadmeMarkdownEffectiveCoverageFormatter =  "![Effective Coverage](https://img.shields.io/badge/effective%20coverage-{0}%25-{1}.svg{2})"
         $this._ReadmeMarkdownAutomationCoverageRegex =     "!\[Automation Coverage\].+?\)"
         $this._ReadmeMarkdownAutomationCoverageFormatter = "![Automation Coverage](https://img.shields.io/badge/automation%20coverage-{0}%25-{1}.svg?logo=appveyor)"
         $this._InitialStateManifest =                      @()
         $this._InitialStateYAMLPipeline =                  @()
         $this._InitialStateReadme =                        @()
         $this._DotsInVersion =                             $this.GetManifestDotsInVersion()
+        $this._ShieldsIOPersonIconBase64 =                 "?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InBlcnNvbkljb25UaXRsZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIgY29sb3I9IiMwMDAwMDAiIHN0eWxlPSIiPjxyZWN0IGlkPSJiYWNrZ3JvdW5kcmVjdCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgeD0iMCIgeT0iMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJub25lIi8+IDx0aXRsZSBpZD0icGVyc29uSWNvblRpdGxlIj5QZXJzb248L3RpdGxlPiAgPGcgY2xhc3M9ImN1cnJlbnRMYXllciIgc3R5bGU9IiI+PHRpdGxlPkxheWVyIDE8L3RpdGxlPjxwYXRoIGQ9Ik00LDIwIEM0LDE3IDgsMTcgMTAsMTUgQzExLDE0IDgsMTQgOCw5IEM4LDUuNjY3IDkuMzMzLDQgMTIsNCBDMTQuNjY3LDQgMTYsNS42NjcgMTYsOSBDMTYsMTQgMTMsMTQgMTQsMTUgQzE2LDE3IDIwLDE3IDIwLDIwIiBpZD0ic3ZnXzEiIGNsYXNzPSJzZWxlY3RlZCIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utb3BhY2l0eT0iMSIvPjwvZz48L3N2Zz4="
 
         # Derive regex for the Manifest version 
         $this._ManifestVersionElementsRegex =              "(?<=ModuleVersion( )?=( )?['""])"
@@ -141,8 +143,8 @@ class BuildAgent {
 
         if ($this._InitialStateReadme.Count -eq 0) { $this._InitialStateReadme = $markdownContents }
 
-        $markdownContents = $markdownContents -replace $this._ReadmeMarkdownRawCoverageRegex, [String]::Format($this._ReadmeMarkdownRawCoverageFormatter, $rawCoverage, $rawCoverageColour)
-        $markdownContents = $markdownContents -replace $this._ReadmeMarkdownEffectiveCoverageRegex, [String]::Format($this._ReadmeMarkdownEffectiveCoverageFormatter, $effectiveCoverage, $effectiveCoverageColour)
+        $markdownContents = $markdownContents -replace $this._ReadmeMarkdownRawCoverageRegex, [String]::Format($this._ReadmeMarkdownRawCoverageFormatter, $rawCoverage, $rawCoverageColour, $this._ShieldsIOPersonIconBase64)
+        $markdownContents = $markdownContents -replace $this._ReadmeMarkdownEffectiveCoverageRegex, [String]::Format($this._ReadmeMarkdownEffectiveCoverageFormatter, $effectiveCoverage, $effectiveCoverageColour, $this._ShieldsIOPersonIconBase64)
         $markdownContents | Set-Content -Path $this._ReadmeMarkdownPath -Encoding UTF8
     }
 
