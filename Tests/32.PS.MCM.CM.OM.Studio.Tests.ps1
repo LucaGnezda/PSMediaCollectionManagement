@@ -107,7 +107,7 @@ Describe "Studio Unit Test" -Tag UnitTest {
 
     It "ProductionCount" {
         # Test
-        $validStudio.ProductionCount | Should -Be 6
+        $validStudio.ProductionCount | Should -Be 3
     }
 }
 
