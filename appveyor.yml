@@ -62,7 +62,7 @@ on_finish:
     # Finalising
     #------------
     
-    if ( $env:APPVEYOR_REPO_BRANCH -in @("develop", "release")) {
+    if ( $env:APPVEYOR_REPO_BRANCH -eq "develop") {
         Write-Host "Committing build number and automation coverage to branch"
 
         git config --global credential.helper store
