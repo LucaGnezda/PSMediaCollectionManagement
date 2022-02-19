@@ -1,5 +1,6 @@
 # ignore code coverage
 coverage.xml
+testResults.xml
 
 # ignore the vscode folder
 /.vscode/*
