@@ -36,7 +36,7 @@ class ContentModel : IContentModel {
     [System.Collections.Generic.List[ContentSubjectBase]] $Series
     [System.Collections.Generic.List[ContentSubjectBase]] $Studios
     [System.Collections.Generic.List[Content]] $Content
-    [String] $BuiltFromAbsolutePath
+    [String] $ModuleVersion
     [ContentModelConfig] $Config
     #endregion Properties
 
@@ -45,7 +45,8 @@ class ContentModel : IContentModel {
     ContentModel(){
         
         # Instantiate the config object
-        $this.Config = [ContentModelConfig]::new()  
+        $this.Config = [ContentModelConfig]::new()
+        $this.ModuleVersion = (Get-Module PS.MediaCollectionManagement).Version.ToString()  
 
     }
     #endregion Constructors
@@ -454,6 +455,10 @@ class ContentModel : IContentModel {
     [Void] RemoveContentFromModel([String] $filename) {
     
         [CollectionManagementController]::RemoveContentFromModel($this, $filename)
+    }
+
+    [String] GetModuleVersion() {
+        return $this.ModuleVersion
     }
     #endregion Public Methods
 }

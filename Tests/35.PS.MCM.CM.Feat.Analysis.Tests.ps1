@@ -33,6 +33,15 @@ Describe "ContentModel.Analyse(Subject) Integration Test" -Tag IntegrationTest {
         $contentModel4.Actors.Add([Actor]::new("Foobar"))
         $contentModel4.Actors.Add([Actor]::new("oobar"))
         $contentModel4.Actors.Add([Actor]::new("Oobar"))
+
+        $contentModel5 = New-ContentModel
+        $contentModel5.Config.ConfigureForStructuredFiles(@([FilenameElement]::Actors))
+        $contentModel5.Init()
+
+        $contentModel5.Content.Add([Content]::new("ContentB.test", "ContentB", ".test", $true, $false, $false, $false, $false, $false, $false, $false, $false))
+        $contentModel5.Content.Add([Content]::new("ContentA.test", "ContentA", ".test", $true, $false, $false, $false, $false, $false, $false, $false, $false))
+        $contentModel5.Content[0].Title = "ContentB"
+        $contentModel5.Content[1].Title = "ContentA"
     }
 
     It "Analyse Actors" {
@@ -73,6 +82,17 @@ Describe "ContentModel.Analyse(Subject) Integration Test" -Tag IntegrationTest {
 
     It "Summary" {
         $contentModel1.Summary() # Nothing to test, other than it doesn't error
+        $contentModel2.Summary()
+        $contentModel3.Summary()
+        $contentModel4.Summary()
+        $contentModel5.Summary()
+    }
+}
+
+Describe "ContentModel.ModuleVersion Integration Test" -Tag IntegrationTest {
+    It "ModuleVersion" {
+        $contentModel = New-ContentModel
+        $contentModel.GetModuleVersion() | Should -BeOfType "String"
     }
 }
 

@@ -47,27 +47,40 @@ class ModelAnalysisHandler : IModelAnalysisHandler {
     [Void] ModelSummary([IContentModel] $contentModel) {
         [Timespan]$totalTimeSpan = 0
 
+        $missingTime = $false
+
         foreach ($content in $contentModel.Content) {
+            if ($null -eq $content.TimeSpan) {
+                $missingTime = $true
+                break
+            }
             $totalTimeSpan += $content.TimeSpan
         }
 
         if ($null -ne $contentModel.Actors) {
-            Write-InfoToConsole ([String]$contentModel.Actors.Count).PadLeft(13," ") " Content Items"
+            Write-InfoToConsole ([String]$contentModel.Actors.Count).PadLeft(13," ") " Actors"
         }
-        if ($null -ne $contentModel.Actors) {
-            Write-InfoToConsole ([String]$contentModel.Artists.Count).PadLeft(13," ") " Content Items"
+        if ($null -ne $contentModel.Artists) {
+            Write-InfoToConsole ([String]$contentModel.Artists.Count).PadLeft(13," ") " Artists"
         }
-        if ($null -ne $contentModel.Actors) {
-            Write-InfoToConsole ([String]$contentModel.Albums.Count).PadLeft(13," ") " Content Items"
+        if ($null -ne $contentModel.Albums) {
+            Write-InfoToConsole ([String]$contentModel.Albums.Count).PadLeft(13," ") " Albums"
         }
-        if ($null -ne $contentModel.Actors) {
-            Write-InfoToConsole ([String]$contentModel.Series.Count).PadLeft(13," ") " Content Items"
+        if ($null -ne $contentModel.Series) {
+            Write-InfoToConsole ([String]$contentModel.Series.Count).PadLeft(13," ") " Series"
         }
-        if ($null -ne $contentModel.Actors) {
-            Write-InfoToConsole ([String]$contentModel.Studios.Count).PadLeft(13," ") " Content Items"
+        if ($null -ne $contentModel.Studios) {
+            Write-InfoToConsole ([String]$contentModel.Studios.Count).PadLeft(13," ") " Studios"
         }
         Write-InfoToConsole ([String]$contentModel.Content.Count).PadLeft(13," ") " Content Items"
-        Write-InfoToConsole ([String]([String]$totalTimeSpan.Days + "d " + $totalTimeSpan.ToString("hh\:mm\:ss") )).PadLeft(13," ") " Total Duration" 
+
+        if ($missingTime) {
+            Write-InfoToConsole " Missing data  Total Duration"
+        }
+        else {
+            Write-InfoToConsole ([String]([String]$totalTimeSpan.Days + "d " + $totalTimeSpan.ToString("hh\:mm\:ss") )).PadLeft(13," ") " Total Duration"
+        }
+         
     }
 
 

@@ -1,13 +1,13 @@
 ﻿```Friendly Coverage Report
-Generated on: 17 February 2022 10:42:34 UTC
+Generated on: 12 March 2022 04:01:51 UTC
 
 
 Statistics:
   Functions & classes     : 69
-  Functions & methods     : 319
-  Instructions            : 2659
+  Functions & methods     : 320
+  Instructions            : 2667
   Instructions per method : 1 to 165 instructions, 8.3 average
-  Instruction coverage    : 2585 out of 2659 ( 97.22% )
+  Instruction coverage    : 2593 out of 2667 ( 97.23% )
   Accepted Exemptions     : 74
 
 Legend:
@@ -139,7 +139,7 @@ Codebase                                                Coverage                
     ModelAnalysisHandler.Class                                                                                     
       SetStringSimilarityProvider                       [●●●●●●●●●●●●●●●●●●●●]    1/1           100.00%     100.00%
       SetSpellcheckProvider                             [●●●●●●●●●●●●●●●●●●●●]    1/1           100.00%     100.00%
-      ModelSummary                                      [●●●●●●●●●●●●●●●●●●●●]   23/23          100.00%     100.00%
+      ModelSummary                                      [●●●●●●●●●●●●●●●●●●●●]   28/28          100.00%     100.00%
       AnalysePossibleLabellingIssues                    [●●●●●●●●●●●●●●●●●●●●]   79/79          100.00%     100.00%
       SpellcheckContentTitles                           [●●●●●●●●●●●●●●●●●●●●]   22/22          100.00%     100.00%
       DisplaySpellcheckSuggestions                      [●●●●●●●●●●●●●●●●●●●●]   24/24          100.00%     100.00%
@@ -292,7 +292,7 @@ Codebase                                                Coverage                
       Compare                                           [●●●●●●●●●●●●●●●●●●●●]   12/12          100.00%     100.00%
 
     ContentModel.Class                                                                                             
-      ContentModel                                      [●●●●●●●●●●●●●●●●●●●●]    1/1           100.00%     100.00%
+      ContentModel                                      [●●●●●●●●●●●●●●●●●●●●]    3/3           100.00%     100.00%
       Init                                              [●●●●●●●●●●●●●●●●●●●●]  102/102         100.00%     100.00%
       Reset                                             [●●●●●●●●●●●●●●●●●●●●]    7/7           100.00%     100.00%
       Build                                             [●●●●●●●●●●●●●●●●●●●●]    4/4           100.00%     100.00%
@@ -316,6 +316,7 @@ Codebase                                                Coverage                
       AnalyseStudiosForPossibleLabellingIssues          [●●●●●●●●●●●●●●●●●●●●]    2/2           100.00%     100.00%
       SpellcheckContentTitles                           [●●●●●●●●●●●●●●●●●●●●]    2/2           100.00%     100.00%
       RemoveContentFromModel                            [●●●●●●●●●●●●●●●●●●●●]    1/1           100.00%     100.00%
+      GetModuleVersion                                  [●●●●●●●●●●●●●●●●●●●●]    1/1           100.00%     100.00%
 
     ContentModelConfig.Class                                                                                       
       ContentModelConfig                                [●●●●●●●●●●●●●●●●●●●●]    2/2           100.00%     100.00%
@@ -465,6 +466,6 @@ Codebase                                                Coverage                
 
 
 ------------------------------------------------------- ---------------------- --------- --- ---------- ----------- 
-Overall coverage                                        [●●●●●●●●●●●●●●●●●●●▲] 2585/2659 +74     97.22%     100.00%
+Overall coverage                                        [●●●●●●●●●●●●●●●●●●●▲] 2593/2667 +74     97.23%     100.00%
 
 ```
