@@ -29,7 +29,6 @@ class IContentModel : IsInterface {
     [System.Collections.Generic.List[ContentSubjectBase]] $Series
     [System.Collections.Generic.List[ContentSubjectBase]] $Studios
     [System.Collections.Generic.List[Content]] $Content
-    [String] $BuiltFromAbsolutePath
     [ContentModelConfig] $Config
     
     IContentModel () {

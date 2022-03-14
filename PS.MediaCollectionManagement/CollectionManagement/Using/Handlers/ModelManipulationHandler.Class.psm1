@@ -524,7 +524,7 @@ class ModelManipulationHandler : IModelManipulationHandler {
 
          foreach ($content in $this.ContentModel.Content) {
 
-             Write-Progress -Activity "Collecting addtitional info" -Status ("Re-processing Item: " + ($i + 1) + " | " + $content.FileName) -PercentComplete (($i * 100) / $this.ContentModel.Content.Count)
+             Write-Progress -Activity "Collecting additional info" -Status ("Re-processing Item: " + ($i + 1) + " | " + $content.FileName) -PercentComplete (($i * 100) / $this.ContentModel.Content.Count)
 
              $file = $filesystemProvider.GetFileIfExists($content.FileName)
 
